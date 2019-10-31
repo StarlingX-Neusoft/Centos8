@@ -1,1 +1,1 @@
-# Starlingx upgrade to Centos8
+# StarlingX upgrade to centos 8.

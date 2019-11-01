@@ -22,7 +22,7 @@ fi
 CMD=$1
 
 TC_CONTAINER_NAME=${MYUNAME}-centos-builder
-TC_CONTAINER_TAG=local/${MYUNAME}-stx-builder:8.0
+TC_CONTAINER_TAG=local/${MYUNAME}-stx-builder:8
 TC_DOCKERFILE=Dockerfile
 
 function create_container {

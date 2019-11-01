@@ -56,11 +56,9 @@ RUN groupadd -g 751 cgts && \
         createrepo \
         #deltarpm \
         expat-devel \
-        isomd5sum \
         gcc \
         gettext \
         git \
-        libguestfs-tools \
         libtool \
         libxml2 \
         #lighttpd \
@@ -85,6 +83,8 @@ RUN groupadd -g 751 cgts && \
         #python-testrepository \
         #python-tox \
         python3-pyyaml \
+	python2 \
+	python36 \
         postgresql \
         qemu-kvm \
         quilt \
@@ -95,7 +95,6 @@ RUN groupadd -g 751 cgts && \
         sudo \
         systemd \
         syslinux \
-        syslinux-utils \
         udisks2 \
         vim-enhanced \
         wget
@@ -163,7 +162,7 @@ RUN echo "# Load stx-builder configuration" >> /etc/profile.d/TC.sh && \
     echo "export PATH=\$MY_REPO/build-tools:\$PATH" >> /etc/profile.d/TC.sh
 
 # centos locales are broken. this needs to be run after the last yum install/update
-RUN localedef -i en_US -f UTF-8 en_US.UTF-8
+#RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 
 # setup
 RUN mkdir -p /www/run && \
@@ -180,28 +179,28 @@ RUN mkdir -p /www/run && \
 # chmod for /var/log/lighttpd fixes a centos issue
 # in place sed for server root since it's expanded soon thereafter
 #     echo "server.bind = \"localhost\"" >> /etc/lighttpd/lighttpd.conf && \
-RUN echo "$MYUNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
-    mkdir -p  /var/log/lighttpd  && \
-    chmod a+rwx /var/log/lighttpd/ && \
-    sed -i 's%^var\.log_root.*$%var.log_root = "/www/logs"%g' /etc/lighttpd/lighttpd.conf  && \
-    sed -i 's%^var\.server_root.*$%var.server_root = "/www/root"%g' /etc/lighttpd/lighttpd.conf  && \
-    sed -i 's%^var\.home_dir.*$%var.home_dir = "/www/home"%g' /etc/lighttpd/lighttpd.conf  && \
-    sed -i 's%^var\.state_dir.*$%var.state_dir = "/www/run"%g' /etc/lighttpd/lighttpd.conf  && \
-    sed -i "s/server.port/#server.port/g" /etc/lighttpd/lighttpd.conf  && \
-    sed -i "s/server.use-ipv6/#server.use-ipv6/g" /etc/lighttpd/lighttpd.conf && \
-    sed -i "s/server.username/#server.username/g" /etc/lighttpd/lighttpd.conf && \
-    sed -i "s/server.groupname/#server.groupname/g" /etc/lighttpd/lighttpd.conf && \
-    sed -i "s/server.bind/#server.bind/g" /etc/lighttpd/lighttpd.conf && \
-    sed -i "s/server.document-root/#server.document-root/g" /etc/lighttpd/lighttpd.conf && \
-    sed -i "s/server.dirlisting/#server.dirlisting/g" /etc/lighttpd/lighttpd.conf && \
-    echo "server.port = 8088" >> /etc/lighttpd/lighttpd.conf && \
-    echo "server.use-ipv6 = \"disable\"" >> /etc/lighttpd/lighttpd.conf && \
-    echo "server.username = \"$MYUNAME\"" >> /etc/lighttpd/lighttpd.conf && \
-    echo "server.groupname = \"cgts\"" >> /etc/lighttpd/lighttpd.conf && \
-    echo "server.bind = \"localhost\"" >> /etc/lighttpd/lighttpd.conf && \
-    echo "server.document-root   = \"/www/root/htdocs\"" >> /etc/lighttpd/lighttpd.conf && \
-    sed -i "s/dir-listing.activate/#dir-listing.activate/g" /etc/lighttpd/conf.d/dirlisting.conf && \
-    echo "dir-listing.activate = \"enable\"" >> /etc/lighttpd/conf.d/dirlisting.conf
+#RUN echo "$MYUNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+#    mkdir -p  /var/log/lighttpd  && \
+#    chmod a+rwx /var/log/lighttpd/ && \
+#    sed -i 's%^var\.log_root.*$%var.log_root = "/www/logs"%g' /etc/lighttpd/lighttpd.conf  && \
+#    sed -i 's%^var\.server_root.*$%var.server_root = "/www/root"%g' /etc/lighttpd/lighttpd.conf  && \
+#    sed -i 's%^var\.home_dir.*$%var.home_dir = "/www/home"%g' /etc/lighttpd/lighttpd.conf  && \
+#    sed -i 's%^var\.state_dir.*$%var.state_dir = "/www/run"%g' /etc/lighttpd/lighttpd.conf  && \
+#    sed -i "s/server.port/#server.port/g" /etc/lighttpd/lighttpd.conf  && \
+#    sed -i "s/server.use-ipv6/#server.use-ipv6/g" /etc/lighttpd/lighttpd.conf && \
+#    sed -i "s/server.username/#server.username/g" /etc/lighttpd/lighttpd.conf && \
+#    sed -i "s/server.groupname/#server.groupname/g" /etc/lighttpd/lighttpd.conf && \
+#    sed -i "s/server.bind/#server.bind/g" /etc/lighttpd/lighttpd.conf && \
+#    sed -i "s/server.document-root/#server.document-root/g" /etc/lighttpd/lighttpd.conf && \
+#    sed -i "s/server.dirlisting/#server.dirlisting/g" /etc/lighttpd/lighttpd.conf && \
+#    echo "server.port = 8088" >> /etc/lighttpd/lighttpd.conf && \
+#    echo "server.use-ipv6 = \"disable\"" >> /etc/lighttpd/lighttpd.conf && \
+#    echo "server.username = \"$MYUNAME\"" >> /etc/lighttpd/lighttpd.conf && \
+#    echo "server.groupname = \"cgts\"" >> /etc/lighttpd/lighttpd.conf && \
+#    echo "server.bind = \"localhost\"" >> /etc/lighttpd/lighttpd.conf && \
+#    echo "server.document-root   = \"/www/root/htdocs\"" >> /etc/lighttpd/lighttpd.conf && \
+#    sed -i "s/dir-listing.activate/#dir-listing.activate/g" /etc/lighttpd/conf.d/dirlisting.conf && \
+#    echo "dir-listing.activate = \"enable\"" >> /etc/lighttpd/conf.d/dirlisting.conf
 
 # Systemd Enablement
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \

@@ -1,0 +1,49 @@
+From 97ae8e0844c8b6f5e77ce968e51b21d0507e4718 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Fri, 1 Nov 2019 13:40:22 +0800
+Subject: [PATCH 3/3] security-set-immutable-attribute
+
+---
+ SPECS/tboot.spec | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/SPECS/tboot.spec b/SPECS/tboot.spec
+index 9e09659..61617d2 100644
+--- a/SPECS/tboot.spec
++++ b/SPECS/tboot.spec
+@@ -33,9 +33,21 @@ CFLAGS="$RPM_OPT_FLAGS"; export CFLAGS
+ LDFLAGS="$RPM_LD_FLAGS"; export LDFLAGS
+ make debug=y %{?_smp_mflags}
+ 
++# On updating this package, we want to clear the immutable
++# attribute so that the module files can get overwritten
++if [ $1 -gt 1 ]; then
++    chattr -i /boot/tboot.gz /boot/tboot-syms
++fi
++exit 0
++
+ %install
+ make debug=y DISTDIR=$RPM_BUILD_ROOT install
+ 
++%post
++# Set immutable attribute on tboot modules
++chattr +i /boot/tboot.gz /boot/tboot-syms
++exit 0
++
+ %files
+ %doc README COPYING docs/* lcptools/lcptools2.txt lcptools/Linux_LCP_Tools_User_Manual.pdf
+ %config %{_sysconfdir}/grub.d/20_linux_tboot
+@@ -71,8 +83,8 @@ make debug=y DISTDIR=$RPM_BUILD_ROOT install
+ %{_mandir}/man8/lcp_writepol.8.gz
+ %{_mandir}/man8/tb_polgen.8.gz
+ %{_mandir}/man8/txt-stat.8.gz
+-/boot/tboot.gz
+-/boot/tboot-syms
++%attr(0400,root,root) /boot/tboot.gz
++%attr(0400,root,root) /boot/tboot-syms
+ 
+ %changelog
+ * Fri Sep 7 2018 Tony Camuso <tcamuso@redhat.com> - 1:1.9.7-1
+-- 
+1.8.3.1
+

@@ -1,2 +1,0 @@
-#COPY_LIST="tpm2-tools/*"
-TIS_PATCH_VER=0

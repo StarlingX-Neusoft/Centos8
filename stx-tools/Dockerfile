@@ -13,7 +13,7 @@
 # Copyright (C) 2019 Intel Corporation
 #
 
-FROM centos:7.4.1708
+FROM centos:8
 
 # Proxy configuration
 #ENV http_proxy  "http://your.actual_http_proxy.com:your_port"
@@ -44,17 +44,17 @@ RUN groupadd -g 751 cgts && \
     echo "mockbuild:x:9001:" >> /etc/group && \
     yum install -y epel-release && \
     yum install -y anaconda \
-        anaconda-help \
+        #anaconda-help \
         anaconda-runtime \
-        autoconf-archive \
-        autogen \
+        #autoconf-archive \
+        #autogen \
         automake \
         bc \
         bind \
         bind-utils \
         cpanminus \
         createrepo \
-        deltarpm \
+        #deltarpm \
         expat-devel \
         isomd5sum \
         gcc \
@@ -63,34 +63,34 @@ RUN groupadd -g 751 cgts && \
         libguestfs-tools \
         libtool \
         libxml2 \
-        lighttpd \
-        lighttpd-fastcgi \
-        lighttpd-mod_geoip \
+        #lighttpd \
+        #lighttpd-fastcgi \
+        #lighttpd-mod_geoip \
         net-tools \
         mkisofs \
         mock \
-        mongodb \
-        mongodb-server \
-        pax \
+        #mongodb \
+        #mongodb-server \
+        #pax \
         perl-CPAN \
-        python-deltarpm \
-        python-pep8 \
-        python-pip \
-        python-psutil \
+        #python-deltarpm \
+        #python-pep8 \
+        python3-pip \
+        python3-psutil \
         python2-psutil \
-        python36-psutil \
-        python-sphinx \
-        python-subunit \
-        python-pip \
-        python-testrepository \
-        python-tox \
-        python-yaml \
+        #python36-psutil \
+        #python3-sphinx \
+        #python-subunit \
+        #python-pip \
+        #python-testrepository \
+        #python-tox \
+        python3-pyyaml \
         postgresql \
         qemu-kvm \
         quilt \
         rpm-build \
         rpm-sign \
-        rpm-python \
+        #rpm-python \
         squashfs-tools \
         sudo \
         systemd \
@@ -98,8 +98,8 @@ RUN groupadd -g 751 cgts && \
         syslinux-utils \
         udisks2 \
         vim-enhanced \
-        wget \
-        yumdownloader
+        wget
+        #yumdownloader
 
 # This image requires a set of scripts and helpers
 # for working correctly, in this section they are
@@ -118,8 +118,8 @@ RUN cpanm --notest Fatal && \
     cpanm --notest XML::Simple
 
 # pip installs
-RUN pip install python-subunit junitxml --upgrade && \
-    pip install tox --upgrade
+RUN pip3 install python-subunit junitxml --upgrade && \
+    pip3 install tox --upgrade
 
 # Install repo tool
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo && \

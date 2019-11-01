@@ -1,0 +1,7 @@
+#####
+# buildlogs-seed.centos.org
+
+[Starlingx-buildlogs-seed.centos.org_c7.1708.00]
+name=Starlingx-buildlogs-seed.centos.org_c7.1708.00 - buildlogs-seed.centos.org_c7.1708.00
+baseurl=http://buildlogs-seed.centos.org/c7.1708.00
+enabled=1

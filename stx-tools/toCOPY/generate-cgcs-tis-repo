@@ -1,0 +1,154 @@
+#!/bin/bash
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (C) 2019 Intel Corporation
+#
+
+set -e
+export SRC_BUILD_ENVIRONMENT="stx-r1"
+export ARCH="x86_64"
+export PATH="${MY_REPO}/build-tools:${PATH}"
+
+EXPORTS="$MY_WORKSPACE/export/mirrors/"
+DISTRO="CentOS"
+HEAD_FILE="${MY_REPO_ROOT_DIR}/.repo/projects/cgcs-root.git/HEAD"
+STAT="$(stat -c %Y ${HEAD_FILE})"
+TIMESTAMP=$(date -d @$(stat -c %Y ${HEAD_FILE}) +%Y-%m-%dT%H:%M:%S)
+STD_PKG_DIR="${MY_WORKSPACE}/std/rpmbuild/RPMS"
+RT_PKG_DIR="${MY_WORKSPACE}/rt/rpmbuild/RPMS"
+RELEASE="$SRC_BUILD_ENVIRONMENT"
+CACHE_DIR="$EXPORTS/$DISTRO/$RELEASE"
+DEST_RPM_ROOT="${CACHE_DIR}/${ARCH}"
+DEST_SRPM_ROOT="${CACHE_DIR}/Source"
+DEST_RPM_ROOT_NEW="${DEST_RPM_ROOT}.new"
+DEST_SRPM_ROOT_NEW="${DEST_SRPM_ROOT}.new"
+DEST_RPM_ROOT_OLD="${DEST_RPM_ROOT}.old"
+DEST_SRPM_ROOT_OLD="${DEST_SRPM_ROOT}.old"
+DEST_RPM="${DEST_RPM_ROOT_NEW}/Packages"
+DEST_SRPM="${DEST_SRPM_ROOT_NEW}/SPackages"
+DEST_RPM_REPODATA="${DEST_RPM_ROOT_NEW}/repodata"
+DEST_SRPM_REPODATA="${DEST_SRPM_ROOT_NEW}/repodata"
+TIS_REPO_DIR="${MY_REPO}/cgcs-tis-repo"
+TIS_CACHE_DIR="${TIS_REPO_DIR}/dependancy-cache"
+TIS_CACHE_ORIGIN="${TIS_REPO_DIR}/origin"
+ORIGIN="/import/mirrors/CentOS/${SRC_BUILD_ENVIRONMENT}/CentOS/pike"
+
+CREATEREPO=$(which createrepo_c)
+if [ $? -ne 0 ]; then
+   CREATEREPO="createrepo"
+fi
+
+# Create directories
+for d in "$DEST_RPM" "$DEST_SRPM" "$TIS_CACHE_DIR"; do
+	if [ ! -d "$d" ]; then
+		mkdir -p "$d"
+	fi
+done
+
+if [ ! -e "$TIS_CACHE_ORIGIN" ]; then
+	echo "$ORIGIN" > $TIS_CACHE_ORIGIN
+	ORIGIN_DIR="$ORIGIN"
+else
+	ORIGIN_DIR=$(grep -v '^#'  $TIS_CACHE_ORIGIN | head -n 1)
+fi
+
+if [ ! -d "$ORIGIN_DIR" ]; then
+	echo "ERROR: directory not found '$ORIGIN_DIR'"
+	exit -1
+fi
+
+# copy standard and rt build of binary packages
+for f in $(find "$RT_PKG_DIR" "$STD_PKG_DIR" -name '*.rpm' \
+	| grep -v '[.]src[.]rpm'); do
+	ff="$(basename $f)"
+	echo "$ff"
+	cp "$f" "$DEST_RPM"
+	touch "${DEST_RPM}/${ff}" --date="$TIMESTAMP"
+done
+
+# Make a repo out of it
+( cd "$DEST_RPM_ROOT_NEW"; $CREATEREPO $PWD; exit $? )
+
+# copy standard and rt build of src.rpm packages
+for f in $(find "$STD_PKG_DIR" "$RT_PKG_DIR" -name '*.src.rpm'); do
+	ff="$(basename $f)"
+	echo "$ff"
+	cp "$f" "$DEST_SRPM"
+	touch "${DEST_SRPM}/${ff}" --date="$TIMESTAMP"
+done
+
+# Make a repo out of it
+( cd  "$DEST_SRPM_ROOT_NEW"; $CREATEREPO $PWD; exit $? )
+
+date > "${DEST_SRPM_ROOT_NEW}/last_updated"
+date > "${DEST_RPM_ROOT_NEW}/last_updated"
+
+# Rotate directories ... current becomes old, and new becomes current
+if [ -d $DEST_RPM_ROOT ]; then
+	mv "$DEST_RPM_ROOT" "$DEST_RPM_ROOT_OLD"
+fi
+
+mv "$DEST_RPM_ROOT_NEW" "$DEST_RPM_ROOT"
+rm -rf "$DEST_RPM_ROOT_OLD"
+
+if [ -d "$DEST_SRPM_ROOT" ]; then
+	mv "$DEST_SRPM_ROOT" "$DEST_SRPM_ROOT_OLD"
+fi
+
+mv "$DEST_SRPM_ROOT_NEW" "$DEST_SRPM_ROOT"
+rm -rf "$DEST_SRPM_ROOT_OLD"
+
+# Update symlinks in cgcs-tis-repo
+
+for d in $(find "$ORIGIN_DIR" -type d | tail -n +2); do
+	RELATIVE_DIR=$(echo $d | sed "s#^$ORIGIN_DIR/##")
+	if [ -d "${TIS_REPO_DIR}/${RELATIVE_DIR}" ]; then
+		rm -rf "${TIS_REPO_DIR}/${RELATIVE_DIR}/*"
+	fi
+	echo "mkdir -p $RELATIVE_DIR"
+	mkdir -p "${TIS_REPO_DIR}/${RELATIVE_DIR}"
+done
+
+for d in $(find "$ORIGIN_DIR" -type d | tail -n +2); do
+	for f in $(find $d -maxdepth 1 -type f); do
+		RELATIVE_FILE=$(echo $f | sed "s#^$ORIGIN_DIR/##")
+		if [ -e "${TIS_REPO_DIR}/${RELATIVE_FILE}" ]; then
+			rm -f "${TIS_REPO_DIR}/${RELATIVE_FILE}"
+		fi
+		ln -s "$f" "${TIS_REPO_DIR}/${RELATIVE_FILE}"
+	done
+done
+
+for d in $(find -L "$TIS_REPO_DIR" -type d -name repodata); do
+	pushd  "${d}/.."
+	rm -rf repodata
+	if [ -f "comps.xml" ]; then
+		"$CREATEREPO" -g comps.xml "$PWD"
+	else
+		"$CREATEREPO" "$PWD"
+	fi
+	popd
+done
+
+# Recreate repodata
+cd "$TIS_REPO_DIR"
+
+for d in $(find -L . -type d -name repodata); do
+	pushd "${d}/.."
+	for c in $(ls -1 repodata/*comps*xml); do
+		mv -f "${c}" comps.xml
+	done
+	if [ -d "repodata" ]; then
+		rm -rf repodata
+	fi
+	if [ -f "comps.xml" ]; then
+		$CREATEREPO -g comps.xml "$PWD"
+	else
+		$CREATEREPO "$PWD"
+	fi
+	popd
+done
+
+# Update the dependancy_cache under cgcs-tis-repo
+create_dependancy_cache.py --cache_dir "${TIS_CACHE_DIR}"

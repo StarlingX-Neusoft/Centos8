@@ -1,0 +1,41 @@
+# CentOS-OpenStack-queens.repo
+#
+# Please see http://wiki.centos.org/SpecialInterestGroup/Cloud for more
+# information
+
+[centos-openstack-rocky]
+name=CentOS-7 - OpenStack rocky
+baseurl=http://mirror.centos.org/centos/7/cloud/$basearch/openstack-rocky/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[centos-openstack-rocky-test]
+name=CentOS-7 - OpenStack rocky Testing
+baseurl=https://buildlogs.centos.org/centos/7/cloud/$basearch/openstack-rocky/
+gpgcheck=0
+enabled=0
+exclude=sip,PyQt4
+
+[centos-openstack-rocky-debuginfo]
+name=CentOS-7 - OpenStack rocky - Debug
+baseurl=http://debuginfo.centos.org/centos/7/cloud/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[centos-openstack-Rocky-source]
+name=CentOS-7 - OpenStack Rocky - Source
+baseurl=http://vault.centos.org/centos/7.5.1804/cloud/Source/openstack-rocky/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[rdo-trunk-rocky-tested]
+name=OpenStack rocky Trunk Tested
+baseurl=https://trunk.rdoproject.org/centos7-rocky/current-passed-ci/
+gpgcheck=0
+enabled=0

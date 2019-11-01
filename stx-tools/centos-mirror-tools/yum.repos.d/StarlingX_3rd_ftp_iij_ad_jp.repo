@@ -1,0 +1,7 @@
+####
+# ftp.iij.ad.jp
+
+[Starlingx-ftp.iij.ad.jp_pub_linux_centos_7_rt_x86_64]
+name=Starlingx-ftp.iij.ad.jp_pub_linux_centos_7_rt_x86_64 - ftp.iij.ad.jp_pub_linux_centos_7_rt_x86_64
+baseurl=http://ftp.iij.ad.jp/pub/linux/centos/7/rt/x86_64
+enabled=1

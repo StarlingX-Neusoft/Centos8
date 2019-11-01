@@ -1,0 +1,13 @@
+*~
+.makeenv
+.tox
+localrc
+toCOPY/.gitconfig
+centos-mirror-tools/logs/
+centos-mirror-tools/output/
+
+# Sphinx documentation
+doc/build/
+
+# Release Notes documentation
+releasenotes/build

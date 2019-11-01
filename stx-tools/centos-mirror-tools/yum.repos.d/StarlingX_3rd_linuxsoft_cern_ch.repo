@@ -1,0 +1,7 @@
+#####
+# linuxsoft.cern.ch
+
+[Starlingx-linuxsoft.cern.ch_cern_centos_7.5_rt_Sources]
+name=Starlingx-linuxsoft.cern.ch_cern_centos_7.5_rt_Sources - linuxsoft.cern.ch_cern_centos_7.5_rt_Sources
+baseurl=http://linuxsoft.cern.ch/cern/centos/7.5/rt/Sources/
+enabled=1

@@ -1,0 +1,41 @@
+# CentOS-OpenStack-queens.repo
+#
+# Please see http://wiki.centos.org/SpecialInterestGroup/Cloud for more
+# information
+
+[centos-openstack-queens]
+name=CentOS-7 - OpenStack queens
+baseurl=http://mirror.centos.org/centos/7/cloud/$basearch/openstack-queens/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[centos-openstack-queens-test]
+name=CentOS-7 - OpenStack queens Testing
+baseurl=https://buildlogs.centos.org/centos/7/cloud/$basearch/openstack-queens/
+gpgcheck=0
+enabled=0
+exclude=sip,PyQt4
+
+[centos-openstack-queens-debuginfo]
+name=CentOS-7 - OpenStack queens - Debug
+baseurl=http://debuginfo.centos.org/centos/7/cloud/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[centos-openstack-Queens-source]
+name=CentOS-7 - OpenStack Queens - Source
+baseurl=http://vault.centos.org/centos/7.5.1804/cloud/Source/openstack-queens/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[rdo-trunk-queens-tested]
+name=OpenStack queens Trunk Tested
+baseurl=https://trunk.rdoproject.org/centos7-queens/current-passed-ci/
+gpgcheck=0
+enabled=0

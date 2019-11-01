@@ -1,0 +1,16 @@
+#####
+# download.docker.com
+
+[Starlingx-download.docker.com_linux_centos_7_source_stable]
+name=Starlingx-download.docker.com_linux_centos_7_source_stable - download.docker.com_linux_centos_7_source_stable
+baseurl=https://download.docker.com/linux/centos/7/source/stable
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-DOCKER
+enabled=1
+
+[Starlingx-download.docker.com_linux_centos_7_x86_64_stable]
+name=Starlingx-download.docker.com_linux_centos_7_x86_64_stable - download.docker.com_linux_centos_7_x86_64_stable
+baseurl=https://download.docker.com/linux/centos/7/x86_64/stable
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-DOCKER
+enabled=1

@@ -1,0 +1,118 @@
+From ab6bbe9d9e696a4593842588bb82bfa9738cf90a Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Fri, 1 Nov 2019 15:48:20 +0800
+Subject: [PATCH] Change-group-passwd-and-uidgid
+
+---
+ group  | 21 +++++++++++----------
+ passwd | 18 ++++++++++--------
+ uidgid |  9 +++++----
+ 3 files changed, 26 insertions(+), 22 deletions(-)
+
+diff --git a/group b/group
+index 13a6276..4bbe1e0 100644
+--- a/group
++++ b/group
+@@ -1,24 +1,25 @@
+ root::0:
+-bin::1:
+-daemon::2:
+ sys::3:
+-adm::4:
+ tty::5:
+ disk::6:
+-lp::7:
+-mem::8:
+ kmem::9:
+ wheel::10:
+ cdrom::11:
+ mail::12:
+-man::15:
+ dialout::18:
+ floppy::19:
+-games::20:
+ tape::33:
+-video::39:
+-ftp::50:
+ lock::54:
+-audio::63:
+ users::100:
++postgres:x:120:
++nova:x:162:nova
++keystone:x:42424:keystone
++neutron:x:164:neutron
++ceilometer:x:166:ceilometer
++sysinv:x:168:sysinv
++snmpd:x:169:snmpd,fm
++fm:x:195:fm
++libvirt:x:991:nova
++ironic:x:1874:ironic
++www:x:1877:www
+ nobody::65534:
+diff --git a/passwd b/passwd
+index 8175e8b..132944e 100644
+--- a/passwd
++++ b/passwd
+@@ -1,13 +1,15 @@
+ root:*:0:0:root:/root:/bin/bash
+-bin:*:1:1:bin:/bin:/sbin/nologin
+-daemon:*:2:2:daemon:/sbin:/sbin/nologin
+-adm:*:3:4:adm:/var/adm:/sbin/nologin
+-lp:*:4:7:lp:/var/spool/lpd:/sbin/nologin
+ sync:*:5:0:sync:/sbin:/bin/sync
+ shutdown:*:6:0:shutdown:/sbin:/sbin/shutdown
+ halt:*:7:0:halt:/sbin:/sbin/halt
+-mail:*:8:12:mail:/var/spool/mail:/sbin/nologin
+-operator:*:11:0:operator:/root:/sbin/nologin
+-games:*:12:100:games:/usr/games:/sbin/nologin
+-ftp:*:14:50:FTP User:/var/ftp:/sbin/nologin
++postgres:x:120:120:PostgreSQL Server:/var/lib/pgsql:/bin/sh
++neutron:x:164:164:OpenStack Neutron Daemons:/var/lib/neutron:/sbin/nologin
++sysinv:x:168:168:sysinv Daemons:/var/lib/sysinv:/sbin/nologin
++snmpd:x:169:169:net-snmp:/usr/share/snmp:/sbin/nologin
++fm:x:195:195:fm-mgr:/var/lib/fm:/sbin/nologin
++ceilometer:x:991:166:OpenStack ceilometer Daemons:/var/lib/ceilometer:/sbin/nologin
++keystone:x:42424:42424:OpenStack Keystone Daemons:/var/lib/keystone:/sbin/nologin
++nova:x:994:162:OpenStack Nova Daemons:/var/lib/nova:/sbin/nologin
++ironic:x:1874:1874:OpenStack Ironic Daemons:/var/lib/ironic:/sbin/nologin
++www:x:1877:1877:www:/home/www:/sbin/nologin
+ nobody:*:65534:65534:Kernel Overflow User:/:/sbin/nologin
+diff --git a/uidgid b/uidgid
+index e86d45e..5bfa92d 100644
+--- a/uidgid
++++ b/uidgid
+@@ -128,13 +128,13 @@ stapusr	-	156	/		-	systemtap-runtime
+ stapsys	-	157	/		-	systemtap-runtime
+ stapdev	-	158	/		-	systemtap-runtime
+ swift	160	160	/var/lib/swift		/sbin/nologin	openstack-swift
+-glance	161	161	/var/lib/glance		/sbin/nologin	openstack-glance
+ nova	162	162	/var/lib/nova		/sbin/nologin	openstack-nova
+-keystone	163	163	/var/lib/keystone		/sbin/nologin	openstack-keystone
++keystone	42424	42424	/var/lib/keystone		/sbin/nologin	openstack-keystone
+ quantum	164	164	/var/lib/quantum		/sbin/nologin	openstack-quantum
+-cinder	165	165	/var/lib/cinder		/sbin/nologin	openstack-cinder
+ ceilometer	166	166	/var/lib/ceilometer		/sbin/nologin	openstack-ceilometer
+ ceph	167	167	/var/lib/ceph		/sbin/nologin	ceph-common
++sysinv  168 168 /var/lib/sysinv     /sbin/nologin   sysinv
++snmpd   169 169 /usr/share/snmp    /sbin/nologin    net-snmp
+ avahi-autoipd	170	170	/var/lib/avahi-autoipd		/sbin/nologin	avahi
+ pulse	171	171	/var/run/pulse		/sbin/nologin	pulseaudio
+ rtkit	172	172	/proc		/sbin/nologin	rtkit
+@@ -153,7 +153,6 @@ mongodb	184	184	/var/lib/mongodb		/sbin/nologin	mongodb
+ wildfly	185	185	/usr/share/wildfly		/sbin/nologin	wildfly	#was jboss-as
+ jbosson-agent	186	-	/		/sbin/nologin	jboss-on-agent
+ jbosson	-	186	-		-	jboss-on-agent
+-heat	187	187	/var/lib/heat		/sbin/nologin	heat
+ haproxy	188	188	/var/lib/haproxy		/sbin/nologin	haproxy
+ hacluster	189	-	/		/sbin/nologin	pacemaker
+ haclient	-	189	-		-	pacemaker
+@@ -163,4 +162,6 @@ systemd-network	192	192	/		/sbin/nologin	systemd
+ systemd-resolve	193	193	/		/sbin/nologin	systemd
+ gnats	?	?	?		?	gnats, gnats-db
+ listar	?	?	?		?	listar
++fm      195 195 /var/lib/fm             /sbin/nologin   fm-mgr
+ nobody	65534	65534	/		/sbin/nologin	setup
++www     1877    1877    /home/www       /sbin/nologin   setup
+-- 
+1.8.3.1
+

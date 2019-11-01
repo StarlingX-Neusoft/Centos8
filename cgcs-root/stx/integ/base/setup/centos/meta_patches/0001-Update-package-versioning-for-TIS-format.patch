@@ -1,0 +1,25 @@
+From f26118287a90951fa9df28e1f7e9568384ff2db2 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Fri, 1 Nov 2019 15:32:35 +0800
+Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+
+---
+ SPECS/setup.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/setup.spec b/SPECS/setup.spec
+index acd6d95..2b16ffb 100644
+--- a/SPECS/setup.spec
++++ b/SPECS/setup.spec
+@@ -1,7 +1,7 @@
+ Summary: A set of system configuration and setup files
+ Name: setup
+ Version: 2.12.2
+-Release: 2%{?dist}
++Release: 2.el8%{?_tis_dist}.%{tis_patch_ver}
+ License: Public Domain
+ Group: System Environment/Base
+ URL: https://pagure.io/setup/
+-- 
+1.8.3.1
+

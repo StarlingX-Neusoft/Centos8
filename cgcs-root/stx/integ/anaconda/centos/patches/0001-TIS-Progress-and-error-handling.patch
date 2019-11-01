@@ -1,0 +1,311 @@
+From 718eb590dbf211ecc0d3cb0ea78230437ac584b4 Mon Sep 17 00:00:00 2001
+From: LongLi <lilong-neu@neusoft.com>
+Date: Fri, 1 Nov 2019 13:52:44 +0800
+Subject: [PATCH 1/4] TIS-Progress-and-error-handling
+
+Signed-off-by: LongLi <lilong-neu@neusoft.com>
+---
+ data/tmux.conf                                    |  3 +-
+ pyanaconda/errors.py                              | 19 ++++-
+ pyanaconda/flags.py                               |  1 +
+ pyanaconda/installation.py                        |  1 +
+ pyanaconda/kickstart.py                           |  3 +
+ pyanaconda/payload/rpmostreepayload.py            |  5 ++
+ pyanaconda/tisnotify.py                           | 91 +++++++++++++++++++++++
+ pyanaconda/ui/gui/hubs/progress.py                |  4 +
+ pyanaconda/ui/tui/spokes/installation_progress.py |  4 +
+ 9 files changed, 129 insertions(+), 2 deletions(-)
+ create mode 100644 pyanaconda/tisnotify.py
+
+diff --git a/data/tmux.conf b/data/tmux.conf
+index c909aca..7632f8f 100644
+--- a/data/tmux.conf
++++ b/data/tmux.conf
+@@ -1,6 +1,7 @@
+ # tmux.conf for the anaconda environment
+ 
+ bind -n M-tab next
++bind -n C-o next
+ bind -n F1 list-keys
+ 
+ set-option -s exit-unattached off
+@@ -20,7 +21,7 @@ set-option -g history-limit 10000
+ # then re-attach to it in the tmux service run on the console tty.
+ new-session -d -s anaconda -n main "anaconda"
+ 
+-set-option status-right '#[fg=blue]#(echo -n "Switch tab: Alt+Tab | Help: F1 ")'
++set-option status-right '#[fg=blue]#(echo -n "Switch: Alt+Tab or Ctrl-o ")'
+ 
+ new-window -d -n shell          "bash --login"
+ new-window -d -n log            "tail -F /tmp/anaconda.log"
+diff --git a/pyanaconda/errors.py b/pyanaconda/errors.py
+index aec9602..78dfc42 100644
+--- a/pyanaconda/errors.py
++++ b/pyanaconda/errors.py
+@@ -18,6 +18,7 @@
+ 
+ from pyanaconda.core.i18n import _, C_
+ from pyanaconda.flags import flags
++from pyanaconda.tisnotify import tisnotify
+ 
+ __all__ = ["ERROR_RAISE", "ERROR_CONTINUE", "ERROR_RETRY", "errorHandler", "InvalidImageSizeError",
+            "MissingImageError", "ScriptError", "NonInteractiveError", "CmdlineError", "ExitError"]
+@@ -83,6 +84,18 @@ ERROR_RAISE = 0
+ ERROR_CONTINUE = 1
+ ERROR_RETRY = 2
+ 
++#
++# NEU: If a fatal error occurs in a %pre, anaconda hasn't setup the UI yet,
++# and an exception occurs in the error handler. This is a basic dummy UI
++# to avoid this exception and print the error message.
++#
++class DefaultUI(object):
++    def __init__(self):
++        pass
++
++    def showError(self, msg):
++        print "\n\n", msg
++
+ 
+ ###
+ ### TOP-LEVEL ERROR HANDLING OBJECT
+@@ -322,8 +335,12 @@ class ErrorHandler(object):
+         """
+         rc = ERROR_RAISE
+ 
++        # WRS: Notify the controller installation has failed
++        tisnotify.failed()
++
+         if not self.ui:
+-            raise exn
++            # NEU: Use the basic UI
++            self.ui = DefaultUI()
+ 
+         if not flags.ksprompt:
+             raise NonInteractiveError("Non interactive installation failed: %s" % exn)
+diff --git a/pyanaconda/flags.py b/pyanaconda/flags.py
+index 17325a1..c60ff80 100644
+--- a/pyanaconda/flags.py
++++ b/pyanaconda/flags.py
+@@ -73,6 +73,7 @@ class Flags(object):
+         self.rescue_mode = False
+         self.noefi = False
+         self.kexec = False
++	self.tisNotifyPort = "0"
+         # nosave options
+         self.nosave_input_ks = False
+         self.nosave_output_ks = False
+diff --git a/pyanaconda/installation.py b/pyanaconda/installation.py
+index babdf0c..d747f8b 100644
+--- a/pyanaconda/installation.py
++++ b/pyanaconda/installation.py
+@@ -209,6 +209,7 @@ def doConfiguration(storage, payload, ksdata, instClass):
+     # start the task queue
+     configuration_queue.start()
+     # done
++    tisnotify.installed()
+     progress_complete()
+ 
+ def doInstall(storage, payload, ksdata, instClass):
+diff --git a/pyanaconda/kickstart.py b/pyanaconda/kickstart.py
+index 4a88620..95f181c 100644
+--- a/pyanaconda/kickstart.py
++++ b/pyanaconda/kickstart.py
+@@ -92,6 +92,8 @@ from pykickstart.sections import NullSection, PackageSection, PostScriptSection,
+                                  OnErrorScriptSection, TracebackScriptSection, Section
+ from pykickstart.version import returnClassForVersion, F27
+ 
++from pyanaconda.tisnotify import tisnotify
++
+ from pyanaconda import anaconda_logging
+ from pyanaconda.anaconda_loggers import get_module_logger, get_stdout_logger, get_blivet_logger,\
+     get_anaconda_root_logger
+@@ -2796,6 +2798,7 @@ def runPreScripts(scripts):
+     if len(preScripts) == 0:
+         return
+ 
++    tisnotify.preinstall()
+     script_log.info("Running kickstart %%pre script(s)")
+     stdoutLog.info(_("Running pre-installation scripts"))
+ 
+diff --git a/pyanaconda/payload/rpmostreepayload.py b/pyanaconda/payload/rpmostreepayload.py
+index 0ec736b..f834b88 100644
+--- a/pyanaconda/payload/rpmostreepayload.py
++++ b/pyanaconda/payload/rpmostreepayload.py
+@@ -35,6 +35,8 @@ from gi.repository import Gio
+ from blivet.size import Size
+ from blivet.util import umount
+ 
++from pyanaconda.tisnotify import tisnotify
++
+ from pyanaconda.anaconda_loggers import get_module_logger
+ log = get_module_logger(__name__)
+ 
+@@ -73,6 +75,7 @@ class RPMOSTreePayload(ArchivePayload):
+         """Like util.execWithRedirect, but treat errors as fatal"""
+         rc = util.execWithRedirect(cmd, argv, **kwargs)
+         if rc != 0:
++            tisnotify.failed()
+             exn = PayloadInstallError("%s %s exited with code %d" % (cmd, argv, rc))
+             if errors.errorHandler.cb(exn) == errors.ERROR_RAISE:
+                 raise exn
+@@ -208,6 +211,7 @@ class RPMOSTreePayload(ArchivePayload):
+                                    Variant('a{sv}', pull_opts),
+                                    progress, cancellable)
+         except GError as e:
++            tisnotify.failed()
+             exn = PayloadInstallError("Failed to pull from repository: %s" % e)
+             log.error(str(exn))
+             if errors.errorHandler.cb(exn) == errors.ERROR_RAISE:
+@@ -252,6 +256,7 @@ class RPMOSTreePayload(ArchivePayload):
+         try:
+             self._copyBootloaderData()
+         except (OSError, RuntimeError) as e:
++            tisnotify.failed()
+             exn = PayloadInstallError("Failed to copy bootloader data: %s" % e)
+             log.error(str(exn))
+             if errors.errorHandler.cb(exn) == errors.ERROR_RAISE:
+diff --git a/pyanaconda/tisnotify.py b/pyanaconda/tisnotify.py
+new file mode 100644
+index 0000000..33fc79b
+--- /dev/null
++++ b/pyanaconda/tisnotify.py
+@@ -0,0 +1,91 @@
++"""
++Copyright (c) 2016-2017 Wind River Systems, Inc.
++ SPDX-License-Identifier: Apache-2.0
++
++
++
++"""
++
++import os
++import re
++import subprocess
++import time
++
++from pyanaconda.flags import flags
++
++class TisNotify():
++
++    def __init__(self):
++        self.tisnotify = flags.cmdline.get("tisnotify")
++        self.regex = re.compile(r'\(([\d\/]*)\)$')
++        self.DEVNULL = open(os.devnull, "w")
++        self.last_installing = 0
++
++    def sendNotification(self, data):
++        try:
++            subprocess.call(['/usr/bin/curl',
++                             '--data', data,
++                             self.tisnotify],
++                            stdout=self.DEVNULL,
++                            stderr=self.DEVNULL)
++        except:
++            pass
++
++    def preinstall(self):
++        if self.tisnotify is None:
++            return
++
++        data = "install_state=preinstall"
++        self.sendNotification(data)
++
++    def installing(self, text):
++        if self.tisnotify is None:
++            return
++
++        match = self.regex.search(text)
++        if match is None:
++            return
++
++        if (time.time() - self.last_installing) >= 5:
++            self.last_installing = time.time()
++            data = "install_state=installing&install_state_info=%s" % match.groups()[0]
++            self.sendNotification(data)
++
++    def postinstall(self):
++        if self.tisnotify is None:
++            return
++
++        data = "install_state=postinstall"
++        self.sendNotification(data)
++
++    def installed(self):
++        if self.tisnotify is None:
++            return
++
++        data = "install_state=installed"
++        self.sendNotification(data)
++
++    def failed(self):
++        if self.tisnotify is None:
++            return
++
++        data = "install_state=failed"
++        self.sendNotification(data)
++
++        etc_dir = '/mnt/sysimage/etc'
++        platform_dir = etc_dir + '/platform'
++        failed_flag = platform_dir + '/platform/installation_failed'
++        motd_file = etc_dir + '/motd'
++
++        # Set installation_failed flag, if possible and not already done
++        if os.path.exists(platform_dir) and not os.path.exists(failed_flag):
++            try:
++                subprocess.call(['touch', '/mnt/sysimage/etc/platform/installation_failed'])
++                with open(motd_file, 'a') as f:
++                    f.write('Installation failure. Please check logs or reinstall.\n\n')
++            except:
++                pass
++
++
++tisnotify = TisNotify()
++
+diff --git a/pyanaconda/ui/gui/hubs/progress.py b/pyanaconda/ui/gui/hubs/progress.py
+index 5b904bc..e49c134 100644
+--- a/pyanaconda/ui/gui/hubs/progress.py
++++ b/pyanaconda/ui/gui/hubs/progress.py
+@@ -41,6 +41,8 @@ from pyanaconda.ui.gui.hubs import Hub
+ from pyanaconda.ui.gui.utils import gtk_call_once
+ from pyanaconda.core.async_utils import async_action_nowait
+ 
++from pyanaconda.tisnotify import tisnotify
++
+ __all__ = ["ProgressHub"]
+ 
+ class ProgressHub(Hub):
+@@ -126,6 +128,8 @@ class ProgressHub(Hub):
+                 # to indicate this method should be removed from the idle loop.
+                 return False
+             elif code == progressQ.PROGRESS_CODE_QUIT:
++                if args[0] != 0:
++                    tisnotify.failed()
+                 sys.exit(args[0])
+ 
+             q.task_done()
+diff --git a/pyanaconda/ui/tui/spokes/installation_progress.py b/pyanaconda/ui/tui/spokes/installation_progress.py
+index f89b022..3d47790 100644
+--- a/pyanaconda/ui/tui/spokes/installation_progress.py
++++ b/pyanaconda/ui/tui/spokes/installation_progress.py
+@@ -33,6 +33,8 @@ from simpleline.event_loop import ExitMainLoop
+ 
+ from pykickstart.constants import KS_SHUTDOWN, KS_REBOOT
+ 
++from pyanaconda.tisnotify import tisnotify
++
+ __all__ = ["ProgressSpoke"]
+ 
+ 
+@@ -107,6 +109,8 @@ class ProgressSpoke(StandaloneTUISpoke):
+                     print('')
+                 return True
+             elif code == progressQ.PROGRESS_CODE_QUIT:
++                if args[0] != 0:
++                    tisnotify.failed()
+                 sys.exit(args[0])
+ 
+             q.task_done()
+-- 
+2.7.4
+

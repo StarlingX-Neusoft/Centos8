@@ -1,0 +1,26 @@
+From dc119ab0e14463bf986eb4e1730feb358748bc9d Mon Sep 17 00:00:00 2001
+From: LongLi <lilong-neu@neusoft.com>
+Date: Fri, 1 Nov 2019 14:25:09 +0800
+Subject: [PATCH 3/4] Set-default-hostname-to-localhost
+
+Signed-off-by: LongLi <lilong-neu@neusoft.com>
+---
+ pyanaconda/network.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pyanaconda/network.py b/pyanaconda/network.py
+index a0de470..47fda0c 100644
+--- a/pyanaconda/network.py
++++ b/pyanaconda/network.py
+@@ -57,7 +57,7 @@ networkConfFile = "%s/network" % (sysconfigDir)
+ hostnameFile = "/etc/hostname"
+ ipv6ConfFile = "/etc/sysctl.d/anaconda.conf"
+ ifcfgLogFile = "/tmp/ifcfg.log"
+-DEFAULT_HOSTNAME = "localhost.localdomain"
++DEFAULT_HOSTNAME = "localhost"
+ 
+ ifcfglog = None
+ 
+-- 
+2.7.4
+

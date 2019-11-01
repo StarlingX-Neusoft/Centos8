@@ -1,0 +1,81 @@
+From 14824f4712e46c48b3d9e0dfc42972dd092f268e Mon Sep 17 00:00:00 2001
+From: LongLi <lilong-neu@neusoft.com>
+Date: Fri, 1 Nov 2019 14:30:10 +0800
+Subject: [PATCH 4/4] Cache-server-ip-in-etc-hosts
+
+Signed-off-by: LongLi <lilong-neu@neusoft.com>
+---
+ data/systemd/anaconda.service |  1 +
+ scripts/anaconda-preexec      | 50 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 51 insertions(+)
+ create mode 100644 scripts/anaconda-preexec
+
+diff --git a/data/systemd/anaconda.service b/data/systemd/anaconda.service
+index a80c6bb..8966258 100644
+--- a/data/systemd/anaconda.service
++++ b/data/systemd/anaconda.service
+@@ -7,4 +7,5 @@ Wants=anaconda-noshell.service
+ Type=forking
+ Environment=HOME=/root MALLOC_CHECK_=2 MALLOC_PERTURB_=204 PATH=/usr/bin:/bin:/sbin:/usr/sbin:/mnt/sysimage/bin:/mnt/sysimage/usr/bin:/mnt/sysimage/usr/sbin:/mnt/sysimage/sbin LANG=en_US.UTF-8 GDK_BACKEND=x11 XDG_RUNTIME_DIR=/tmp GIO_USE_VFS=local
+ WorkingDirectory=/root
++ExecStartPre=/usr/sbin/anaconda-preexec
+ ExecStart=/usr/bin/tmux -u -f /usr/share/anaconda/tmux.conf start
+diff --git a/scripts/anaconda-preexec b/scripts/anaconda-preexec
+new file mode 100644
+index 0000000..d491173
+--- /dev/null
++++ b/scripts/anaconda-preexec
+@@ -0,0 +1,50 @@
++#!/bin/bash
++#
++# Copyright (c) 2017 Wind River Systems, Inc.
++# SPDX-License-Identifier: Apache-2.0
++#
++#
++#
++#
++
++exec >>/tmp/anaconda-preexec.log
++exec 2>>/tmp/anaconda-preexec.log
++set -x
++
++function get_ip()
++{
++    local host=$1
++
++    # Try the DNS query
++    host -t A $host | awk '{print $4}' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$' | head -1
++}
++
++# If the kickstart is net-based, wait for connectivity to server
++cat /proc/cmdline | grep -q 'inst\.ks=http://'
++if [ $? -eq 0 ]
++then
++    server=$(cat /proc/cmdline | sed -r 's#.*inst\.ks=http://([^/:]*)(:[^/]*)?/.*#\1#')
++    if [ -n "$server" ]
++    then
++        echo "Testing connectivity to server: $server"
++        let -i ping_count=0
++        ping -c 1 -w 60 $server
++        while [ $? -ne 0 -a $ping_count -lt 600 ]
++        do
++            echo "Waiting for connectivity to server: $server"
++            sleep 1
++            let -i ping_count++
++            ping -c 1 -w 60 $server
++        done
++
++        # Cache the host IP
++        ipaddr=$(get_ip $server)
++        if [ -n "$ipaddr" -a "$ipaddr" != "$server" ]
++        then
++            echo "$ipaddr $server" >> /etc/hosts
++        fi
++
++    fi
++fi
++
++exit 0
+-- 
+2.7.4
+

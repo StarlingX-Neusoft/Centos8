@@ -1,0 +1,37 @@
+From 960977497fda55317ed80bc164ccee0bfb941d00 Mon Sep 17 00:00:00 2001
+From: LongLi <lilong-neu@neusoft.com>
+Date: Thu, 31 Oct 2019 20:05:02 +0800
+Subject: [PATCH 2/5] Add-TIS-patches
+
+Signed-off-by: LongLi <lilong-neu@neusoft.com>
+---
+ SPECS/anaconda.spec | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/SPECS/anaconda.spec b/SPECS/anaconda.spec
+index 342c158..b0929b5 100644
+--- a/SPECS/anaconda.spec
++++ b/SPECS/anaconda.spec
+@@ -15,6 +15,9 @@ URL:     http://fedoraproject.org/wiki/Anaconda
+ Patch100: centos-l10n.patch
+ Patch101: 0001-branding-syspurpose-doesn-t-make-sense-for-CentOS.patch
+ Patch102: 0002-add-centos-background-color.patch
++# WRS
++Patch10001: 0001-TIS-Progress-and-error-handling.patch
++
+ # To generate Source0 do:
+ # git clone https://github.com/rhinstaller/anaconda
+ # git checkout -b archive-branch anaconda-%%{version}-%%{release}
+@@ -247,6 +250,9 @@ runtime on NFS/HTTP/FTP servers or local disks.
+ %prep
+ %autosetup -p1
+ 
++# WRS
++%patch10001 -p1
++
+ %build
+ # use actual build-time release number, not tarball creation time release number
+ %configure ANACONDA_RELEASE=%{release}
+-- 
+2.7.4
+

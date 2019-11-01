@@ -1,0 +1,54 @@
+From acb8430da6b6f5afd8e84d6976af7660582ac09b Mon Sep 17 00:00:00 2001
+From: LongLi <lilong-neu@neusoft.com>
+Date: Thu, 31 Oct 2019 20:13:56 +0800
+Subject: [PATCH 5/5] Add-TIS-patches-for-host-lookup
+
+Signed-off-by: LongLi <lilong-neu@neusoft.com>
+---
+ SPECS/anaconda.spec | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/SPECS/anaconda.spec b/SPECS/anaconda.spec
+index 8532e0f..1c20d1b 100644
+--- a/SPECS/anaconda.spec
++++ b/SPECS/anaconda.spec
+@@ -18,6 +18,8 @@ Patch102: 0002-add-centos-background-color.patch
+ # WRS
+ Patch10001: 0001-TIS-Progress-and-error-handling.patch
+ Patch10002: 0002-revert-7.4-grub2-efi-handling.patch
++Patch10003: 0003-Set-default-hostname-to-localhost.patch
++Patch10004: 0004-Cache-server-ip-in-etc-hosts.patch
+ 
+ # To generate Source0 do:
+ # git clone https://github.com/rhinstaller/anaconda
+@@ -254,6 +256,8 @@ runtime on NFS/HTTP/FTP servers or local disks.
+ # WRS
+ %patch10001 -p1
+ %patch10002 -p1
++%patch10003 -p1
++%patch10004 -p1
+ 
+ %build
+ # use actual build-time release number, not tarball creation time release number
+@@ -270,6 +274,10 @@ mkdir %{buildroot}%{_datadir}/anaconda/addons
+ %ifarch %livearches
+ desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/applications/liveinst.desktop
+ %endif
++
++# Add anaconda-preexec script
++install -m 0755 scripts/anaconda-preexec %{buildroot}%{_sbindir}/anaconda-preexec
++
+ # NOTE: If you see "error: Installed (but unpackaged) file(s) found" that include liveinst files,
+ #       check the IS_LIVEINST_ARCH in configure.ac to make sure your architecture is properly defined
+ 
+@@ -327,6 +335,7 @@ update-desktop-database &> /dev/null || :
+ %{_datadir}/applications/*.desktop
+ %{_sysconfdir}/xdg/autostart/*.desktop
+ %endif
++%{_sbindir}/anaconda-preexec
+ 
+ %files gui
+ %{python3_sitearch}/pyanaconda/ui/gui/*
+-- 
+2.7.4
+

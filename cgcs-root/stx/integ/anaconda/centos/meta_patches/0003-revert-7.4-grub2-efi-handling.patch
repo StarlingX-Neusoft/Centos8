@@ -1,0 +1,33 @@
+From 125ec09e3e0268019a0b3401d8c25aba7c28d816 Mon Sep 17 00:00:00 2001
+From: LongLi <lilong-neu@neusoft.com>
+Date: Thu, 31 Oct 2019 20:07:55 +0800
+Subject: [PATCH 3/5] revert-7.4-grub2-efi-handling
+
+Signed-off-by: LongLi <lilong-neu@neusoft.com>
+---
+ SPECS/anaconda.spec | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/SPECS/anaconda.spec b/SPECS/anaconda.spec
+index b0929b5..d3ccc46 100644
+--- a/SPECS/anaconda.spec
++++ b/SPECS/anaconda.spec
+@@ -17,6 +17,7 @@ Patch101: 0001-branding-syspurpose-doesn-t-make-sense-for-CentOS.patch
+ Patch102: 0002-add-centos-background-color.patch
+ # WRS
+ Patch10001: 0001-TIS-Progress-and-error-handling.patch
++Patch10002: 0002-revert-7.4-grub2-efi-handling.patch
+ 
+ # To generate Source0 do:
+ # git clone https://github.com/rhinstaller/anaconda
+@@ -252,6 +253,7 @@ runtime on NFS/HTTP/FTP servers or local disks.
+ 
+ # WRS
+ %patch10001 -p1
++%patch10002 -p1
+ 
+ %build
+ # use actual build-time release number, not tarball creation time release number
+-- 
+2.7.4
+

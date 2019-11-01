@@ -1,0 +1,91 @@
+From b490a45f40e8d5706d0f7a7c5b5d687f3b0b1984 Mon Sep 17 00:00:00 2001
+From: LongLi <lilong-neu@neusoft.com>
+Date: Fri, 1 Nov 2019 14:23:04 +0800
+Subject: [PATCH 2/4] revert-7.4-grub2-efi-handling
+
+Signed-off-by: LongLi <lilong-neu@neusoft.com>
+---
+ pyanaconda/bootloader.py | 35 +++--------------------------------
+ 1 file changed, 3 insertions(+), 32 deletions(-)
+
+diff --git a/pyanaconda/bootloader.py b/pyanaconda/bootloader.py
+index d2c772d..da6c10d 100644
+--- a/pyanaconda/bootloader.py
++++ b/pyanaconda/bootloader.py
+@@ -1457,9 +1457,7 @@ class GRUB2(GRUB):
+ 
+     """
+     name = "GRUB2"
+-    # grub2 is a virtual provides that's provided by grub2-pc, grub2-ppc64le,
+-    # and all of the primary grub components that aren't grub2-efi-${EFIARCH}
+-    packages = ["grub2", "grub2-tools"]
++    packages = ["grub2"]
+     _config_file = "grub.cfg"
+     _config_dir = "grub2"
+     _passwd_file = "user.cfg"
+@@ -1888,8 +1886,7 @@ class EFIGRUB1(EFIBase, GRUB):
+ 
+ 
+ class EFIGRUB(EFIBase, GRUB2):
+-    _packages32 = [ "grub2-efi-ia32", "shim-ia32" ]
+-    _packages_common = [ "efibootmgr" ]
++    packages = ["grub2-efi", "efibootmgr", "shim"]
+     can_dual_boot = False
+     stage2_is_valid_stage1 = False
+     stage2_bootable = False
+@@ -1899,38 +1896,14 @@ class EFIGRUB(EFIBase, GRUB2):
+     def __init__(self):
+         super().__init__()
+         self.efi_dir = 'BOOT'
+-        self._packages64 = [ "grub2-efi-x64", "shim-x64" ]
+ 
+-        try:
+-            f = open("/sys/firmware/efi/fw_platform_size", "r")
+-            value = f.readline().strip()
+-        except IOError:
+-            log.info("Reading /sys/firmware/efi/fw_platform_size failed, defaulting to 64-bit install.")
+-            value = '64'
+-        if value == '32':
+-            self._is_32bit_firmware = True
+-
+-    @property
+-    def _efi_binary(self):
+-        if self._is_32bit_firmware:
+-            return "\\shimia32.efi"
+-        return "\\shimx64.efi"
+-
+-    @property
+-    def packages(self):
+-        if self._is_32bit_firmware:
+-            return self._packages32 + self._packages_common + \
+-                super().packages
+-        return self._packages64 + self._packages_common + \
+-            super().packages
++    _efi_binary = "\\shim.efi"
+ 
+ class Aarch64EFIGRUB(EFIGRUB):
+     _serial_consoles = ["ttyAMA", "ttyS"]
+-    _efi_binary = "\\shimaa64.efi"
+ 
+     def __init__(self):
+         super().__init__()
+-        self._packages64 = ["grub2-efi-aa64", "shim-aa64"]
+ 
+ class ArmEFIGRUB(EFIGRUB):
+     _serial_consoles = ["ttyAMA", "ttyS"]
+@@ -1938,12 +1911,10 @@ class ArmEFIGRUB(EFIGRUB):
+ 
+     def __init__(self):
+         super().__init__()
+-        self._packages64 = ["grub2-efi-arm"]
+ 
+ class MacEFIGRUB(EFIGRUB):
+     def __init__(self):
+         super().__init__()
+-        self._packages64.extend(["grub2-tools-efi", "mactel-boot"])
+ 
+     def mactel_config(self):
+         if os.path.exists(util.getSysroot() + "/usr/libexec/mactel-boot-setup"):
+-- 
+2.7.4
+

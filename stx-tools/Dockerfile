@@ -179,7 +179,7 @@ RUN mkdir -p /www/run && \
 # chmod for /var/log/lighttpd fixes a centos issue
 # in place sed for server root since it's expanded soon thereafter
 #     echo "server.bind = \"localhost\"" >> /etc/lighttpd/lighttpd.conf && \
-RUN echo "$MYUNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+RUN echo "$MYUNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
 #    mkdir -p  /var/log/lighttpd  && \
 #    chmod a+rwx /var/log/lighttpd/ && \
 #    sed -i 's%^var\.log_root.*$%var.log_root = "/www/logs"%g' /etc/lighttpd/lighttpd.conf  && \

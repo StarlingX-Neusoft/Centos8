@@ -1,0 +1,44 @@
+From baf18b5bdd60dbfb24f3e925a5f2c7c4df5d2c8f Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Fri, 1 Nov 2019 14:33:48 +0800
+Subject: [PATCH 2/3] spec-include-TiS-changes
+
+---
+ SPECS/sudo.spec | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/SPECS/sudo.spec b/SPECS/sudo.spec
+index 8a67560..e105ef5 100644
+--- a/SPECS/sudo.spec
++++ b/SPECS/sudo.spec
+@@ -117,7 +117,7 @@ export CFLAGS="$RPM_OPT_FLAGS $F_PIE" LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
+         --with-ignore-dot \
+         --with-tty-tickets \
+         --with-ldap \
+-        --with-ldap-conf-file="%{_sysconfdir}/sudo-ldap.conf" \
++        --with-ldap-conf-file="%{_sysconfdir}/openldap/ldap.conf" \
+         --with-selinux \
+         --with-passprompt="[sudo] password for %p: " \
+         --with-linux-audit \
+@@ -144,6 +144,9 @@ install -p -c -m 0440 %{SOURCE1} $RPM_BUILD_ROOT/etc/sudoers
+ install -p -c -m 0640 %{SOURCE3} $RPM_BUILD_ROOT/etc/sudo.conf
+ install -p -c -m 0640 %{SOURCE2} $RPM_BUILD_ROOT/%{_sysconfdir}/sudo-ldap.conf
+ 
++install -d %{buildroot}%{_sysconfdir}/openldap/schema/
++install -m 644 doc/schema.OpenLDAP %{buildroot}%{_sysconfdir}/openldap/schema/sudo.schema
++
+ # Add sudo to protected packages
+ install -p -d -m 755 $RPM_BUILD_ROOT/etc/dnf/protected.d/
+ touch sudo.conf
+@@ -234,7 +237,7 @@ rm -rf $RPM_BUILD_ROOT
+ %{!?_licensedir:%global license %%doc}
+ %license doc/LICENSE
+ %exclude %{_pkgdocdir}/ChangeLog
+-
++%{_sysconfdir}/openldap/schema/sudo.schema
+ 
+ # Make sure permissions are ok even if we're updating
+ %post
+-- 
+1.8.3.1
+

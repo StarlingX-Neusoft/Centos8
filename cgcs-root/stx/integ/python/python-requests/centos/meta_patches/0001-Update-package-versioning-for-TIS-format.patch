@@ -1,0 +1,25 @@
+From ae315127367fb56207341a4f744f43f47b66ef34 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Sat, 2 Nov 2019 09:46:58 +0800
+Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+
+---
+ SPECS/python-requests.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/python-requests.spec b/SPECS/python-requests.spec
+index 3c980d3..7d1f842 100644
+--- a/SPECS/python-requests.spec
++++ b/SPECS/python-requests.spec
+@@ -10,7 +10,7 @@
+ 
+ Name:           python-requests
+ Version:        2.20.0
+-Release:        1%{?dist}
++Release:        1.el8%{?_tis_dist}.%{tis_patch_ver}
+ Summary:        HTTP library, written in Python, for human beings
+ 
+ License:        ASL 2.0
+-- 
+1.8.3.1
+

@@ -1,0 +1,25 @@
+From 5bf9746d06c5126cf395bfa129bf6b7aa7c795ed Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Sat, 2 Nov 2019 09:48:10 +0800
+Subject: [PATCH 2/2] include-patch-for-error-handling
+
+---
+ SPECS/python-requests.spec | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/SPECS/python-requests.spec b/SPECS/python-requests.spec
+index 7d1f842..1c77f7c 100644
+--- a/SPECS/python-requests.spec
++++ b/SPECS/python-requests.spec
+@@ -38,6 +38,8 @@ Patch4:         Don-t-inject-pyopenssl-into-urllib3.patch
+ #   build-time package tests
+ Patch5:         Skip-all-tests-needing-httpbin.patch
+ 
++Patch6:         0001-close-connection-on-HTTP-413-Request-Entit.patch
++
+ BuildArch:      noarch
+ 
+ %description
+-- 
+1.8.3.1
+

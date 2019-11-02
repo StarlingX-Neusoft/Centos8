@@ -1,0 +1,26 @@
+From e1d6b4ae5eba71ba5547fdcb76582e8b000e9e76 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Fri, 1 Nov 2019 17:30:12 +0800
+Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/bash.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/bash.spec b/SPECS/bash.spec
+index 7e3549a..100e440 100644
+--- a/SPECS/bash.spec
++++ b/SPECS/bash.spec
+@@ -7,7 +7,7 @@
+ Version: %{baseversion}%{patchleveltag}
+ Name: bash
+ Summary: The GNU Bourne Again shell
+-Release: 7%{?dist}
++Release: 7.el8%{?_tis_dist}.%{tis_patch_ver}
+ License: GPLv3+
+ Url: https://www.gnu.org/software/bash
+ Source0: https://ftp.gnu.org/gnu/bash/bash-%{baseversion}.tar.gz
+-- 
+2.7.4
+

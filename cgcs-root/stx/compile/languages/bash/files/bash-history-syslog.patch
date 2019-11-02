@@ -1,0 +1,335 @@
+From 6e3c1ed553a221c7c6841251508c243bcb8f8cba Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 10:09:57 +0800
+Subject: [PATCH 1/2] bash-history-syslog
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ bashhist.c   |  84 +++++++++++++++++++++++++++++++++-------------
+ config-top.h |   2 +-
+ shell.c      | 108 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 169 insertions(+), 25 deletions(-)
+
+diff --git a/bashhist.c b/bashhist.c
+index 9979f99..078482d 100644
+--- a/bashhist.c
++++ b/bashhist.c
+@@ -38,10 +38,6 @@
+ 
+ #include "bashintl.h"
+ 
+-#if defined (SYSLOG_HISTORY)
+-#  include <syslog.h>
+-#endif
+-
+ #include "shell.h"
+ #include "flags.h"
+ #include "input.h"
+@@ -54,6 +50,10 @@
+ #include <glob/glob.h>
+ #include <glob/strmatch.h>
+ 
++#if defined (SYSLOG_HISTORY)
++#include <sys/socket.h>
++#endif
++
+ #if defined (READLINE)
+ #  include "bashline.h"
+ extern int rl_done, rl_dispatching;	/* should really include readline.h */
+@@ -68,6 +68,11 @@ static int check_history_control __P((char *));
+ static void hc_erasedups __P((char *));
+ static void really_add_history __P((char *));
+ 
++#if defined (SYSLOG_HISTORY)
++static void send_cmdline_mq __P((const char *));
++int  cmdline_hist_sock[2];
++#endif
++
+ static struct ignorevar histignore =
+ {
+   "HISTIGNORE",
+@@ -746,7 +751,6 @@ check_add_history (line, force)
+ }
+ 
+ #if defined (SYSLOG_HISTORY)
+-#define SYSLOG_MAXLEN 600
+ 
+ extern char *shell_name;
+ 
+@@ -758,23 +762,7 @@ void
+ bash_syslog_history (line)
+      const char *line;
+ {
+-  char trunc[SYSLOG_MAXLEN];
+-  static int first = 1;
+-
+-  if (first)
+-    {
+-      openlog (shell_name, OPENLOG_OPTS, SYSLOG_FACILITY);
+-      first = 0;
+-    }
+-
+-  if (strlen(line) < SYSLOG_MAXLEN)
+-    syslog (SYSLOG_FACILITY|SYSLOG_LEVEL, "HISTORY: PID=%d UID=%d %s", getpid(), current_user.uid, line);
+-  else
+-    {
+-      strncpy (trunc, line, SYSLOG_MAXLEN);
+-      trunc[SYSLOG_MAXLEN - 1] = '\0';
+-      syslog (SYSLOG_FACILITY|SYSLOG_LEVEL, "HISTORY (TRUNCATED): PID=%d UID=%d %s", getpid(), current_user.uid, trunc);
+-    }
++    send_cmdline_mq (line);
+ }
+ #endif
+      	
+@@ -838,6 +826,10 @@ bash_add_history (line)
+ 	  sprintf (new_line, "%s%s%s", current->line, chars_to_add, line);
+ 	  offset = where_history ();
+ 	  old = replace_history_entry (offset, new_line, current->data);
++
++#if defined (SYSLOG_HISTORY)
++      bash_syslog_history (new_line);
++#endif
+ 	  free (new_line);
+ 
+ 	  if (old)
+@@ -848,12 +840,13 @@ bash_add_history (line)
+     }
+ 
+   if (add_it)
++  {
+     really_add_history (line);
+ 
+ #if defined (SYSLOG_HISTORY)
+-  bash_syslog_history (line);
++    bash_syslog_history (line);
+ #endif
+-
++  }
+   using_history ();
+ }
+ 
+@@ -975,4 +968,47 @@ history_should_ignore (line)
+ 
+   return match;
+ }
++
++#if defined (SYSLOG_HISTORY)
++
++#define MQ_SEND_MAX_ATTEMPT      2
++
++static void
++send_cmdline_mq (line)
++     const char *line;
++{
++    int ret = 0;
++    int attempt = 0;
++    int fail = 0;
++    size_t len_snd;
++    int sndbuf_size;
++
++    do {
++        if (attempt >= MQ_SEND_MAX_ATTEMPT)
++        {
++            fail = 1;
++            break;
++        }
++
++        len_snd = strlen(line)+1;
++        ret = send (cmdline_hist_sock[0], line, len_snd, MSG_DONTWAIT);
++        if (ret == EMSGSIZE)
++        {
++            socklen_t optlen = sizeof(sndbuf_size);
++            ret = getsockopt(cmdline_hist_sock[0], SOL_SOCKET, SO_SNDBUF, 
++                    &sndbuf_size, &optlen);
++            if (ret == 0) {
++                len_snd = sndbuf_size - 1;
++                continue;
++            }
++        }
++
++        attempt ++;
++    } while (ret < 0 && (errno == EAGAIN || errno == EINTR));
++
++    return;
++}
++
++#endif /*SYSLOG_HISTORY*/
++
+ #endif /* HISTORY */
+diff --git a/config-top.h b/config-top.h
+index d89682e..29e9502 100644
+--- a/config-top.h
++++ b/config-top.h
+@@ -113,7 +113,7 @@
+ 
+ /* Define if you want each line saved to the history list in bashhist.c:
+    bash_add_history() to be sent to syslog(). */
+-/* #define SYSLOG_HISTORY */
++#define SYSLOG_HISTORY
+ #if defined (SYSLOG_HISTORY)
+ #  define SYSLOG_FACILITY LOG_USER
+ #  define SYSLOG_LEVEL LOG_INFO
+diff --git a/shell.c b/shell.c
+index 45b77f9..4474918 100644
+--- a/shell.c
++++ b/shell.c
+@@ -77,6 +77,12 @@ extern int get_tty_state __P((void));
+ #  include <readline/history.h>
+ #endif
+ 
++#if defined (SYSLOG_HISTORY)
++#  include <syslog.h>
++#  include <sys/socket.h>
++#  include "error.h"
++#endif
++
+ #if defined (READLINE)
+ #  include <readline/readline.h>
+ #  include "bashline.h"
+@@ -113,6 +119,9 @@ extern int array_needs_making;
+ extern int gnu_error_format;
+ extern char *primary_prompt, *secondary_prompt;
+ extern char *this_command_name;
++#if defined (SYSLOG_HISTORY)
++extern int  cmdline_hist_sock[2];
++#endif
+ 
+ /* Non-zero means that this shell has already been run; i.e. you should
+    call shell_reinitialize () if you need to start afresh. */
+@@ -337,6 +346,10 @@ static void shell_reinitialize __P((void));
+ 
+ static void show_shell_usage __P((FILE *, int));
+ 
++#if defined (SYSLOG_HISTORY)
++static pid_t make_consumer_process __P(());
++#endif
++
+ #ifdef __CYGWIN__
+ static void
+ _cygwin32_check_tmp ()
+@@ -379,6 +392,10 @@ main (argc, argv, env)
+   env = environ;
+ #endif /* __OPENNT */
+ 
++#if defined (SYSLOG_HISTORY)
++  pid_t con_pid;
++#endif
++
+   USE_VAR(argc);
+   USE_VAR(argv);
+   USE_VAR(env);
+@@ -780,6 +797,11 @@ main (argc, argv, env)
+       /* Initialize terminal state for interactive shells after the
+ 	 .bash_profile and .bashrc are interpreted. */
+       get_tty_state ();
++
++#if defined (SYSLOG_HISTORY)
++      /*fork a child for bash history logging consumption*/
++      con_pid = make_consumer_process ();
++#endif
+     }
+ 
+ #if !defined (ONESHOT)
+@@ -790,6 +812,13 @@ main (argc, argv, env)
+ 
+   /* Read commands until exit condition. */
+   reader_loop ();
++
++#if defined (SYSLOG_HISTORY)
++  if (interactive_shell && con_pid > 0) {
++      kill(con_pid, SIGKILL);
++  }
++#endif
++
+   exit_shell (last_command_exit_value);
+ }
+ 
+@@ -1715,6 +1744,85 @@ set_shell_name (argv0)
+     shell_name = PROGRAM;
+ }
+ 
++#if defined (SYSLOG_HISTORY)
++#define SYSLOG_MAXLEN 1200
++
++/* Fork child process for bash history logging, handling errors.
++   Returns the pid of the newly made child in parent process context
++   and will not return in child process context.  */
++static pid_t
++make_consumer_process ()
++{
++  pid_t pid;
++
++  if (socketpair(AF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC, 0, cmdline_hist_sock) == -1)
++    {
++      return -1;
++    }
++
++
++  pid = fork ();
++  if (pid < 0)
++    {
++      return -1;
++    }
++
++  if (pid == 0)
++    {
++      int ret;
++      char *buffer;
++      int rcvbuf_size;
++      socklen_t optlen = sizeof(rcvbuf_size);
++
++#if defined (BUFFERED_INPUT)
++      unset_bash_input (0);
++#endif /* BUFFERED_INPUT */
++
++      default_tty_job_signals ();
++
++      close(cmdline_hist_sock[0]);
++
++      ret = getsockopt(cmdline_hist_sock[1], SOL_SOCKET, SO_RCVBUF, &rcvbuf_size, &optlen);
++      if (ret < 0)
++        {
++          rcvbuf_size = SYSLOG_MAXLEN;
++        }
++
++      buffer = (char *) malloc(rcvbuf_size);
++      if (buffer == NULL)
++        {
++          return -1;
++        }
++
++      do {
++          ret = recv(cmdline_hist_sock[1], buffer, rcvbuf_size, 0);
++
++          if (ret == -1 && errno == EINTR)
++            {
++              continue;
++            }
++          else if (ret < 0)
++            {
++              break;
++            }
++
++          buffer[ret] = '\0';
++
++          /*syslog this bash command line*/
++          syslog (SYSLOG_FACILITY|SYSLOG_LEVEL, "HISTORY: PID=%d UID=%d %s",
++                  getpid(), current_user.uid, buffer);
++      } while (1);
++
++    }
++  else
++    {
++        /* In the parent. */
++        close(cmdline_hist_sock[1]);
++    }
++  return (pid);
++}
++#endif /*SYSLOG_HISTORY*/
++
+ static void
+ init_interactive ()
+ {
+-- 
+2.7.4
+

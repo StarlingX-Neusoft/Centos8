@@ -1,0 +1,105 @@
+From a71d59682a7b16dc0522d213f213139f835466a9 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 10:14:30 +0800
+Subject: [PATCH 2/2] bash-history-exit-child-on-parent-death
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ shell.c | 16 +++++++++++++++-
+ sig.c   | 13 +++++++++++++
+ sig.h   |  2 ++
+ 3 files changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/shell.c b/shell.c
+index 4474918..68218c4 100644
+--- a/shell.c
++++ b/shell.c
+@@ -80,6 +80,7 @@ extern int get_tty_state __P((void));
+ #if defined (SYSLOG_HISTORY)
+ #  include <syslog.h>
+ #  include <sys/socket.h>
++#  include <sys/prctl.h>
+ #  include "error.h"
+ #endif
+ 
+@@ -347,6 +348,7 @@ static void shell_reinitialize __P((void));
+ static void show_shell_usage __P((FILE *, int));
+ 
+ #if defined (SYSLOG_HISTORY)
++int logger_terminated = 0;
+ static pid_t make_consumer_process __P(());
+ #endif
+ 
+@@ -1780,6 +1782,16 @@ make_consumer_process ()
+ 
+       default_tty_job_signals ();
+ 
++      /* handle parent process deaths */
++      set_signal_handler(SIGTERM, sigterm_logger_sighandler);
++      prctl(PR_SET_PDEATHSIG, SIGTERM);
++
++      if (getppid() == 1)
++        {
++          /* parent has already died */
++          exit (0);
++        }
++
+       close(cmdline_hist_sock[0]);
+ 
+       ret = getsockopt(cmdline_hist_sock[1], SOL_SOCKET, SO_RCVBUF, &rcvbuf_size, &optlen);
+@@ -1811,7 +1823,9 @@ make_consumer_process ()
+           /*syslog this bash command line*/
+           syslog (SYSLOG_FACILITY|SYSLOG_LEVEL, "HISTORY: PID=%d UID=%d %s",
+                   getpid(), current_user.uid, buffer);
+-      } while (1);
++      } while (!logger_terminated);
++
++      exit(0);
+ 
+     }
+   else
+diff --git a/sig.c b/sig.c
+index ad01631..143152e 100644
+--- a/sig.c
++++ b/sig.c
+@@ -601,6 +601,19 @@ termsig_handler (sig)
+   kill (getpid (), sig);
+ }
+ 
++sighandler
++sigterm_logger_sighandler (sig)
++     int sig;
++{
++#if defined (MUST_REINSTALL_SIGHANDLERS)
++  signal (sig, sigterm_logger_sighandler);
++#endif
++
++  logger_terminated = 1;
++
++  SIGRETURN (0);
++}
++
+ /* What we really do when SIGINT occurs. */
+ sighandler
+ sigint_sighandler (sig)
+diff --git a/sig.h b/sig.h
+index 4e5b464..177fcad 100644
+--- a/sig.h
++++ b/sig.h
+@@ -111,11 +111,13 @@ extern volatile sig_atomic_t sigterm_received;
+ 
+ extern int interrupt_immediately;	/* no longer used */
+ extern int terminate_immediately;
++extern int logger_terminated;
+ 
+ /* Functions from sig.c. */
+ extern sighandler termsig_sighandler __P((int));
+ extern void termsig_handler __P((int));
+ extern sighandler sigint_sighandler __P((int));
++extern sighandler sigterm_logger_sighandler __P((int));
+ extern void initialize_signals __P((int));
+ extern void initialize_terminating_signals __P((void));
+ extern void reset_terminating_signals __P((void));
+-- 
+2.7.4
+

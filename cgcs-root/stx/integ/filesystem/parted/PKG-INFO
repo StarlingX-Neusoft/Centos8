@@ -1,0 +1,14 @@
+Metadata-Version: 1.1
+Name: parted
+Version: 3.2.36
+Summary: Disk partition editing/resizing utility
+Home-page: 
+Author:
+Author-email:
+License: GPLv3+
+
+Description:
+Disk partition editing/resizing utility
+
+        
+Platform: UNKNOWN

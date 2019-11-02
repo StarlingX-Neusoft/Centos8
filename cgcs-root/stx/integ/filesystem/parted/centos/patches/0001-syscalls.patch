@@ -1,0 +1,52 @@
+From ad0c8fcb211ec3f41496f04b0a0a9ccb2b3eba22 Mon Sep 17 00:00:00 2001
+From: Fedora Ninjas <parted-owner@fedoraproject.org>
+Date: Sat, 2 Nov 2019 15:50:06 +0800
+Subject: [PATCH] syscalls
+
+---
+ libparted/arch/linux.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/libparted/arch/linux.c b/libparted/arch/linux.c
+index 7771a8b..9f9af8e 100644
+--- a/libparted/arch/linux.c
++++ b/libparted/arch/linux.c
+@@ -1771,12 +1771,14 @@ _device_close (PedDevice* dev)
+ 
+ #if SIZEOF_OFF_T < 8
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,20)
+ static _syscall5(int,_llseek,
+                  unsigned int, fd,
+                  unsigned long, offset_high,
+                  unsigned long, offset_low,
+                  loff_t*, result,
+                  unsigned int, origin)
++#endif
+ 
+ loff_t
+ llseek (unsigned int fd, loff_t offset, unsigned int whence)
+@@ -1784,11 +1786,20 @@ llseek (unsigned int fd, loff_t offset, unsigned int whence)
+         loff_t result;
+         int retval;
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,20)
+         retval = _llseek(fd,
+                          ((unsigned long long)offset) >> 32,
+                          ((unsigned long long)offset) & 0xffffffff,
+                          &result,
+                          whence);
++#else
++        retval = syscall(__NR__llseek, fd,
++                         ((unsigned long long)offset) >> 32,
++                         ((unsigned long long)offset) & 0xffffffff,
++                         &result,
++                         whence);
++#endif
++
+         return (retval==-1 ? (loff_t) retval : result);
+ }
+ 
+-- 
+1.8.3.1
+

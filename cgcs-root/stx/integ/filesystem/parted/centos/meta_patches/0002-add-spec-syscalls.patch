@@ -1,0 +1,63 @@
+From e77860e63fbee4e4c112f41751e79fd0437bf33d Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Sat, 2 Nov 2019 16:56:36 +0800
+Subject: [PATCH 2/2] add-spec-syscalls
+
+---
+ SPECS/parted.spec | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/SPECS/parted.spec b/SPECS/parted.spec
+index 6f22ab1..670ed57 100644
+--- a/SPECS/parted.spec
++++ b/SPECS/parted.spec
+@@ -13,6 +13,7 @@ Source0: https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+ Source1: https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz.sig
+ Source2: pubkey.jim.meyering
+ Source3: pubkey.phillip.susi
++Source4: resizepart.sh
+ 
+ Patch0001: 0001-tests-Try-several-UTF8-locales.patch
+ Patch0002: 0002-maint-post-release-administrivia.patch
+@@ -110,6 +111,9 @@ Patch0086: 0086-parted.c-Make-sure-dev_name-is-freed.patch
+ Patch0087: 0087-t6100-mdraid-partitions-Use-v0.90-metadata-for-the-t.patch
+ Patch0088: 0088-linux.c-Use-sys-sysmacros.h-for-major-minor.patch
+ 
++# WRS
++Patch0099: 0001-syscalls.patch
++
+ Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+ BuildRequires: gcc
+ BuildRequires: e2fsprogs-devel
+@@ -179,7 +183,7 @@ git commit -a -m "run iconv"
+ autoreconf
+ autoconf
+ CFLAGS="$RPM_OPT_FLAGS -Wno-unused-but-set-variable"; export CFLAGS
+-%configure --enable-selinux --disable-static --disable-gcc-warnings
++%configure --enable-selinux --disable-static --disable-gcc-warnings --disable-device-mapper
+ # Don't use rpath!
+ %{__sed} -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+ %{__sed} -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+@@ -198,6 +202,9 @@ V=1 %{__make} %{?_smp_mflags}
+ 
+ %find_lang %{name}
+ 
++# WRS
++install -d %{buildroot}%{_sbindir}
++install -m 755 %{SOURCE4} %{buildroot}%{_sbindir}/resizepart.sh
+ 
+ %check
+ export LD_LIBRARY_PATH=$(pwd)/libparted/.libs:$(pwd)/libparted/fs/.libs
+@@ -234,6 +241,9 @@ fi
+ %{_libdir}/libparted-fs-resize.so.0.0.1
+ %{_infodir}/parted.info.gz
+ 
++# WRS
++%{_sbindir}/resizepart.sh
++
+ %files devel
+ %defattr(-,root,root,-)
+ %doc TODO doc/API doc/FAT
+-- 
+1.8.3.1
+

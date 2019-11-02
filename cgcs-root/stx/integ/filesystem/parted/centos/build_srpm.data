@@ -1,0 +1,3 @@
+COPY_LIST="files/resizepart.sh"
+TIS_PATCH_VER=1
+BUILD_IS_SLOW=1

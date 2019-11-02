@@ -1,0 +1,26 @@
+From 8dbac8383594a7d30c7475810e928d4a5e80ad5c Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 13:03:13 +0800
+Subject: [PATCH] cloud-init-interactive-parted
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ cloudinit/config/cc_growpart.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cloudinit/config/cc_growpart.py b/cloudinit/config/cc_growpart.py
+index bafca9d..88e7bbb 100644
+--- a/cloudinit/config/cc_growpart.py
++++ b/cloudinit/config/cc_growpart.py
+@@ -182,7 +182,7 @@ class ResizeGpart(object):
+ 
+         before = get_size(partdev)
+         try:
+-            util.subp(["gpart", "resize", "-i", partnum, diskdev])
++            util.subp(["resizepart.sh", diskdev, partnum])
+         except util.ProcessExecutionError as e:
+             util.logexc(LOG, "Failed: gpart resize -i %s %s", partnum, diskdev)
+             raise ResizeFailedException(e)
+-- 
+2.7.4
+

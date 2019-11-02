@@ -1,0 +1,27 @@
+From af6f82d4218ec1a828f3d0b354a88f072f86786e Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 12:09:19 +0800
+Subject: [PATCH 2/2] spec-include-tis-changes
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/cloud-init.spec | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/SPECS/cloud-init.spec b/SPECS/cloud-init.spec
+index a873d81..687f9e0 100644
+--- a/SPECS/cloud-init.spec
++++ b/SPECS/cloud-init.spec
+@@ -38,6 +38,9 @@ Patch15: ci-Fix-string-missmatch-when-mounting-ntfs.patch
+ # For bz#1602784 - cloud-init: Sometimes image boots fingerprints is configured, there's a network device present but it's not configured
+ Patch16: ci-net-Make-sysconfig-renderer-compatible-with-Network-.patch
+ 
++# WRS patches
++Patch1000: cloud-init-interactive-parted.patch
++
+ BuildArch:      noarch
+ 
+ BuildRequires:  pkgconfig(systemd)
+-- 
+2.7.4
+

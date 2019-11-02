@@ -1,0 +1,29 @@
+From 113a48de0fc4e5d80dc633588b418b56e77e035a Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 17:26:19 +0800
+Subject: [PATCH 2/2] close-tftp-sockets-immediately
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ src/tftp.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/tftp.c b/src/tftp.c
+index bccca69..8bbe649 100644
+--- a/src/tftp.c
++++ b/src/tftp.c
+@@ -807,9 +807,11 @@ int do_tftp_script_run(void)
+   if ((transfer = daemon->tftp_done_trans))
+     {
+       daemon->tftp_done_trans = transfer->next;
++#if 0 /* Disable delayed closing of TFTP UDP socket */
+ #ifdef HAVE_SCRIPT
+       queue_tftp(transfer->file->size, transfer->file->filename, &transfer->peer);
+ #endif
++#endif
+       free_transfer(transfer);
+       return 1;
+     }
+-- 
+2.7.4
+

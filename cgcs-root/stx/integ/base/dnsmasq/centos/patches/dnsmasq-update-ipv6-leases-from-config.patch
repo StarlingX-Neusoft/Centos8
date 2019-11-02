@@ -1,0 +1,83 @@
+From 340db2353ddba246af40db6b7db5c36ad848751b Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 17:24:02 +0800
+Subject: [PATCH 1/2] dnsmasq-update-ipv6-leases-from-config
+
+---
+ src/lease.c | 53 +++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 43 insertions(+), 10 deletions(-)
+
+diff --git a/src/lease.c b/src/lease.c
+index 5c33df7..2f18678 100644
+--- a/src/lease.c
++++ b/src/lease.c
+@@ -210,6 +210,18 @@ void lease_init(time_t now)
+   dns_dirty = 1;
+ }
+ 
++static int lease_match_config_addr(struct dhcp_lease *lease, struct dhcp_config *config)
++{
++    if (!(lease->flags & (LEASE_TA | LEASE_NA)) && (config->flags & CONFIG_ADDR))
++      return (lease->addr.s_addr == config->addr.s_addr);
++#ifdef HAVE_DHCP6
++    else if ((lease->flags & (LEASE_TA | LEASE_NA)) && (config->flags & CONFIG_ADDR6))
++      return IN6_ARE_ADDR_EQUAL(&config->addr6, &lease->addr6);
++#endif
++    else
++      return 0;
++}
++
+ void lease_update_from_configs(void)
+ {
+   /* changes to the config may change current leases. */
+@@ -218,16 +230,37 @@ void lease_update_from_configs(void)
+   struct dhcp_config *config;
+   char *name;
+   
+-  for (lease = leases; lease; lease = lease->next)
+-    if (lease->flags & (LEASE_TA | LEASE_NA))
+-      continue;
+-    else if ((config = find_config(daemon->dhcp_conf, NULL, lease->clid, lease->clid_len, 
+-				   lease->hwaddr, lease->hwaddr_len, lease->hwaddr_type, NULL)) && 
+-	     (config->flags & CONFIG_NAME) &&
+-	     (!(config->flags & CONFIG_ADDR) || config->addr.s_addr == lease->addr.s_addr))
+-      lease_set_hostname(lease, config->hostname, 1, get_domain(lease->addr), NULL);
+-    else if ((name = host_from_dns(lease->addr)))
+-      lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
++  for (lease = leases; lease; lease = lease->next) {
++    if (lease->flags & LEASE_TA)
++      continue;  /* we do not update temporary ipv6 leases */
++
++    config = find_config(daemon->dhcp_conf, NULL, lease->clid, lease->clid_len,
++                         (lease->hwaddr_len > 0 ? lease->hwaddr : NULL),
++                         lease->hwaddr_len, lease->hwaddr_type, NULL);
++    if (config)
++      {
++        if ((!(config->flags & (CONFIG_ADDR | CONFIG_ADDR6))) ||
++            lease_match_config_addr(lease, config))
++          {
++            /*
++             * Either we matched on a config that doesn't have an address in
++             * which case we'll just use the hostname, or we matched on a
++             * config that has the same IP address.
++             */
++            if (!(lease->flags & (LEASE_TA | LEASE_NA)))
++              lease_set_hostname(lease, config->hostname, 1, get_domain(lease->addr), NULL);
++#ifdef HAVE_DHCP6
++            else
++              lease_set_hostname(lease, config->hostname, 1, get_domain6(&lease->addr6), NULL);
++#endif
++            continue;  /* lease updated; move on to next lease */
++          }
++      }
++
++    /* attempt to find a matching DNS cache entry for an IPv4 entry */
++    if (!(lease->flags & (LEASE_TA | LEASE_NA)) && (name = host_from_dns(lease->addr)))
++       lease_set_hostname(lease, name, 1, get_domain(lease->addr), NULL); /* updates auth flag only */
++  }
+ }
+ 
+ static void ourprintf(int *errp, char *format, ...)
+-- 
+2.7.4
+

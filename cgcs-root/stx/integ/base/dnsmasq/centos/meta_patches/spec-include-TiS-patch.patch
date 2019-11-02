@@ -1,0 +1,65 @@
+From cc54c976afc69acc26f2a9b38dbc0a9aa336130e Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 17:10:23 +0800
+Subject: [PATCH 1/2] spec-include-TiS-patch
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/dnsmasq.spec | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/SPECS/dnsmasq.spec b/SPECS/dnsmasq.spec
+index 2a433d2..4bac936 100644
+--- a/SPECS/dnsmasq.spec
++++ b/SPECS/dnsmasq.spec
+@@ -27,6 +27,10 @@ Patch1:         dnsmasq-2.77-underflow.patch
+ Patch3:         dnsmasq-2.78-fips.patch
+ Patch4:         dnsmasq-2.80-dnssec.patch
+ 
++# WRS patches
++Patch30:        dnsmasq-update-ipv6-leases-from-config.patch
++Patch31:        close-tftp-sockets-immediately.patch
++
+ # This is workaround to nettle bug #1549190
+ # https://bugzilla.redhat.com/show_bug.cgi?id=1549190
+ Requires:       nettle >= 3.4
+@@ -64,6 +68,10 @@ server's leases.
+ %patch3 -p1 -b .fips
+ %patch4 -p1 -b .dnssec
+ 
++# WRS patches
++%patch30 -p1
++%patch31 -p1
++
+ # use /var/lib/dnsmasq instead of /var/lib/misc
+ for file in dnsmasq.conf.example man/dnsmasq.8 man/es/dnsmasq.8 src/config.h; do
+     sed -i 's|/var/lib/misc/dnsmasq.leases|/var/lib/dnsmasq/dnsmasq.leases|g' "$file"
+@@ -130,23 +138,12 @@ install -Dpm 644 %{SOURCE2} %{buildroot}%{_sysusersdir}/dnsmasq.conf
+ #precreate users so that rpm can install files owned by that user
+ %sysusers_create_inline %(cat %{SOURCE2})
+ 
+-%post
+-#https://fedoraproject.org/wiki/Changes/SystemdSysusers
+-%sysusers_create
+-%systemd_post dnsmasq.service
+-
+-%preun
+-%systemd_preun dnsmasq.service
+-
+-%postun
+-%systemd_postun_with_restart dnsmasq.service
+-
+ %files
+ %doc CHANGELOG FAQ doc.html setup.html dbus/DBus-interface
+ %license COPYING COPYING-v3
+ %defattr(0644,root,dnsmasq,0755)
+-%config(noreplace) %{_sysconfdir}/dnsmasq.conf
+-%dir %{_sysconfdir}/dnsmasq.d
++%config(noreplace) %attr(640,root,root) %{_sysconfdir}/dnsmasq.conf
++%dir %attr(750,root,root) %{_sysconfdir}/dnsmasq.d
+ %dir %{_var}/lib/dnsmasq
+ %defattr(-,root,root,-)
+ %config(noreplace) %{_sysconfdir}/dbus-1/system.d/dnsmasq.conf
+-- 
+2.7.4
+

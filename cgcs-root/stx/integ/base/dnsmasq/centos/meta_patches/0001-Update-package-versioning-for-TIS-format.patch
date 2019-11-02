@@ -1,0 +1,26 @@
+From 226899e803449df2e7e199b21733b80608fd6512 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 17:12:53 +0800
+Subject: [PATCH 2/2] 0001-Update-package-versioning-for-TIS-format
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/dnsmasq.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/dnsmasq.spec b/SPECS/dnsmasq.spec
+index 4bac936..e738745 100644
+--- a/SPECS/dnsmasq.spec
++++ b/SPECS/dnsmasq.spec
+@@ -13,7 +13,7 @@
+ 
+ Name:           dnsmasq
+ Version:        2.79
+-Release:        4%{?extraversion:.%{extraversion}}%{?dist}
++Release:        4.el8%{?_tis_dist}.%{tis_patch_ver}
+ Summary:        A lightweight DHCP/caching DNS server
+ 
+ License:        GPLv2 or GPLv3
+-- 
+2.7.4
+

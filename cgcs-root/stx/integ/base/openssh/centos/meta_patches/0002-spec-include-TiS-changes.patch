@@ -1,0 +1,26 @@
+From 6e6d64fe6b57ab5c7ea3c4870a42f51e1de2f70c Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Sat, 2 Nov 2019 17:19:06 +0800
+Subject: [PATCH 2/2] spec-include-TiS-changes
+
+---
+ SPECS/openssh.spec | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/SPECS/openssh.spec b/SPECS/openssh.spec
+index d92504f..cf85d8a 100644
+--- a/SPECS/openssh.spec
++++ b/SPECS/openssh.spec
+@@ -659,9 +659,6 @@ getent passwd sshd >/dev/null || \
+ %preun server
+ %systemd_preun sshd.service sshd.socket
+ 
+-%postun server
+-%systemd_postun_with_restart sshd.service
+-
+ %files
+ %license LICENCE
+ %doc CREDITS ChangeLog INSTALL OVERVIEW PROTOCOL* README README.platform README.privsep README.tun README.dns TODO
+-- 
+1.8.3.1
+

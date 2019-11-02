@@ -1,0 +1,25 @@
+Metadata-Version: 1.1
+Name: openssh
+Version: 7.8p1
+Summary: An open source implementation of SSH protocol versions 1 and 2
+Home-page: 
+Author:
+Author-email:
+License: BSD
+
+Description:
+SSH (Secure SHell) is a program for logging into and executing
+commands on a remote machine. SSH is intended to replace rlogin and
+rsh, and to provide secure encrypted communications between two
+untrusted hosts over an insecure network. X11 connections and
+arbitrary TCP/IP ports can also be forwarded over the secure channel.
+
+OpenSSH is OpenBSD's version of the last free version of SSH, bringing
+it up to date in terms of security and features.
+
+This package includes the core files necessary for both the OpenSSH
+client and server. To make this package useful, you should also
+install openssh-clients, openssh-server, or both.
+
+        
+Platform: UNKNOWN

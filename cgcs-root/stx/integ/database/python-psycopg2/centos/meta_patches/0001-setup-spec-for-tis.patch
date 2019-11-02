@@ -1,0 +1,25 @@
+From 7763573c0d03f4d8fbea67d5a677041722936da8 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Sat, 2 Nov 2019 10:11:19 +0800
+Subject: [PATCH 1/2] setup-spec-for-tis
+
+---
+ SPECS/python-psycopg2.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/python-psycopg2.spec b/SPECS/python-psycopg2.spec
+index bbd3840..9fcfd86 100644
+--- a/SPECS/python-psycopg2.spec
++++ b/SPECS/python-psycopg2.spec
+@@ -41,7 +41,7 @@ features offered by PostgreSQL.
+ Summary:	%{sum}
+ Name:		python-%{srcname}
+ Version:	2.7.5
+-Release:	7%{?dist}
++Release:	7.el8%{?_tis_dist}.%{tis_patch_ver}
+ # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
+ License:	LGPLv3+ with exceptions
+ Group:		Applications/Databases
+-- 
+1.8.3.1
+

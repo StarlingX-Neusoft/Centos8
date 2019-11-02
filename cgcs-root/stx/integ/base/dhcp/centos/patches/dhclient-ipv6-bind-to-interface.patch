@@ -1,0 +1,49 @@
+From c814c16ff4b298b6eb8f73a9166e18b3c435f0ff Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 16:23:46 +0800
+Subject: [PATCH 2/3] dhclient-ipv6-bind-to-interface
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ common/socket.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/common/socket.c b/common/socket.c
+index f30c171..b236c4a 100644
+--- a/common/socket.c
++++ b/common/socket.c
+@@ -236,6 +236,15 @@ if_register_socket(struct interface_info *info, int family,
+ 	}
+ #endif
+ 
++#if defined(SO_BINDTODEVICE)
++	/* Bind this socket to this interface. */
++	if ((!do_multicast || !*do_multicast) && info->ifp &&
++	    setsockopt(sock, SOL_SOCKET, SO_BINDTODEVICE,
++			(char *)(info -> ifp), sizeof(*(info -> ifp))) < 0) {
++		log_error("setsockopt: SO_BINDTODEVICE: %m");
++	}
++#endif
++
+ 	/* Bind the socket to this interface's IP address. */
+ 	if (bind(sock, (struct sockaddr *)&name, name_len) < 0) {
+ 		log_error("Can't bind to dhcp address: %m");
+@@ -246,15 +255,6 @@ if_register_socket(struct interface_info *info, int family,
+ 		log_fatal("includes a bootp server.");
+ 	}
+ 
+-#if defined(SO_BINDTODEVICE)
+-	/* Bind this socket to this interface. */
+-	if ((local_family != AF_INET6) && (info->ifp != NULL) &&
+-	    setsockopt(sock, SOL_SOCKET, SO_BINDTODEVICE,
+-			(char *)(info -> ifp), sizeof(*(info -> ifp))) < 0) {
+-		log_fatal("setsockopt: SO_BINDTODEVICE: %m");
+-	}
+-#endif
+-
+ 	/* IP_BROADCAST_IF instructs the kernel which interface to send
+ 	 * IP packets whose destination address is 255.255.255.255.  These
+ 	 * will be treated as subnet broadcasts on the interface identified
+-- 
+2.7.4
+

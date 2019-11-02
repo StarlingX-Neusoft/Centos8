@@ -1,0 +1,67 @@
+From d96e3d9d3340e8fc571b81695f8b11b563f3267b Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 16:13:39 +0800
+Subject: [PATCH 1/3] dhclient-restrict-interfaces-to-command-line
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ client/clparse.c  | 8 ++++++--
+ client/dhclient.c | 3 +++
+ includes/dhcpd.h  | 1 +
+ 3 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/client/clparse.c b/client/clparse.c
+index b609caf..3ae632a 100644
+--- a/client/clparse.c
++++ b/client/clparse.c
+@@ -943,8 +943,12 @@ void parse_interface_declaration (cfile, outer_config, name)
+ 	if (!client -> config)
+ 		make_client_config (client, outer_config);
+ 
+-	ip -> flags &= ~INTERFACE_AUTOMATIC;
+-	interfaces_requested = 1;
++	if (restrict_interfaces != ISC_TRUE) {
++		ip -> flags &= ~INTERFACE_AUTOMATIC;
++		interfaces_requested = 1;
++	} else {
++		log_info("%s not in command line interfaces; ignoring", ip->name);
++	}
+ 
+ 	token = next_token (&val, (unsigned *)0, cfile);
+ 	if (token != LBRACE) {
+diff --git a/client/dhclient.c b/client/dhclient.c
+index 6403754..606f9e0 100644
+--- a/client/dhclient.c
++++ b/client/dhclient.c
+@@ -71,6 +71,7 @@ isc_boolean_t no_pid_file = ISC_FALSE;
+ int dhcp_max_agent_option_packet_length = 0;
+ 
+ int interfaces_requested = 0;
++int restrict_interfaces = ISC_FALSE;
+ 
+ struct iaddr iaddr_broadcast = { 4, { 255, 255, 255, 255 } };
+ struct iaddr iaddr_any = { 4, { 0, 0, 0, 0 } };
+@@ -242,6 +243,8 @@ main(int argc, char **argv) {
+ 			no_dhclient_pid = 1;
+ 		} else if (!strcmp(argv[i], "--no-pid")) {
+ 			no_pid_file = ISC_TRUE;
++		} else if (!strcmp(argv[i], "--restrict-interfaces")) {
++			restrict_interfaces = ISC_TRUE;
+ 		} else if (!strcmp(argv[i], "-cf")) {
+ 			if (++i == argc)
+ 				usage();
+diff --git a/includes/dhcpd.h b/includes/dhcpd.h
+index 52ba677..d66083a 100644
+--- a/includes/dhcpd.h
++++ b/includes/dhcpd.h
+@@ -2693,6 +2693,7 @@ extern const char *path_dhclient_db;
+ extern const char *path_dhclient_pid;
+ extern char *path_dhclient_script;
+ extern int interfaces_requested;
++extern int restrict_interfaces;
+ extern struct data_string default_duid;
+ extern int duid_type;
+ 
+-- 
+2.7.4
+

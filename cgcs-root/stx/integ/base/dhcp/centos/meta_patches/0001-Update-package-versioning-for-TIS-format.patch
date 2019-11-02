@@ -1,0 +1,26 @@
+From 863bddfcfb4a421532742edc113ff970233131f3 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 14:28:32 +0800
+Subject: [PATCH 2/2] Update-package-versioning-for-TIS-format
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/dhcp.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/dhcp.spec b/SPECS/dhcp.spec
+index f0084b1..c09d90f 100644
+--- a/SPECS/dhcp.spec
++++ b/SPECS/dhcp.spec
+@@ -16,7 +16,7 @@
+ Summary:  Dynamic host configuration protocol software
+ Name:     dhcp
+ Version:  4.3.6
+-Release:  30%{?dist}
++Release:  30.el8%{?_tis_dist}.%{tis_patch_ver}
+ # NEVER CHANGE THE EPOCH on this package.  The previous maintainer (prior to
+ # dcantrell maintaining the package) made incorrect use of the epoch and
+ # that's why it is at 12 now.  It should have never been used, but it was.
+-- 
+2.7.4
+

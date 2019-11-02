@@ -1,0 +1,37 @@
+From 5a8b797fe3c391ebc803e73150f6cbed73f0ea3c Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Sat, 2 Nov 2019 16:25:50 +0800
+Subject: [PATCH 3/3] dhclient-ipv6-conditionally-set-hostname
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ client/scripts/linux | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/client/scripts/linux b/client/scripts/linux
+index 14655f0..59e764f 100755
+--- a/client/scripts/linux
++++ b/client/scripts/linux
+@@ -254,6 +254,19 @@ if [ x$reason = xPREINIT6 ] ; then
+   exit_with_hooks 0
+ fi
+ 
++if [ x$reason = xBOUND6 ] || [ x$reason = xRENEW6 ] || \
++   [ x$reason = xREBIND6 ] || [ x$reason = xREBOOT6 ]; then
++  current_hostname=`hostname`
++  if [ x$current_hostname = x ] || \
++     [ x$current_hostname = "x(none)" ] || \
++     [ x$current_hostname = xlocalhost ] || \
++     [ x$current_hostname = x$old_fqdn_hostname ]; then
++    if [ x$new_fqdn_hostname != x$old_fqdn_hostname ]; then
++      hostname "$new_fqdn_hostname"
++    fi
++  fi
++fi
++
+ if [ x${old_ip6_prefix} != x ] || [ x${new_ip6_prefix} != x ] ; then
+     echo Prefix ${reason} old=${old_ip6_prefix} new=${new_ip6_prefix}
+ 
+-- 
+2.7.4
+

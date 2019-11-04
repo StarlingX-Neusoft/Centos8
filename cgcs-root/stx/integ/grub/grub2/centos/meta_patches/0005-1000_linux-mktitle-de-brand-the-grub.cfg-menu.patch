@@ -1,0 +1,22 @@
+From 1cf167c45e506f9c755f99b40d9a9b3b3dfdb679 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 14:40:33 +0800
+Subject: [PATCH 05/10] 1000_linux-mktitle-de-brand-the-grub.cfg-menu
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SOURCES/grub.patches | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/SOURCES/grub.patches b/SOURCES/grub.patches
+index 558efbe..c265b9d 100644
+--- a/SOURCES/grub.patches
++++ b/SOURCES/grub.patches
+@@ -256,3 +256,4 @@ Patch0255: 0255-Make-grub2-mkconfig-to-honour-GRUB_CMDLINE_LINUX-in-.patch
+ Patch0256: 0256-grub-boot-success.timer-Add-a-few-Conditions-for-run.patch
+ Patch0257: 0257-docs-Stop-using-polkit-pkexec-for-grub-boot-success..patch
+ Patch0258: 0258-Fix-the-looking-up-grub.cfg-XXX-while-tftp-booting.patch
++Patch1000: 1000_linux-mktitle-de-brand-the-grub.cfg-menu.patch
+-- 
+2.7.4
+

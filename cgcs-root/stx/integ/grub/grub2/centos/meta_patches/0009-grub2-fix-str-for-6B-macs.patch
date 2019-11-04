@@ -1,0 +1,36 @@
+From 1830192177d7fd82563416b7d09ac18272a84c76 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 15:05:10 +0800
+Subject: [PATCH 09/10] grub2-fix-str-for-6B-macs
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SOURCES/grub.macros  | 2 +-
+ SOURCES/grub.patches | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/SOURCES/grub.macros b/SOURCES/grub.macros
+index abe43da..bda5d3d 100644
+--- a/SOURCES/grub.macros
++++ b/SOURCES/grub.macros
+@@ -110,7 +110,7 @@
+ %global legacy_target_cpu_name i386
+ %global legacy_package_arch pc
+ %global platform pc
+-%global wrs_modules " multiboot multiboot2"
++%global wrs_modules " multiboot multiboot2 regexp"
+ %else
+ %global wrs_modules ""
+ 
+diff --git a/SOURCES/grub.patches b/SOURCES/grub.patches
+index d872b74..03e89fc 100644
+--- a/SOURCES/grub.patches
++++ b/SOURCES/grub.patches
+@@ -258,3 +258,4 @@ Patch0257: 0257-docs-Stop-using-polkit-pkexec-for-grub-boot-success..patch
+ Patch0258: 0258-Fix-the-looking-up-grub.cfg-XXX-while-tftp-booting.patch
+ Patch1000: 1000_linux-mktitle-de-brand-the-grub.cfg-menu.patch
+ Patch1001: 1001-add-tboot.patch
++Patch1002: 1002-Don-t-write-trailing-colon-when-populating-MAC-strin.patch
+-- 
+2.7.4
+

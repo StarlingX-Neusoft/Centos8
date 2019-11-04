@@ -1,0 +1,29 @@
+From 8469e6d581e016e43d269d7ac28ca36715bb5097 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 15:46:56 +0800
+Subject: [PATCH 2/3] add-tboot
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ util/grub.d/10_linux.in | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
+index 5482ebf..6e6b414 100644
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -23,6 +23,11 @@ datarootdir="@datarootdir@"
+ 
+ . "$pkgdatadir/grub-mkconfig_lib"
+ 
++tboot=`cat /proc/cmdline | xargs -n1 | grep '^tboot=true$'` || true
++if [ -n "$tboot"  ]; then
++  exit 0
++fi
++
+ export TEXTDOMAIN=@PACKAGE@
+ export TEXTDOMAINDIR="@localedir@"
+ 
+-- 
+2.7.4
+

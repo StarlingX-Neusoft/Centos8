@@ -1,0 +1,45 @@
+From 86a738b0efc1dddedfa98c3d66df0522926dc3d0 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 15:42:04 +0800
+Subject: [PATCH 1/3] linux-mktitle-de-brand-the-grub.cfg-menu
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ util/grub.d/10_linux.in | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
+index da2992a..5482ebf 100644
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -101,22 +101,20 @@ mktitle ()
+   local title_type
+   local version
+   local OS_NAME
+-  local OS_VERS
+ 
+   title_type=$1 && shift
+   version=$1 && shift
+ 
+-  OS_NAME="$(eval $(grep ^NAME= /etc/os-release) ; echo ${NAME})"
+-  OS_VERS="$(eval $(grep ^VERSION= /etc/os-release) ; echo ${VERSION})"
++  OS_NAME="Linux"
+ 
+   case $title_type in
+     recovery)
+-      title=$(printf '%s (%s) %s (recovery mode)' \
+-                     "${OS_NAME}" "${version}" "${OS_VERS}")
++      title=$(printf '%s (%s) (recovery mode)' \
++                     "${OS_NAME}" "${version}")
+       ;;
+     *)
+-      title=$(printf '%s (%s) %s' \
+-                     "${OS_NAME}" "${version}" "${OS_VERS}")
++      title=$(printf '%s (%s)' \
++                     "${OS_NAME}" "${version}")
+       ;;
+   esac
+   echo -n ${title}
+-- 
+2.7.4
+

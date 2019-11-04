@@ -1,0 +1,46 @@
+From 1e9d16a3c847f452c3bf79b5bf0b3127416a5f32 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 14:27:50 +0800
+Subject: [PATCH 03/10] grub2-remove-32b-build
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SOURCES/grub.macros | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
+
+diff --git a/SOURCES/grub.macros b/SOURCES/grub.macros
+index d59f889..f02720d 100644
+--- a/SOURCES/grub.macros
++++ b/SOURCES/grub.macros
+@@ -122,20 +122,6 @@
+ %global legacy_package_arch pc
+ %global platform pc
+ 
+-%global alt_efi_arch ia32
+-%global alt_target_cpu_name i386
+-%global alt_grub_target_name i386-efi
+-%global alt_platform efi
+-%global alt_package_arch efi-ia32
+-
+-%global alt_efi_host_cflags %{expand:%%(echo %{efi_host_cflags})}
+-%global alt_efi_target_cflags					\\\
+-	%{expand:%%(echo %{target_cflags} |			\\\
+-	%{cflags_sed}						\\\
+-		-e 's/-m64//g'					\\\
+-	)}
+-%endif
+-
+ %ifarch aarch64
+ %global efiarch aa64
+ %global target_cpu_name aarch64
+@@ -439,6 +425,7 @@ cd ..								\
+ %define do_efi_install()					\
+ cd grub-%{1}-%{tarversion}					\
+ make DESTDIR=$RPM_BUILD_ROOT install				\
++find $RPM_BUILD_ROOT -name "grub2-bios-setup*" | xargs rm -f \
+ if [ -f $RPM_BUILD_ROOT%{_infodir}/grub.info ]; then		\
+ 	rm -f $RPM_BUILD_ROOT%{_infodir}/grub.info		\
+ fi								\
+-- 
+2.7.4
+

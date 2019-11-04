@@ -1,0 +1,46 @@
+From b2da101a67d9c07368d091d09c92f10a592a3fd5 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 15:03:32 +0800
+Subject: [PATCH 08/10] grub2-add-tboot
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SOURCES/grub.macros  | 5 +++++
+ SOURCES/grub.patches | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/SOURCES/grub.macros b/SOURCES/grub.macros
+index c09e7ce..abe43da 100644
+--- a/SOURCES/grub.macros
++++ b/SOURCES/grub.macros
+@@ -110,6 +110,10 @@
+ %global legacy_target_cpu_name i386
+ %global legacy_package_arch pc
+ %global platform pc
++%global wrs_modules " multiboot multiboot2"
++%else
++%global wrs_modules ""
++
+ %endif
+ 
+ %ifarch x86_64
+@@ -379,6 +383,7 @@ GRUB_MODULES="	all_video boot blscfg btrfs			\\\
+ 		search_label serial sleep syslinuxcfg test tftp	\\\
+ 		video xfs"					\
+ GRUB_MODULES+=%{platform_modules}				\
++GRUB_MODULES+=%{wrs_modules}                                    \
+ %{expand:%%{mkimage %{1} %{2} %{3} %{4} %{5} %{6} %{7}}}	\
+ %{nil}
+ 
+diff --git a/SOURCES/grub.patches b/SOURCES/grub.patches
+index c265b9d..d872b74 100644
+--- a/SOURCES/grub.patches
++++ b/SOURCES/grub.patches
+@@ -257,3 +257,4 @@ Patch0256: 0256-grub-boot-success.timer-Add-a-few-Conditions-for-run.patch
+ Patch0257: 0257-docs-Stop-using-polkit-pkexec-for-grub-boot-success..patch
+ Patch0258: 0258-Fix-the-looking-up-grub.cfg-XXX-while-tftp-booting.patch
+ Patch1000: 1000_linux-mktitle-de-brand-the-grub.cfg-menu.patch
++Patch1001: 1001-add-tboot.patch
+-- 
+2.7.4
+

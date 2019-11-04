@@ -1,0 +1,36 @@
+From c5fedbd1f2c9cbac07bd4221ff513f3525ef4ed1 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 15:51:04 +0800
+Subject: [PATCH 3/3] Don-t-write-trailing-colon-when-populating-MAC-strin
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ grub-core/net/net.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/grub-core/net/net.c b/grub-core/net/net.c
+index 19ff2d4..00ae5c1 100644
+--- a/grub-core/net/net.c
++++ b/grub-core/net/net.c
+@@ -784,10 +784,18 @@ grub_net_hwaddr_to_str (const grub_net_link_level_address_t *addr, char *str)
+     }
+   maxstr = addr->len * grub_strlen ("XX:");
+   for (ptr = str, i = 0; i < addr->len; i++)
++  if (addr->len == 0)
++    {
++      return;
++    }
++
++  for (ptr = str, i = 0; i < (addr->len - 1); i++)
+     {
+       ptr += grub_snprintf (ptr, maxstr - (ptr - str),
+ 		     "%02x:", addr->mac[i] & 0xff);
+     }
++  ptr += grub_snprintf (ptr, maxstr - (ptr - str),
++           "%02x", addr->mac[i] & 0xff);
+ }
+ 
+ int
+-- 
+2.7.4
+

@@ -1,0 +1,26 @@
+From 76bc24ced403e4056afd0fe8bc6d7a1aaf25ff1e Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 14:38:29 +0800
+Subject: [PATCH 04/10] grub2-ship-lst-files
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/grub2.spec | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/SPECS/grub2.spec b/SPECS/grub2.spec
+index c48b6fd..22840d2 100644
+--- a/SPECS/grub2.spec
++++ b/SPECS/grub2.spec
+@@ -314,6 +314,8 @@ fi
+ 
+ %files common -f grub.lang
+ %dir %{_libdir}/grub/
++%dir %{_libdir}/grub/%{grubefiarch}/
++%{_libdir}/grub/%{grubefiarch}/*.lst
+ %dir %{_datarootdir}/grub/
+ %dir %{_datarootdir}/grub/themes/
+ %exclude %{_datarootdir}/grub/themes/*
+-- 
+2.7.4
+

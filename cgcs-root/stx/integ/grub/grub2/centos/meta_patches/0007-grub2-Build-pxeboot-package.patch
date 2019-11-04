@@ -1,0 +1,48 @@
+From 5000b0988b44bcf6b925a3c8332b84db8f6de80d Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 14:58:08 +0800
+Subject: [PATCH 07/10] grub2-Build-pxeboot-package
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SOURCES/grub.macros | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/SOURCES/grub.macros b/SOURCES/grub.macros
+index 6509c6a..c09e7ce 100644
+--- a/SOURCES/grub.macros
++++ b/SOURCES/grub.macros
+@@ -277,6 +277,13 @@ Summary:    Unsigned versions of GRUB EFI binaries                      \
+ %description %{1}-unsigned                                              \
+ This package contains unsigned version of GRUB EFI binaries.            \
+                                                                         \
++%package %{1}-pxeboot                                                   \
++Summary:    PXE bootable GRUB EFI binaries                              \
++                                                                        \
++%description %{1}-pxeboot                                               \
++This package contains the version of EFI GRUB that is served by the pxeboot \
++server                                                                  \
++                                                                        \
+ %{nil}
+ 
+ %global do_common_setup()					\
+@@ -447,6 +454,7 @@ ln -sf ..%{efi_esp_dir}/grub.cfg				\\\
+ 	$RPM_BUILD_ROOT%{_sysconfdir}/%{name}-efi.cfg		\
+ install -m 700 %{2} $RPM_BUILD_ROOT%{efi_esp_dir}/%{2}.unsigned \
+ install -m 700 %{3} $RPM_BUILD_ROOT%{efi_esp_dir}/%{3}.unsigned \
++install -D -m 755 %{2} $RPM_BUILD_ROOT/pxeboot/EFI/%{2}         \
+ install -m 700 %{2} $RPM_BUILD_ROOT%{efi_esp_dir}/%{2}		\
+ install -m 700 %{3} $RPM_BUILD_ROOT%{efi_esp_dir}/%{3}		\
+ install -D -m 700 unicode.pf2					\\\
+@@ -553,4 +561,8 @@ touch ${RPM_BUILD_ROOT}/boot/%{name}/grub.cfg			\
+ %{expand:%%files %{1}-unsigned}                                 \
+ /boot/efi/EFI/%{efidir}/%{grubefiname}.unsigned                 \
+ /boot/efi/EFI/%{efidir}/%{grubeficdname}.unsigned               \
++								\
++%{expand:%%files %{1}-pxeboot}                                  \
++/pxeboot/EFI/%{grubefiname}                                     \
++								\
+ %{nil}
+-- 
+2.7.4
+

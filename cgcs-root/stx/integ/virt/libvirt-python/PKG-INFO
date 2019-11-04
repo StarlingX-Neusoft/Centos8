@@ -1,0 +1,14 @@
+Metadata-Version: 1.1
+Name: libvirt-python
+Version: 1.2.17
+Summary: The libvirt virtualization API python2 binding
+Home-page:
+Author:
+Author-email:
+License: LGPLv2+
+
+Description:
+The libvirt-python package contains a module that permits applications
+written in the Python programming language to use the interface
+supplied by the libvirt library to use the virtualization capabilities
+of recent versions of Linux (and other OSes).

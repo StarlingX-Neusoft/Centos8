@@ -1,0 +1,25 @@
+From 4f5f6dd13b5ee753a93156c566806d87c5a6efbb Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 15:23:44 +0800
+Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+
+---
+ SPECS/libvirt-python.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/libvirt-python.spec b/SPECS/libvirt-python.spec
+index 571b4a8..99afd2e 100644
+--- a/SPECS/libvirt-python.spec
++++ b/SPECS/libvirt-python.spec
+@@ -34,7 +34,7 @@
+ Summary: The libvirt virtualization API python2 binding
+ Name: libvirt-python
+ Version: 4.5.0
+-Release: 1%{?dist}%{?extra_release}
++Release: 1%{?_tis_dist}.%{tis_patch_ver}
+ Source0: http://libvirt.org/sources/python/%{name}-%{version}.tar.gz
+ Url: http://libvirt.org
+ License: LGPLv2+
+-- 
+1.8.3.1
+

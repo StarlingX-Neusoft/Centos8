@@ -1,0 +1,80 @@
+From 271c52dec2962f0cd324e7c1a62ab2aa40aa40e0 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 15:31:45 +0800
+Subject: [PATCH 2/2] Build-python-wheel
+
+---
+ SPECS/libvirt-python.spec | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/SPECS/libvirt-python.spec b/SPECS/libvirt-python.spec
+index 99afd2e..7da7db8 100644
+--- a/SPECS/libvirt-python.spec
++++ b/SPECS/libvirt-python.spec
+@@ -36,6 +36,7 @@ Name: libvirt-python
+ Version: 4.5.0
+ Release: 1%{?_tis_dist}.%{tis_patch_ver}
+ Source0: http://libvirt.org/sources/python/%{name}-%{version}.tar.gz
++Patch0: 0001-Fix-setup-import-to-support-building-wheel.patch
+ Url: http://libvirt.org
+ License: LGPLv2+
+ Group: Development/Libraries
+@@ -46,10 +47,14 @@ BuildRequires: libvirt-devel >= 4.5.0-1%{?dist}
+ BuildRequires: python2-devel
+ BuildRequires: python2-nose
+ BuildRequires: python2-lxml
++BuildRequires: python2-pip
++BuildRequires: python2-wheel
+ %else
+ BuildRequires: python-devel
+ BuildRequires: python-nose
+ BuildRequires: python-lxml
++BuildRequires: python2-pip
++BuildRequires: python2-wheel
+ %endif
+ %endif
+ %if %{with_python3}
+@@ -109,6 +114,7 @@ of recent versions of Linux (and other OSes).
+ 
+ %prep
+ %setup -q
++%patch0 -p1
+ 
+ # Unset execute bit for example scripts; it can introduce spurious
+ # RPM dependencies, like /usr/bin/python which can pull in python2
+@@ -123,6 +129,7 @@ exit 1
+ 
+ %if %{with_python2}
+ CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
++CFLAGS="$RPM_OPT_FLAGS" %{__python2} setup.py bdist_wheel
+ %endif
+ %if %{with_python3}
+ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
+@@ -131,6 +138,8 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
+ %install
+ %if %{with_python2}
+ %{__python} setup.py install --skip-build --root=%{buildroot}
++mkdir -p $RPM_BUILD_ROOT/wheels
++install -m 644 dist/*.whl $RPM_BUILD_ROOT/wheels/
+ %endif
+ %if %{with_python3}
+ %{__python3} setup.py install --skip-build --root=%{buildroot}
+@@ -171,6 +180,15 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
+ %{python3_sitearch}/*egg-info
+ %endif
+ 
++%package wheels
++Summary: %{name} wheels
++
++%description wheels
++Contains python wheels for %{name}
++
++%files wheels
++/wheels/*
++
+ %changelog
+ * Tue Jul  3 2018 Jiri Denemark <jdenemar@redhat.com> - 4.5.0-1
+ - Rebased to libvirt-python-4.5.0
+-- 
+1.8.3.1
+

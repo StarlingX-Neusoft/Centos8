@@ -1,0 +1,25 @@
+From 6c1041d2683f472dc645a44351b5938676e89738 Mon Sep 17 00:00:00 2001
+From: Don Penney <don.penney@windriver.com>
+Date: Wed, 17 Oct 2018 15:26:37 -0400
+Subject: [PATCH] Fix setup import to support building wheel
+
+---
+ setup.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index 964a40e..263266d 100755
+--- a/setup.py
++++ b/setup.py
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python
+ 
+-from distutils.core import setup, Extension, Command
++from setuptools import setup
++from distutils.core import Extension, Command
+ from distutils.command.build import build
+ from distutils.command.clean import clean
+ from distutils.command.sdist import sdist
+-- 
+1.8.3.1
+

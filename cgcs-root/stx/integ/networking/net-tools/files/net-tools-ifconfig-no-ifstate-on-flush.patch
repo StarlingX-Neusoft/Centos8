@@ -1,0 +1,28 @@
+From 0b53ec749ec625edcadf84f15e76e8507cd3ad55 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 14:13:33 +0800
+Subject: [PATCH 2/2] net-tools-ifconfig-no-ifstate-on-flush
+
+---
+ ifconfig.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/ifconfig.c b/ifconfig.c
+index 6505e07..397a5be 100644
+--- a/ifconfig.c
++++ b/ifconfig.c
+@@ -983,6 +983,11 @@ int main(int argc, char **argv)
+ 		    exit(1);
+ 		}
+ 		r = ioctl(fd, SIOCSIFADDR, &ifr);
++		if (((struct sockaddr_in*)&sa)->sin_addr.s_addr == INADDR_ANY) {
++		   /* do not continue to change interface state if only flushing addresses */
++		   spp++;
++		   continue;
++		}
+ 		break;
+ #endif
+ #if HAVE_AFECONET
+-- 
+1.8.3.1
+

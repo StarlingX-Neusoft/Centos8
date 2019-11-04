@@ -1,0 +1,31 @@
+From 00f60089c52508f20b82fb56a73d1b98faa08e1d Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 14:10:44 +0800
+Subject: [PATCH 1/2] net-tools-hostname-ipv6-shortname
+
+---
+ hostname.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/hostname.c b/hostname.c
+index 93f3a8b..e1bde18 100644
+--- a/hostname.c
++++ b/hostname.c
+@@ -344,8 +344,13 @@ int main(int argc, char **argv)
+ 	    break;
+ 	case 'a':
+ 	case 'f':
+-	case 'i':
+ 	case 's':
++	    /*
++	     * These are not supported for IPv6 so just consume the option
++	     * and return the default hostname value
++	     */
++	    break;
++	case 'i':
+ 	    what = 1;
+ 	    type = c;
+ 	    break;
+-- 
+1.8.3.1
+

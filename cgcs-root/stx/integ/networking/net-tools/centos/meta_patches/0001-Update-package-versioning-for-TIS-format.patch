@@ -1,0 +1,25 @@
+From 5f8214e56a215b2144a72037ff3ba728425a6b69 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 11:47:46 +0800
+Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+
+---
+ SPECS/net-tools.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/net-tools.spec b/SPECS/net-tools.spec
+index 4e5041b..82dfa5e 100644
+--- a/SPECS/net-tools.spec
++++ b/SPECS/net-tools.spec
+@@ -3,7 +3,7 @@
+ Summary: Basic networking tools
+ Name: net-tools
+ Version: 2.0
+-Release: 0.51.%{checkout}%{?dist}
++Release: 0.51.20160912git.el8%{?_tis_dist}.%{tis_patch_ver}
+ License: GPLv2+
+ Group: System Environment/Base
+ URL: http://sourceforge.net/projects/net-tools/
+-- 
+1.8.3.1
+

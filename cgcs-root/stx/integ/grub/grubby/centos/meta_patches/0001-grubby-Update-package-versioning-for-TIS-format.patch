@@ -1,0 +1,25 @@
+From bcf9b04ee6d1079e33ef181216b8defe83a935bd Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 16:06:46 +0800
+Subject: [PATCH 1/3] grubby-Update-package-versioning-for-TIS-format
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/grubby.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/grubby.spec b/SPECS/grubby.spec
+index a7cb388..a42642f 100644
+--- a/SPECS/grubby.spec
++++ b/SPECS/grubby.spec
+@@ -1,6 +1,6 @@
+ Name: grubby
+ Version: 8.40
+-Release: 34%{?dist}
++Release: 34.el8%{?_tis_dist}.%{tis_patch_ver}
+ Summary: Command line tool for updating BootLoaderSpec files
+ License: GPLv2+
+ URL: https://github.com/rhinstaller/grubby
+-- 
+2.7.4
+

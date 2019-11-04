@@ -1,0 +1,27 @@
+From d831b1163f8dedb47b7d03c46c4f0c62773c493c Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 16:08:43 +0800
+Subject: [PATCH 2/3] grubby-Generic-name-for-Titanium
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/grubby.spec | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/SPECS/grubby.spec b/SPECS/grubby.spec
+index a42642f..4e673ae 100644
+--- a/SPECS/grubby.spec
++++ b/SPECS/grubby.spec
+@@ -70,6 +70,9 @@ Patch0054: 0054-Make-installkernel-to-use-kernel-install-scripts-on-.patch
+ Patch0055: 0055-Add-usr-libexec-rpm-sort.patch
+ Patch0056: 0056-Improve-man-page-for-info-option.patch
+ 
++# WRS Titanium patches
++Patch1000: 1000-Generic-name-for-Titanium.patch
++
+ BuildRequires: gcc
+ BuildRequires: pkgconfig glib2-devel popt-devel 
+ BuildRequires: libblkid-devel git-core sed make
+-- 
+2.7.4
+

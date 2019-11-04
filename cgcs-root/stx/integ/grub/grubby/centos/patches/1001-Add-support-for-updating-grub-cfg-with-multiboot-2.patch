@@ -1,0 +1,269 @@
+From 20ca9d4955f1421fdb167d8b63ed87f93532a104 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 19:00:13 +0800
+Subject: [PATCH 2/2] Add-support-for-updating-grub-cfg-with-multiboot-2
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ Makefile           |   4 ++
+ __init__.py        |   8 ++++
+ grub-cfg-update    |  17 ++++++++
+ grub_cfg_update.py | 126 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ new-kernel-pkg     |  33 ++++++++++----
+ 5 files changed, 180 insertions(+), 8 deletions(-)
+ create mode 100644 __init__.py
+ create mode 100644 grub-cfg-update
+ create mode 100644 grub_cfg_update.py
+
+diff --git a/Makefile b/Makefile
+index 8eeec80..de72d3c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -49,6 +49,7 @@ test: all
+ install: all
+ 	mkdir -p $(DESTDIR)$(PREFIX)$(sbindir)
+ 	mkdir -p $(DESTDIR)/$(mandir)/man8
++	mkdir -p $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby
+ 	install -m 755 new-kernel-pkg $(DESTDIR)$(PREFIX)$(sbindir)
+ 	install -m 644 new-kernel-pkg.8 $(DESTDIR)/$(mandir)/man8
+ 	install -m 755 installkernel $(DESTDIR)$(PREFIX)$(sbindir)
+@@ -59,6 +60,9 @@ install: all
+ 	fi
+ 	install -m 755 -d $(DESTDIR)$(PREFIX)$(libexecdir)/grubby/
+ 	install -m 755 rpm-sort $(DESTDIR)$(PREFIX)$(libexecdir)/grubby/rpm-sort
++	install -m 644 grub_cfg_update.py $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby/grub_cfg_update.py
++	install -m 644 __init__.py $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby/__init__.py
++	install -m 500 grub-cfg-update $(DESTDIR)$(PREFIX)/sbin/grub-cfg-update
+ 
+ grubby:: $(OBJECTS)
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(grubby_LIBS)
+diff --git a/__init__.py b/__init__.py
+new file mode 100644
+index 0000000..40094b3
+--- /dev/null
++++ b/__init__.py
+@@ -0,0 +1,8 @@
++#!/usr/bin/env python
++#
++# Copyright (c) 2018 Wind River Systems, Inc.
++# SPDX-License-Identifier: Apache-2.0
++#
++#
++#
++#
+diff --git a/grub-cfg-update b/grub-cfg-update
+new file mode 100644
+index 0000000..64fd286
+--- /dev/null
++++ b/grub-cfg-update
+@@ -0,0 +1,17 @@
++#!/usr/bin/env python
++
++"""
++Copyright (c) 2018 Wind River Systems, Inc.
++ SPDX-License-Identifier: Apache-2.0
++
++
++
++"""
++
++import sys
++
++from grubby.grub_cfg_update import main
++
++if __name__ == "__main__":
++    main()
++
+diff --git a/grub_cfg_update.py b/grub_cfg_update.py
+new file mode 100644
+index 0000000..03c83c9
+--- /dev/null
++++ b/grub_cfg_update.py
+@@ -0,0 +1,126 @@
++#!/usr/bin/env python
++#
++# Copyright (c) 2018 Wind River Systems, Inc.
++# SPDX-License-Identifier: Apache-2.0
++#
++#
++#
++#
++import sys
++import argparse
++import os.path
++import re
++import ntpath
++
++
++LINUX_KERNEL_RE = "^[ \t]*module2[ \t]{1,}/vmlinuz-[^ \n\t]*"
++INITRD_RE = "^[ \t]*module2[ \t]{1,}/initramfs-[^ \n\t]*"
++
++
++def is_title(line):
++    m = re.search('^[ ]*menuentry ', line)
++    if m:
++        return True
++    return False
++
++
++def update_title(line, ver):
++    m = re.search("Linux [^ \n\t']*", line)
++    if not m:
++        print "Title pattern not understandable, not updated"
++        return line
++    new_line = re.sub("Linux [^ \n\t']*", "Linux %s" % ver, line)
++    return new_line
++
++
++def is_kernel(line):
++    m = re.search(LINUX_KERNEL_RE, line)
++    if m:
++        return True
++    return False
++
++
++def update_kernel(line, kernel):
++    kernel_name = ntpath.basename(kernel)
++    new_line = re.sub(LINUX_KERNEL_RE,
++                      "        module2 /%s" % kernel_name,
++                      line)
++    return new_line
++
++
++def is_initrd(line):
++    m = re.search(INITRD_RE, line)
++    if m:
++        return True
++    return False
++
++
++def update_initrd(line, initrd):
++    initrd_name = ntpath.basename(initrd)
++    new_line = re.sub(INITRD_RE,
++                      "        module2 /%s" % initrd_name,
++                      line)
++    return new_line
++
++
++def convert_line(line, version):
++    pattern = "^[ \t]*echo[ \t]*['\"]Loading Linux [^ \n\t]*"
++    m = re.search(pattern, line)
++    if not m:
++        return line
++
++    return "        echo     'Loading Linux %s ...'\n" % version
++
++
++def update_cfg(cfg, kernel, initramfs, ver, cfg_out):
++    if not os.path.isfile(cfg):
++        print "grub config file %s not found\n" % cfg
++        sys.exit(-1)
++
++    if not os.path.isfile(kernel):
++        print "specified kernel file %s not found\n" % kernel
++        sys.exit(-1)
++
++    if not os.path.isfile(initramfs):
++        print "specified initrd file %s not found\n" % initramfs
++        sys.exit(-1)
++
++    new_file_content = []
++    with open(cfg) as f:
++        for line in f:
++            if is_title(line):
++                new_line = update_title(line, ver)
++                print new_line
++            elif is_kernel(line):
++                new_line = update_kernel(line, kernel)
++                print new_line
++            elif is_initrd(line):
++                new_line = update_initrd(line, initramfs)
++                print new_line
++            else:
++                new_line = convert_line(line, ver)
++                print new_line
++
++            new_file_content.append(new_line)
++    with open(cfg_out, 'w') as f:
++        for line in new_file_content:
++            f.write("%s" % line)
++
++
++def main():
++    try:
++        parser = argparse.ArgumentParser(description='Update tboot enabled grub config')
++        parser.add_argument('cfg', help='original grub.cfg file path')
++        parser.add_argument('kernel', help='kernel file path')
++        parser.add_argument('initramfs', help='initramfs file path')
++        parser.add_argument('version', help='new version of kernel')
++        parser.add_argument('--cfg-out', help='updated grub.cfg target file path')
++        args = parser.parse_args()
++        cfg_out = args.cfg_out
++        if cfg_out is None:
++            cfg_out = args.cfg
++
++        update_cfg(args.cfg, args.kernel, args.initramfs, args.version, cfg_out)
++    except Exception as e:
++        print e
++        sys.exit(-1)
+diff --git a/new-kernel-pkg b/new-kernel-pkg
+index 9add50b..f87a171 100755
+--- a/new-kernel-pkg
++++ b/new-kernel-pkg
+@@ -176,6 +176,11 @@ install() {
+ 	return
+     fi
+ 
++    grep -q 'tboot=true' /proc/cmdline 2>/dev/null
++    if [ $? == 0 ] ; then
++        return
++    fi
++
+     INITRD=""
+     if [ -f $initrdfile ]; then
+ 	[ -n "$verbose" ] && echo "found $initrdfile and using it with grubby"
+@@ -332,6 +337,11 @@ remove() {
+ 	return
+     fi
+ 
++    grep -q 'tboot=true' /proc/cmdline 2>/dev/null
++    if [ $? == 0 ] ; then
++        return
++    fi
++
+     local files
+     local f
+     files="/etc/kernel/prerm.d/*[^~] /etc/kernel/prerm.d/$version/*[^~]"
+@@ -446,14 +456,21 @@ update() {
+     fi
+ 
+     if [ -n "$cfgGrub2Efi" ]; then
+-	[ -n "$verbose" ] && echo "updating $version from $grub2EfiConfig"
+-	ARGS="--grub2 -c $grub2EfiConfig --efi --update-kernel=$kernelImage \
+-		$INITRD ${kernargs:+--args=\"$kernargs\"} \
+-		${removeargs:+--remove-args=\"$removeargs\"} \
+-		--title=\"$title\$debugtitle\""
+-
+-	rungrubby ${ARGS}
+-	rungrubby --debug ${ARGS}
++        grep -q 'tboot=true' /proc/cmdline 2>/dev/null
++        if [ $? == 0 ] ; then
++            [ -n "$verbose" ] && echo "calling grub-cfg-update $grub2EfiConfig $kernelImage $initrdfile $version"
++            grub-cfg-update $grub2EfiConfig $kernelImage $initrdfile $version
++            return
++        else
++            [ -n "$verbose" ] && echo "updating $version from $grub2EfiConfig"
++            ARGS="--grub2 -c $grub2EfiConfig --efi --update-kernel=$kernelImage \
++                $INITRD ${kernargs:+--args=\"$kernargs\"} \
++                ${removeargs:+--remove-args=\"$removeargs\"} \
++                --title=\"$title\$debugtitle\""
++
++            rungrubby ${ARGS}
++            rungrubby --debug ${ARGS}
++        fi
+     else
+ 	[ -n "$verbose" ] && echo "$grub2EfiConfig does not exist, not running grubby"
+     fi
+-- 
+2.7.4
+

@@ -1,0 +1,61 @@
+From 15d635f9d18234ee10f8e182f87dd6d246761f91 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 16:44:11 +0800
+Subject: [PATCH 3/3] grubby-add-multiboot2
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/grubby.spec | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/SPECS/grubby.spec b/SPECS/grubby.spec
+index 4e673ae..b4306bf 100644
+--- a/SPECS/grubby.spec
++++ b/SPECS/grubby.spec
+@@ -72,6 +72,7 @@ Patch0056: 0056-Improve-man-page-for-info-option.patch
+ 
+ # WRS Titanium patches
+ Patch1000: 1000-Generic-name-for-Titanium.patch
++Patch1001: 1001-Add-support-for-updating-grub-cfg-with-multiboot-2.patch
+ 
+ BuildRequires: gcc
+ BuildRequires: pkgconfig glib2-devel popt-devel 
+@@ -89,6 +90,11 @@ Requires: s390utils-base
+ %endif
+ Requires: findutils
+ 
++BuildRequires: python-setuptools
++Requires: python-devel
++
++%define pythonroot  /usr/lib64/python2.7/site-packages
++
+ %description
+ This package provides a grubby compatibility script that manages
+ BootLoaderSpec files and is meant to only be used for legacy compatibility
+@@ -129,6 +135,11 @@ sed -e "s,@@LIBEXECDIR@@,%{_libexecdir}/grubby,g" %{SOURCE2} \
+ sed -e "s,@@LIBEXECDIR@@,%{_libexecdir}/installkernel,g" %{SOURCE3} \
+ 	> %{buildroot}%{_sbindir}/installkernel
+ 
++install -d -m 0755 $RPM_BUILD_ROOT/%{pythonroot}/grubby
++install -m 644 grub_cfg_update.py $RPM_BUILD_ROOT/%{pythonroot}/grubby/grub_cfg_update.py
++install -m 644 __init__.py $RPM_BUILD_ROOT/%{pythonroot}/grubby/__init__.py
++install -m 500 grub-cfg-update $RPM_BUILD_ROOT/usr/sbin/grub-cfg-update
++
+ %package deprecated
+ Summary: Legacy command line tool for updating bootloader configs
+ Conflicts:	%{name} <= 8.40-13
+@@ -165,6 +176,11 @@ current boot environment.
+ %attr(0755,root,root) %{_sbindir}/grubby
+ %attr(0755,root,root) %{_sbindir}/installkernel
+ %attr(0755,root,root) %{_sbindir}/new-kernel-pkg
++%{pythonroot}/grubby
++%{_prefix}/sbin/grub-cfg-update
++%{pythonroot}/grubby/grub_cfg_update.py
++%{pythonroot}/grubby/__init__.py
++
+ %{_mandir}/man8/*.8*
+ 
+ %changelog
+-- 
+2.7.4
+

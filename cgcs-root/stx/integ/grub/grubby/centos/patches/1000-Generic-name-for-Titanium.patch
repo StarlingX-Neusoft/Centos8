@@ -1,0 +1,26 @@
+From 7551da363b0e65d2496d15e675321681a1059032 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Mon, 4 Nov 2019 16:56:16 +0800
+Subject: [PATCH 1/2] Generic-name-for-Titanium
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ new-kernel-pkg | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/new-kernel-pkg b/new-kernel-pkg
+index 0fe6caa..9add50b 100755
+--- a/new-kernel-pkg
++++ b/new-kernel-pkg
+@@ -157,6 +157,8 @@ set_title() {
+ 	fi
+     elif [ $ARCH = 's390' -o $ARCH = 's390x' ]; then
+ 	title=$(echo $version | sed 's/ /_/g')
++    elif [ -f /etc/build.info ]; then
++	title="Linux ($version)"
+     elif [ -f /etc/os-release ]; then
+ 	. /etc/os-release
+ 	title="$NAME ($version) $VERSION"
+-- 
+2.7.4
+

@@ -1,0 +1,41 @@
+From 9456b0eee753d9fd368347b6974a2f6f8d941d4f Mon Sep 17 00:00:00 2001
+From: Kam Nasim <kam.nasim@windriver.com>
+Date: Tue, 11 Apr 2017 17:23:03 -0400
+Subject: [PATCH] rootdn should not bypass ppolicy
+
+---
+ servers/slapd/overlays/ppolicy.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/servers/slapd/overlays/ppolicy.c b/servers/slapd/overlays/ppolicy.c
+index b446deb..fa79872 100644
+--- a/servers/slapd/overlays/ppolicy.c
++++ b/servers/slapd/overlays/ppolicy.c
+@@ -1905,7 +1905,8 @@ ppolicy_modify( Operation *op, SlapReply *rs )
+ 		for(p=tl; p; p=p->next, hsize++); /* count history size */
+ 	}
+
+-	if (be_isroot( op )) goto do_modify;
++	/* WRS UPDATE: Run ppolicy for all user password modify ops */
++	//if (be_isroot( op )) goto do_modify;
+
+ 	/* NOTE: according to draft-behera-ldap-password-policy
+ 	 * pwdAllowUserChange == FALSE must only prevent pwd changes
+@@ -2009,7 +2010,13 @@ ppolicy_modify( Operation *op, SlapReply *rs )
+ 	}
+
+ 	bv = newpw.bv_val ? &newpw : &addmod->sml_values[0];
+-	if (pp.pwdCheckQuality > 0) {
++
++	/* WRS UPDATE:
++	 * If this is a rootDN op and this is the first password
++	 * then bypass password policies as this is a new account
++	 * creation
++	 */
++	if (pp.pwdCheckQuality > 0 && !(be_isroot( op ) && !pa)) {
+
+ 		rc = check_password_quality( bv, &pp, &pErr, e, (char **)&txt );
+ 		if (rc != LDAP_SUCCESS) {
+--
+1.9.1
+

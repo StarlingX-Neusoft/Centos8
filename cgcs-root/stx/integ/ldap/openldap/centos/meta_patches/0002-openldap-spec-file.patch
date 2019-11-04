@@ -1,0 +1,44 @@
+From 84e07a7936da3564af4e6ec930ba8f4a82e8af1d Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 10:22:31 +0800
+Subject: [PATCH 2/3] openldap-spec-file
+
+---
+ SPECS/openldap.spec | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/SPECS/openldap.spec b/SPECS/openldap.spec
+index 1684a52..bca9358 100644
+--- a/SPECS/openldap.spec
++++ b/SPECS/openldap.spec
+@@ -205,7 +205,7 @@ mv check_password.so check_password.so.%{check_password_version}
+ ln -s check_password.so.%{check_password_version} %{buildroot}%{_libdir}/openldap/check_password.so
+ install -m 755 check_password.so.%{check_password_version} %{buildroot}%{_libdir}/openldap/
+ # install -m 644 README %{buildroot}%{_libdir}/openldap
+-install -d -m 755 %{buildroot}%{_sysconfdir}/openldap
++install -d -m 740 %{buildroot}%{_sysconfdir}/openldap
+ cat > %{buildroot}%{_sysconfdir}/openldap/check_password.conf <<EOF
+ # OpenLDAP pwdChecker library configuration
+ 
+@@ -320,6 +320,9 @@ exit 0
+ 
+ 
+ %post servers
++
++mkdir -p /var/lib/openldap-data
++
+ %systemd_post slapd.service
+ 
+ # generate configuration if necessary
+@@ -472,7 +475,7 @@ exit 0
+ %{_mandir}/man5/slapd*.5*
+ %{_mandir}/man5/slapo-*.5*
+ # obsolete configuration
+-%ghost %config(noreplace,missingok) %attr(0640,ldap,ldap) %{_sysconfdir}/openldap/slapd.conf
++#%ghost %config(noreplace,missingok) %attr(0640,ldap,ldap) %{_sysconfdir}/openldap/slapd.conf
+ 
+ %files clients
+ %{_bindir}/*
+-- 
+1.8.3.1
+

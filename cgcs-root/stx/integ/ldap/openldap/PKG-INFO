@@ -1,0 +1,15 @@
+Metadata-Version: 1.1
+Name: openldap
+Version: 2.4.46
+Summary: OpenLDAP Directory Service
+Home-page: 
+Author:
+Author-email:
+License: OLDAP-2.8
+
+Description:
+OpenLDAP Software is an open source implementation of the Lightweight
+Directory Access Protocol.
+
+        
+Platform: UNKNOWN

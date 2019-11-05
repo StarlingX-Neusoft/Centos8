@@ -1,0 +1,25 @@
+From c04f2b7dbde0912efa21dc5095ff03ce97fa0a50 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 15:51:23 +0800
+Subject: [PATCH 3/4] fix-build-error-for-unused-variable
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/systemd.spec | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/SPECS/systemd.spec b/SPECS/systemd.spec
+index 761147b..5782b36 100644
+--- a/SPECS/systemd.spec
++++ b/SPECS/systemd.spec
+@@ -148,6 +148,7 @@ Patch0095: 0095-Revert-core-one-step-back-again-for-nspawn-we-actual.patch
+ 
+ #WRS Patches
+ Patch0101: 0101-inject-millisec-in-syslog-date.patch
++Patch0102: 0102-fix-build-error-for-unused-variable.patch
+ 
+ %ifarch %{ix86} x86_64 aarch64
+ %global have_gnu_efi 1
+-- 
+2.7.4
+

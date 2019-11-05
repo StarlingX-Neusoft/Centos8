@@ -1,0 +1,26 @@
+From 18b1001593d5d29c5745acce31c170a5c958c3e8 Mon Sep 17 00:00:00 2001
+From: rpm-build <rpm-build>
+Date: Tue, 5 Nov 2019 16:35:10 +0800
+Subject: [PATCH 2/2] 0102-fix-build-error-for-unused-variable
+
+Signed-off-by: rpm-build <rpm-build>
+---
+ src/journal/journald-syslog.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/src/journal/journald-syslog.c b/src/journal/journald-syslog.c
+index d0e0567..5549555 100644
+--- a/src/journal/journald-syslog.c
++++ b/src/journal/journald-syslog.c
+@@ -153,8 +153,6 @@ void server_forward_syslog(Server *s, int priority, const char *identifier, cons
+         char header_priority[DECIMAL_STR_MAX(priority) + 3], header_time[64],
+              header_pid[STRLEN("[]: ") + DECIMAL_STR_MAX(pid_t) + 1];
+         int n = 0;
+-        time_t t;
+-        struct tm *tm;
+         _cleanup_free_ char *ident_buf = NULL;
+ 
+         assert(s);
+-- 
+2.7.4
+

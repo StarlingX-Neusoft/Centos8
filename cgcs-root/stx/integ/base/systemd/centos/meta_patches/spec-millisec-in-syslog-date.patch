@@ -1,0 +1,26 @@
+From 1be516aa066ac1f32cafe579ffcb7aa8e7a8aeff Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 15:49:37 +0800
+Subject: [PATCH 2/4] spec-millisec-in-syslog-date
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/systemd.spec | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/SPECS/systemd.spec b/SPECS/systemd.spec
+index fbb016f..761147b 100644
+--- a/SPECS/systemd.spec
++++ b/SPECS/systemd.spec
+@@ -146,6 +146,8 @@ Patch0093: 0093-Allocate-temporary-strings-to-hold-dbus-paths-on-the.patch
+ Patch0094: 0094-sd-bus-if-we-receive-an-invalid-dbus-message-ignore-.patch
+ Patch0095: 0095-Revert-core-one-step-back-again-for-nspawn-we-actual.patch
+ 
++#WRS Patches
++Patch0101: 0101-inject-millisec-in-syslog-date.patch
+ 
+ %ifarch %{ix86} x86_64 aarch64
+ %global have_gnu_efi 1
+-- 
+2.7.4
+

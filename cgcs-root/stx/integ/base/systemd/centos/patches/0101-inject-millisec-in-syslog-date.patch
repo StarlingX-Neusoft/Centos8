@@ -1,0 +1,77 @@
+From ef267aaeb0a42281c02b30fe0f2901a59784eaa3 Mon Sep 17 00:00:00 2001
+From: rpm-build <rpm-build>
+Date: Tue, 5 Nov 2019 16:32:25 +0800
+Subject: [PATCH 1/2] 0101-inject-millisec-in-syslog-date
+
+Signed-off-by: rpm-build <rpm-build>
+---
+ src/journal/journald-syslog.c | 46 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 40 insertions(+), 6 deletions(-)
+
+diff --git a/src/journal/journald-syslog.c b/src/journal/journald-syslog.c
+index 97711ac..d0e0567 100644
+--- a/src/journal/journald-syslog.c
++++ b/src/journal/journald-syslog.c
+@@ -25,6 +25,43 @@
+ /* Warn once every 30s if we missed syslog message */
+ #define WARN_FORWARD_SYSLOG_MISSED_USEC (30 * USEC_PER_SEC)
+ 
++/*  internal function that builds a formatted time str of the
++ *  tv parameter into the passed buffer. (ie Nov  7 16:28:38.109)
++ *  If tv is NULL, then the clock function is used to build the formatted time
++ *  returns (same as snprintf) - number of characters written to buffer.
++ */
++static int formatSyslogDate(char * buffer, int bufLen, const struct timeval *tv) {
++  struct timeval tv_tmp;
++  long int millisec;
++  char tmpbuf[64];
++  struct tm *tm;
++  time_t t;
++
++  if (!tv) {
++      // no timeval input so get time data from clock
++      usec_t now_usec  = now(CLOCK_REALTIME);
++      time_t now_sec = ((time_t) now_usec / USEC_PER_SEC);
++      long int now_fraction_secs = now_usec % USEC_PER_SEC;
++      tv_tmp.tv_sec = now_sec;
++      tv_tmp.tv_usec = now_fraction_secs;
++      tv = &tv_tmp;
++  }
++
++  t = tv->tv_sec;
++  tm = localtime(&t);
++  if (!tm)
++     return 0;
++
++  // format time to the second granularity - ie Nov  7 16:28:38
++  if (strftime(tmpbuf,sizeof(tmpbuf),"%h %e %T", tm) <= 0)
++     return 0;
++
++  millisec = tv->tv_usec / 1000;
++  // now append millisecond granularity (ie Nov  7 16:28:38.109) to
++  // the formatted string.
++  return snprintf(buffer, bufLen, "%s.%03lu", tmpbuf, millisec);
++}
++
+ static void forward_syslog_iovec(Server *s, const struct iovec *iovec, unsigned n_iovec, const struct ucred *ucred, const struct timeval *tv) {
+ 
+         static const union sockaddr_union sa = {
+@@ -133,12 +170,9 @@ void server_forward_syslog(Server *s, int priority, const char *identifier, cons
+         iovec[n++] = IOVEC_MAKE_STRING(header_priority);
+ 
+         /* Second: timestamp */
+-        t = tv ? tv->tv_sec : ((time_t) (now(CLOCK_REALTIME) / USEC_PER_SEC));
+-        tm = localtime(&t);
+-        if (!tm)
+-                return;
+-        if (strftime(header_time, sizeof(header_time), "%h %e %T ", tm) <= 0)
+-                return;
++        if (formatSyslogDate(header_time, sizeof(header_time), tv) <=0 )
++           return;
++
+         iovec[n++] = IOVEC_MAKE_STRING(header_time);
+ 
+         /* Third: identifier and PID */
+-- 
+2.7.4
+

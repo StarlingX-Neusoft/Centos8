@@ -1,0 +1,26 @@
+From 64b25ce1d447c1b332fb39eeb0209557d2c1b4b1 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 14:23:09 +0800
+Subject: [PATCH 1/4] update-package-versioning-for-TIS-format
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/systemd.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/systemd.spec b/SPECS/systemd.spec
+index cc816d2..fbb016f 100644
+--- a/SPECS/systemd.spec
++++ b/SPECS/systemd.spec
+@@ -13,7 +13,7 @@
+ Name:           systemd
+ Url:            http://www.freedesktop.org/wiki/Software/systemd
+ Version:        239
+-Release:        13%{?dist}.5
++Release:        13.el8_0.5%{?_tis_dist}.%{tis_patch_ver}
+ # For a breakdown of the licensing, see README
+ License:        LGPLv2+ and MIT and GPLv2+
+ Summary:        System and Service Manager
+-- 
+2.7.4
+

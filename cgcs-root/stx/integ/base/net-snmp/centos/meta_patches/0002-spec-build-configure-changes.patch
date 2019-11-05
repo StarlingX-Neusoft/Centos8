@@ -1,0 +1,48 @@
+From 52bb106ce05f9f6aa032457bf0156d6b74db0e99 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Tue, 5 Nov 2019 15:17:16 +0800
+Subject: [PATCH 2/2] spec-build-configure-changes
+
+---
+ SPECS/net-snmp.spec | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/SPECS/net-snmp.spec b/SPECS/net-snmp.spec
+index 597e866..b6d92fb 100644
+--- a/SPECS/net-snmp.spec
++++ b/SPECS/net-snmp.spec
+@@ -1,3 +1,6 @@
++# WRS: Disable check
++%global netsnmp_check 0
++
+ # use nestnmp_check 0 to speed up packaging by disabling 'make test'
+ %{!?netsnmp_check: %global netsnmp_check 1}
+ 
+@@ -196,7 +199,7 @@ rm testing/fulltests/default/T200*
+ # Autoreconf to get autoconf 2.69 for ARM (#926223)
+ autoreconf
+ 
+-MIBS="host agentx smux \
++MIBS="agentx smux \
+      ucd-snmp/diskio tcp-mib udp-mib mibII/mta_sendmail \
+      ip-mib/ipv4InterfaceTable ip-mib/ipv6InterfaceTable \
+      ip-mib/ipAddressPrefixTable/ipAddressPrefixTable \
+@@ -222,6 +225,7 @@ MIBS="$MIBS ucd-snmp/lmsensorsMib"
+     --with-ldflags="-Wl,-z,relro -Wl,-z,now" \
+     --with-logfile="/var/log/snmpd.log" \
+     --with-mib-modules="$MIBS" \
++    --with-out-mib-modules=host \
+     --with-mysql \
+     --with-openssl \
+     --with-persistent-directory="/var/lib/net-snmp" \
+@@ -232,6 +236,7 @@ MIBS="$MIBS ucd-snmp/lmsensorsMib"
+     --with-systemd \
+     --with-temp-file-pattern=/var/run/net-snmp/snmp-tmp-XXXXXX \
+     --with-transports="DTLSUDP TLSTCP" \
++    --without-nl \
+     --with-sys-contact="root@localhost" <<EOF
+ EOF
+ 
+-- 
+1.8.3.1
+

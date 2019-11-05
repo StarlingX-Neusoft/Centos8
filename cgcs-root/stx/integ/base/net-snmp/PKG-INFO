@@ -1,0 +1,23 @@
+Metadata-Version: 1.1
+Name: net-snmp
+Version: 5.8
+Summary: A collection of SNMP protocol tools and libraries
+Home-page: 
+Author:
+Author-email:
+License: BSD
+
+Description:
+SNMP (Simple Network Management Protocol) is a protocol used for
+network management. The NET-SNMP project includes various SNMP tools:
+an extensible agent, an SNMP library, tools for requesting or setting
+information from SNMP agents, tools for generating and handling SNMP
+traps, a version of the netstat command which uses SNMP, and a Tk/Perl
+mib browser. This package contains the snmpd and snmptrapd daemons,
+documentation, etc.
+
+You will probably also want to install the net-snmp-utils package,
+which contains NET-SNMP utilities.
+
+        
+Platform: UNKNOWN

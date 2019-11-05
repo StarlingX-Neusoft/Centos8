@@ -1,0 +1,5 @@
+#python-setuptools-v39.2.0.tar.gz
+
+COPY_LIST="$CGCS_BASE/downloads/python-setuptools-v39.2.0.tar.gz $PKG_BASE/files/*"
+
+TIS_PATCH_VER=0

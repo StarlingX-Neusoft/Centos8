@@ -1,0 +1,25 @@
+From 68717d818f0dcb7b50abced74a342c3c0c08e7c3 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Tue, 5 Nov 2019 15:14:10 +0800
+Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+
+---
+ SPECS/net-snmp.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/net-snmp.spec b/SPECS/net-snmp.spec
+index cd968e7..597e866 100644
+--- a/SPECS/net-snmp.spec
++++ b/SPECS/net-snmp.spec
+@@ -10,7 +10,7 @@
+ Summary:    A collection of SNMP protocol tools and libraries
+ Name:       net-snmp
+ Version:    5.8
+-Release:    7%{?dist}.1
++Release:    7.el8%{?_tis_dist}.%{tis_patch_ver}.1
+ Epoch:      1
+ 
+ License:    BSD
+-- 
+1.8.3.1
+

@@ -1,0 +1,26 @@
+From af1dd4a592c460b3861e7dd331e2dd1c77767d0a Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 20:01:00 +0800
+Subject: [PATCH 05/14] dhclient-remove-1-arg
+
+---
+ network-scripts/ifup-eth | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/network-scripts/ifup-eth b/network-scripts/ifup-eth
+index 29f1161..0ac311c 100755
+--- a/network-scripts/ifup-eth
++++ b/network-scripts/ifup-eth
+@@ -215,7 +215,8 @@ if [ -n "${DYNCONFIG}" ] && [ -x /sbin/dhclient ]; then
+     generate_lease_file_name
+ 
+     # Initialize the dhclient args and obtain the hostname options if needed:
+-    DHCLIENTARGS="${DHCLIENTARGS} ${ONESHOT} -q ${DHCLIENTCONF} -lf ${LEASEFILE} --restrict-interfaces -pf /run/dhclient-${DEVICE}.pid"
++    # DHCLIENTARGS="${DHCLIENTARGS} ${ONESHOT} -q ${DHCLIENTCONF} -lf ${LEASEFILE} --restrict-interfaces -pf /run/dhclient-${DEVICE}.pid"
++    DHCLIENTARGS="${DHCLIENTARGS} ${DHCLIENTCONF} -lf ${LEASEFILE} --restrict-interfaces -pf /run/dhclient-${DEVICE}.pid"
+     set_hostname_options DHCLIENTARGS
+ 
+     echo
+-- 
+1.8.3.1
+

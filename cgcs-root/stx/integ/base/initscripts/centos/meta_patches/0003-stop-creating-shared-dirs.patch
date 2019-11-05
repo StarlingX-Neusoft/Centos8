@@ -1,0 +1,26 @@
+From 1ff9814588891ccdbb50931f0b162debcbea194c Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Tue, 5 Nov 2019 10:17:37 +0800
+Subject: [PATCH 3/5] stop-creating-shared-dirs
+
+---
+ SPECS/initscripts.spec | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/SPECS/initscripts.spec b/SPECS/initscripts.spec
+index 18c487d..457d1d7 100644
+--- a/SPECS/initscripts.spec
++++ b/SPECS/initscripts.spec
+@@ -278,9 +278,6 @@ fi
+ 
+ # NOTE: /etc/profile.d/ is owned by setup package.
+ #       /etc/sysconfig/ is owned by filesystem package.
+-%dir %{_sysconfdir}/rc.d
+-%dir %{_sysconfdir}/rc.d/init.d
+-%dir %{_sysconfdir}/rc.d/rc[0-6].d
+ %dir %{_sysconfdir}/sysconfig/console
+ %dir %{_sysconfdir}/sysconfig/modules
+ %dir %{_libexecdir}/%{name}
+-- 
+1.8.3.1
+

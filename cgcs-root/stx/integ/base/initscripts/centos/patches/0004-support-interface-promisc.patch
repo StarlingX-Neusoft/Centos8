@@ -1,0 +1,53 @@
+From b903bdfd52e80b53233048ab112693fc7c4a2a39 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 19:48:25 +0800
+Subject: [PATCH 04/14] support-interface-promisc
+
+---
+ network-scripts/ifdown-eth | 5 +++++
+ network-scripts/ifup-eth   | 8 ++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/network-scripts/ifdown-eth b/network-scripts/ifdown-eth
+index 8a5fd04..8dfbe85 100755
+--- a/network-scripts/ifdown-eth
++++ b/network-scripts/ifdown-eth
+@@ -180,4 +180,9 @@ if [ -n "$VLAN" ]; then
+     fi
+ fi
+ 
++# WRS: Support PROMISC
++if [ "${PROMISC}" = yes ]; then
++   ip link set dev ${DEVICE} promisc off
++fi
++
+ exit $retcode
+diff --git a/network-scripts/ifup-eth b/network-scripts/ifup-eth
+index 8a9d9d7..29f1161 100755
+--- a/network-scripts/ifup-eth
++++ b/network-scripts/ifup-eth
+@@ -131,6 +131,11 @@ if [ -n "${MTU}" ]; then
+     ip link set dev ${DEVICE} mtu ${MTU}
+ fi
+ 
++# WRS: Support PROMISC
++if [ "${PROMISC}" = yes ]; then
++   ip link set dev ${DEVICE} promisc on
++fi
++
+ # is the device wireless? If so, configure wireless device specifics
+ is_wireless_device ${DEVICE} && . ./ifup-wireless
+ 
+@@ -150,6 +155,9 @@ if [ "${SLAVE}" = yes -a "${ISALIAS}" = no -a "${MASTER}" != "" ]; then
+     }
+     ethtool_set
+ 
++    # WRS: Flush addresses
++    ip addr flush dev ${DEVICE}
++
+     exit 0
+ fi
+ 
+-- 
+1.8.3.1
+

@@ -1,0 +1,91 @@
+From 154409de20a3cf8555ab0a188cbd74d8f8478dc8 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 19:30:29 +0800
+Subject: [PATCH 01/14] support-interface-scriptlets
+
+---
+ network-scripts/ifdown      |  6 ++++++
+ network-scripts/ifdown-post | 12 ++++++++++++
+ network-scripts/ifup        |  6 ++++++
+ network-scripts/ifup-post   | 12 ++++++++++++
+ 4 files changed, 36 insertions(+)
+
+diff --git a/network-scripts/ifdown b/network-scripts/ifdown
+index 9b4add6..57e9fc0 100755
+--- a/network-scripts/ifdown
++++ b/network-scripts/ifdown
+@@ -64,6 +64,12 @@ if [ -x /sbin/ifdown-pre-local ]; then
+     /sbin/ifdown-pre-local ${DEVICE}
+ fi
+ 
++# WRS: Execute pre-down commands.
++if [ -n "$pre_down" ]; then
++    eval $pre_down
++    [ "$?" != "0" ] && exit 1
++fi
++
+ OTHERSCRIPT="/etc/sysconfig/network-scripts/ifdown-${DEVICETYPE}"
+ 
+ if [ ! -x ${OTHERSCRIPT} ]; then
+diff --git a/network-scripts/ifdown-post b/network-scripts/ifdown-post
+index 334cdae..b2d2c83 100755
+--- a/network-scripts/ifdown-post
++++ b/network-scripts/ifdown-post
+@@ -66,4 +66,16 @@ if [ -x /sbin/ifdown-local ]; then
+     /sbin/ifdown-local ${DEVICE}
+ fi
+ 
++# WRS: Execute down commands.
++if [ -n "$down" ]; then
++    eval $down
++    [ "$?" != "0" ] && exit 1
++fi
++
++# WRS: Execute post-down commands.
++if [ -n "$post_down" ]; then
++    eval $post_down
++    [ "$?" != "0" ] && exit 1
++fi
++
+ exit 0
+diff --git a/network-scripts/ifup b/network-scripts/ifup
+index 8d7af31..b0ff00d 100755
+--- a/network-scripts/ifup
++++ b/network-scripts/ifup
+@@ -157,6 +157,12 @@ if [ -x /sbin/ifup-pre-local ]; then
+     /sbin/ifup-pre-local ${CONFIG} $2
+ fi
+ 
++# WRS: Execute pre-up commands.
++if [ -n "$pre_up" ]; then
++    eval $pre_up
++    [ "$?" != "0" ] && exit 1
++fi
++
+ OTHERSCRIPT="/etc/sysconfig/network-scripts/ifup-${DEVICETYPE}"
+ 
+ if [ ! -x ${OTHERSCRIPT} ]; then
+diff --git a/network-scripts/ifup-post b/network-scripts/ifup-post
+index 5a89cbf..c1b9cf8 100755
+--- a/network-scripts/ifup-post
++++ b/network-scripts/ifup-post
+@@ -145,4 +145,16 @@ if [ -x /sbin/ifup-local ]; then
+     /sbin/ifup-local ${DEVICE}
+ fi
+ 
++# WRS: Execute up commands.
++if [ -n "$up" ]; then
++    eval $up
++    [ "$?" != "0" ] && exit 1
++fi
++
++# WRS: Execute post-up commands.
++if [ -n "$post_up" ]; then
++    eval $post_up
++    [ "$?" != "0" ] && exit 1
++fi
++
+ exit 0
+-- 
+1.8.3.1
+

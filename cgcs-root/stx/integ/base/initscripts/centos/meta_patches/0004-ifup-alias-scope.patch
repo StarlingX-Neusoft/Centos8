@@ -1,0 +1,24 @@
+From 45ca126063d417fc152d99f9b0613b539fa51f51 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Tue, 5 Nov 2019 10:20:48 +0800
+Subject: [PATCH 4/5] ifup-alias-scope
+
+---
+ SPECS/initscripts.spec | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/SPECS/initscripts.spec b/SPECS/initscripts.spec
+index 457d1d7..a2696ca 100644
+--- a/SPECS/initscripts.spec
++++ b/SPECS/initscripts.spec
+@@ -66,6 +66,7 @@ Patch9: 0009-sysconfig-unsafe-usage-of-linkdelay-variable.patch
+ Patch10: 0010-ipv6-static-route-support.patch
+ Patch11: 0011-ifup-eth-stop-waiting-if-link-is-up.patch
+ Patch12: 0012-run-dhclient-as-daemon-for-ipv6.patch
++Patch13: 0013-ifup-alias-scope.patch
+ 
+ # === PATCHES =================================================================
+ 
+-- 
+1.8.3.1
+

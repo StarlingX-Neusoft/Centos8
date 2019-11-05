@@ -1,0 +1,26 @@
+From 70c62527e3e261898003a25aab5ada3515e49f08 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 20:08:39 +0800
+Subject: [PATCH 07/14] run-ifdown-on-all-interfaces
+
+---
+ etc/rc.d/init.d/network | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/etc/rc.d/init.d/network b/etc/rc.d/init.d/network
+index 798e0d0..0bf5aa6 100755
+--- a/etc/rc.d/init.d/network
++++ b/etc/rc.d/init.d/network
+@@ -232,6 +232,9 @@ stop)
+         if ! check_device_down $DEVICE; then
+             action $"Shutting down interface $i: " ./ifdown $i boot
+             [ $? -ne 0 ] && rc=1
++        else
++            action $"Shutting down non-UP interface $i: " ./ifdown $i boot
++            logger $"Running ifdown on non-UP interface $i"
+         fi
+         )
+     done
+-- 
+1.8.3.1
+

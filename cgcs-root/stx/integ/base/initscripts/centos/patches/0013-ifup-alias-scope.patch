@@ -1,0 +1,32 @@
+From 2bf949735b9feaf2dab6cde12a4a28b6ea6be4e2 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 20:34:26 +0800
+Subject: [PATCH 13/14] ifup-alias-scope
+
+---
+ network-scripts/ifup-aliases | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/network-scripts/ifup-aliases b/network-scripts/ifup-aliases
+index 8a943c1..7735192 100755
+--- a/network-scripts/ifup-aliases
++++ b/network-scripts/ifup-aliases
+@@ -275,8 +275,14 @@ function new_interface ()
+             fi
+         fi
+ 
++        if [ "${parent_device}" = "lo" ]; then
++            SCOPE="scope host"
++        else
++            SCOPE=${SCOPE:-}
++        fi
++
+         /sbin/ip addr add ${IPADDR}/${PREFIX} brd ${BROADCAST} \
+-            dev ${parent_device} label ${DEVICE}
++            dev ${parent_device} ${SCOPE} label ${DEVICE}
+ 
+         # update ARP cache of neighboring computers:
+         if ! is_false "${ARPUPDATE}" && [ "${REALDEVICE}" != "lo" ]; then
+-- 
+1.8.3.1
+

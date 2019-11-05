@@ -1,0 +1,52 @@
+From d47c15bcbd25156d75a140ee528cba05028588a4 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 20:22:10 +0800
+Subject: [PATCH 11/14] ifup-eth-stop-waiting-if-link-is-up
+
+---
+ network-scripts/ifup-eth | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/network-scripts/ifup-eth b/network-scripts/ifup-eth
+index 0ac311c..5d25660 100755
+--- a/network-scripts/ifup-eth
++++ b/network-scripts/ifup-eth
+@@ -171,7 +171,7 @@ if [ "$ISALIAS" = no ] && is_bonding_device ${DEVICE} ; then
+         /sbin/ifup ${device##*/} || net_log "Unable to start slave device ${device##*/} for master ${DEVICE}." warning
+     done
+ 
+-    [ -n "${LINKDELAY}" ] && /bin/sleep ${LINKDELAY}
++    check_link_down ${DEVICE}
+ 
+     # add the bits to setup the needed post enslavement parameters
+     for arg in $BONDING_OPTS ; do   
+@@ -191,7 +191,7 @@ if [ -n "${BRIDGE}" ]; then
+     /sbin/ip addr flush dev ${DEVICE} 2>/dev/null
+     /sbin/ip link set dev ${DEVICE} up
+     ethtool_set
+-    [ -n "${LINKDELAY}" ] && /bin/sleep ${LINKDELAY}
++    check_link_down ${DEVICE}
+     ip link set ${DEVICE} master ${BRIDGE}
+     # add the bits to setup driver parameters here
+     for arg in $BRIDGING_OPTS ; do
+@@ -247,7 +247,7 @@ else
+         # enable device without IP, useful for e.g. PPPoE
+         ip link set dev ${REALDEVICE} up
+         ethtool_set
+-        [ -n "${LINKDELAY}" ] && /bin/sleep ${LINKDELAY}
++        check_link_down ${REALDEVICE}
+     else
+ 
+         expand_config
+@@ -262,7 +262,7 @@ else
+ 
+         ethtool_set
+ 
+-        [ -n "${LINKDELAY}" ] && /bin/sleep ${LINKDELAY}
++        check_link_down ${REAL_DEVICE}
+ 
+         if [ "${DEVICE}" = "lo" ]; then
+             SCOPE="scope host"
+-- 
+1.8.3.1
+

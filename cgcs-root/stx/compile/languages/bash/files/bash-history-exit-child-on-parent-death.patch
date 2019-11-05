@@ -1,6 +1,6 @@
-From a71d59682a7b16dc0522d213f213139f835466a9 Mon Sep 17 00:00:00 2001
+From dd6472ed317b1a79673167968ad53c49e6d437d9 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
-Date: Sat, 2 Nov 2019 10:14:30 +0800
+Date: Tue, 5 Nov 2019 20:41:44 +0800
 Subject: [PATCH 2/2] bash-history-exit-child-on-parent-death
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
@@ -11,7 +11,7 @@ Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
  3 files changed, 30 insertions(+), 1 deletion(-)
 
 diff --git a/shell.c b/shell.c
-index 4474918..68218c4 100644
+index 42b5dce..844c4f6 100644
 --- a/shell.c
 +++ b/shell.c
 @@ -80,6 +80,7 @@ extern int get_tty_state __P((void));
@@ -22,7 +22,7 @@ index 4474918..68218c4 100644
  #  include "error.h"
  #endif
  
-@@ -347,6 +348,7 @@ static void shell_reinitialize __P((void));
+@@ -352,6 +353,7 @@ static void shell_reinitialize __P((void));
  static void show_shell_usage __P((FILE *, int));
  
  #if defined (SYSLOG_HISTORY)
@@ -30,7 +30,7 @@ index 4474918..68218c4 100644
  static pid_t make_consumer_process __P(());
  #endif
  
-@@ -1780,6 +1782,16 @@ make_consumer_process ()
+@@ -1791,6 +1793,16 @@ make_consumer_process ()
  
        default_tty_job_signals ();
  
@@ -47,7 +47,7 @@ index 4474918..68218c4 100644
        close(cmdline_hist_sock[0]);
  
        ret = getsockopt(cmdline_hist_sock[1], SOL_SOCKET, SO_RCVBUF, &rcvbuf_size, &optlen);
-@@ -1811,7 +1823,9 @@ make_consumer_process ()
+@@ -1822,7 +1834,9 @@ make_consumer_process ()
            /*syslog this bash command line*/
            syslog (SYSLOG_FACILITY|SYSLOG_LEVEL, "HISTORY: PID=%d UID=%d %s",
                    getpid(), current_user.uid, buffer);
@@ -59,10 +59,10 @@ index 4474918..68218c4 100644
      }
    else
 diff --git a/sig.c b/sig.c
-index ad01631..143152e 100644
+index e5bb739..0495a33 100644
 --- a/sig.c
 +++ b/sig.c
-@@ -601,6 +601,19 @@ termsig_handler (sig)
+@@ -602,6 +602,19 @@ termsig_handler (sig)
    kill (getpid (), sig);
  }
  

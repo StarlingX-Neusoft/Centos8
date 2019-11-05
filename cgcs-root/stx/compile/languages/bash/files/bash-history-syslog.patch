@@ -1,17 +1,17 @@
-From 6e3c1ed553a221c7c6841251508c243bcb8f8cba Mon Sep 17 00:00:00 2001
+From 73017efa67b155478a1fe08b7e63667a4d8c0719 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
-Date: Sat, 2 Nov 2019 10:09:57 +0800
+Date: Tue, 5 Nov 2019 20:36:14 +0800
 Subject: [PATCH 1/2] bash-history-syslog
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
- bashhist.c   |  84 +++++++++++++++++++++++++++++++++-------------
+ bashhist.c   |  86 ++++++++++++++++++++++++++++++++--------------
  config-top.h |   2 +-
- shell.c      | 108 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 169 insertions(+), 25 deletions(-)
+ shell.c      | 109 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 171 insertions(+), 26 deletions(-)
 
 diff --git a/bashhist.c b/bashhist.c
-index 9979f99..078482d 100644
+index 9979f99..69bc565 100644
 --- a/bashhist.c
 +++ b/bashhist.c
 @@ -38,10 +38,6 @@
@@ -36,10 +36,11 @@ index 9979f99..078482d 100644
  #if defined (READLINE)
  #  include "bashline.h"
  extern int rl_done, rl_dispatching;	/* should really include readline.h */
-@@ -68,6 +68,11 @@ static int check_history_control __P((char *));
+@@ -68,6 +68,12 @@ static int check_history_control __P((char *));
  static void hc_erasedups __P((char *));
  static void really_add_history __P((char *));
  
++
 +#if defined (SYSLOG_HISTORY)
 +static void send_cmdline_mq __P((const char *));
 +int  cmdline_hist_sock[2];
@@ -48,14 +49,15 @@ index 9979f99..078482d 100644
  static struct ignorevar histignore =
  {
    "HISTIGNORE",
-@@ -746,7 +751,6 @@ check_add_history (line, force)
+@@ -746,8 +752,6 @@ check_add_history (line, force)
  }
  
  #if defined (SYSLOG_HISTORY)
 -#define SYSLOG_MAXLEN 600
- 
+-
  extern char *shell_name;
  
+ #ifndef OPENLOG_OPTS
 @@ -758,23 +762,7 @@ void
  bash_syslog_history (line)
       const char *line;
@@ -157,10 +159,10 @@ index 9979f99..078482d 100644
 +
  #endif /* HISTORY */
 diff --git a/config-top.h b/config-top.h
-index d89682e..29e9502 100644
+index cb0e002..8051fad 100644
 --- a/config-top.h
 +++ b/config-top.h
-@@ -113,7 +113,7 @@
+@@ -115,7 +115,7 @@
  
  /* Define if you want each line saved to the history list in bashhist.c:
     bash_add_history() to be sent to syslog(). */
@@ -170,7 +172,7 @@ index d89682e..29e9502 100644
  #  define SYSLOG_FACILITY LOG_USER
  #  define SYSLOG_LEVEL LOG_INFO
 diff --git a/shell.c b/shell.c
-index 45b77f9..4474918 100644
+index 4aae182..42b5dce 100644
 --- a/shell.c
 +++ b/shell.c
 @@ -77,6 +77,12 @@ extern int get_tty_state __P((void));
@@ -186,17 +188,18 @@ index 45b77f9..4474918 100644
  #if defined (READLINE)
  #  include <readline/readline.h>
  #  include "bashline.h"
-@@ -113,6 +119,9 @@ extern int array_needs_making;
- extern int gnu_error_format;
+@@ -114,6 +120,10 @@ extern int gnu_error_format;
  extern char *primary_prompt, *secondary_prompt;
  extern char *this_command_name;
+ 
 +#if defined (SYSLOG_HISTORY)
 +extern int  cmdline_hist_sock[2];
 +#endif
- 
++
  /* Non-zero means that this shell has already been run; i.e. you should
     call shell_reinitialize () if you need to start afresh. */
-@@ -337,6 +346,10 @@ static void shell_reinitialize __P((void));
+ int shell_initialized = 0;
+@@ -341,6 +351,10 @@ static void shell_reinitialize __P((void));
  
  static void show_shell_usage __P((FILE *, int));
  
@@ -207,7 +210,7 @@ index 45b77f9..4474918 100644
  #ifdef __CYGWIN__
  static void
  _cygwin32_check_tmp ()
-@@ -379,6 +392,10 @@ main (argc, argv, env)
+@@ -383,6 +397,10 @@ main (argc, argv, env)
    env = environ;
  #endif /* __OPENNT */
  
@@ -218,7 +221,7 @@ index 45b77f9..4474918 100644
    USE_VAR(argc);
    USE_VAR(argv);
    USE_VAR(env);
-@@ -780,6 +797,11 @@ main (argc, argv, env)
+@@ -790,6 +808,11 @@ main (argc, argv, env)
        /* Initialize terminal state for interactive shells after the
  	 .bash_profile and .bashrc are interpreted. */
        get_tty_state ();
@@ -230,7 +233,7 @@ index 45b77f9..4474918 100644
      }
  
  #if !defined (ONESHOT)
-@@ -790,6 +812,13 @@ main (argc, argv, env)
+@@ -800,6 +823,13 @@ main (argc, argv, env)
  
    /* Read commands until exit condition. */
    reader_loop ();
@@ -244,7 +247,7 @@ index 45b77f9..4474918 100644
    exit_shell (last_command_exit_value);
  }
  
-@@ -1715,6 +1744,85 @@ set_shell_name (argv0)
+@@ -1725,6 +1755,85 @@ set_shell_name (argv0)
      shell_name = PROGRAM;
  }
  
@@ -261,7 +264,7 @@ index 45b77f9..4474918 100644
 +
 +  if (socketpair(AF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC, 0, cmdline_hist_sock) == -1)
 +    {
-+      return -1;
++     return -1;
 +    }
 +
 +

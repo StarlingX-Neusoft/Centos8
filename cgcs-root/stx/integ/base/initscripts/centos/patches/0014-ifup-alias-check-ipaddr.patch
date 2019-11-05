@@ -1,0 +1,25 @@
+From 616127964cd7d63578b3c5982f6c7ac6232941f0 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 20:35:57 +0800
+Subject: [PATCH 14/14] ifup-alias-check-ipaddr
+
+---
+ network-scripts/ifup-aliases | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/network-scripts/ifup-aliases b/network-scripts/ifup-aliases
+index 7735192..d6b9872 100755
+--- a/network-scripts/ifup-aliases
++++ b/network-scripts/ifup-aliases
+@@ -175,7 +175,7 @@ function new_interface ()
+         ipseen_${IPGLOP}=$FILE; devseen_${DEVNUM}=$FILE;
+     ";
+ 
+-    if [ -n "$ipseen" ]; then
++    if [ -n "$IPADDR" -a -n "$ipseen" ]; then
+         net_log $"error in $FILE: already seen ipaddr $IPADDR in $ipseen"
+         return 1
+     fi
+-- 
+1.8.3.1
+

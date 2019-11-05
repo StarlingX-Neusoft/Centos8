@@ -1,0 +1,25 @@
+From 073c92996547369359bef89a7da594a36fa88b02 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 20:13:38 +0800
+Subject: [PATCH 09/14] sysconfig-unsafe-usage-of-linkdelay-variable
+
+---
+ network-scripts/network-functions | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/network-scripts/network-functions b/network-scripts/network-functions
+index 0ab632d..8c19725 100644
+--- a/network-scripts/network-functions
++++ b/network-scripts/network-functions
+@@ -457,7 +457,7 @@ check_link_down ()
+     fi
+     timeout=0
+     delay=20
+-    [ -n "$LINKDELAY" ] && delay=$(($LINKDELAY * 2))
++    [[ $LINKDELAY =~ ^[0-9]+$ ]] && delay=$(($LINKDELAY * 2))
+     while [ $timeout -le $delay ]; do
+         [ "$(cat /sys/class/net/$REALDEVICE/carrier 2>/dev/null)" == "1" ] && return 1
+         sleep 0.5
+-- 
+1.8.3.1
+

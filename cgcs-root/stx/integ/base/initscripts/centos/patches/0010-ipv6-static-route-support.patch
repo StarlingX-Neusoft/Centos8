@@ -1,0 +1,29 @@
+From 86ead5d94154b21ca2ec41bc5cd5d20598f20c21 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 20:16:45 +0800
+Subject: [PATCH 10/14] ipv6-static-route-support
+
+---
+ network-scripts/ifup-routes | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/network-scripts/ifup-routes b/network-scripts/ifup-routes
+index 517c2bb..1e2a345 100755
+--- a/network-scripts/ifup-routes
++++ b/network-scripts/ifup-routes
+@@ -32,9 +32,11 @@ handle_ip_file() {
+     if [ "$type" != "$t" ]; then
+         proto="-6"
+     fi
++    # remove proto input from below so we can keep
++    # ipv6 routes in a route-<if> file as well.
+     { cat "$file" ; echo ; } | while read line; do
+         if [[ ! "$line" =~ $MATCH ]]; then
+-            /sbin/ip $proto $type add $line
++            /sbin/ip $type add $line
+         fi
+     done
+ }
+-- 
+1.8.3.1
+

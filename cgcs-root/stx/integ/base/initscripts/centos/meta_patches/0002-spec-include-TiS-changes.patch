@@ -1,0 +1,36 @@
+From de32494dd4993a63bd9e020b6e53cbb461eb33c4 Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Tue, 5 Nov 2019 09:57:41 +0800
+Subject: [PATCH 2/5] spec-include-TiS-changes
+
+---
+ SPECS/initscripts.spec | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/SPECS/initscripts.spec b/SPECS/initscripts.spec
+index 3ac7b73..18c487d 100644
+--- a/SPECS/initscripts.spec
++++ b/SPECS/initscripts.spec
+@@ -54,6 +54,19 @@ Provides:         /sbin/service
+ 
+ Obsoletes:        %{name}            < 9.82-2
+ 
++Patch1: 0001-support-interface-scriptlets.patch
++Patch2: 0002-relocate-dhclient-leases-to-var-run.patch
++Patch3: 0003-dhclient-restrict-interfaces-to-those-on-c.patch
++Patch4: 0004-support-interface-promisc.patch
++Patch5: 0005-dhclient-remove-1-arg.patch
++Patch6: 0006-force-delay-check-link-down.patch
++Patch7: 0007-run-ifdown-on-all-interfaces.patch
++Patch8: 0008-sysconfig-affirmative-check-for-link-carrier.patch
++Patch9: 0009-sysconfig-unsafe-usage-of-linkdelay-variable.patch
++Patch10: 0010-ipv6-static-route-support.patch
++Patch11: 0011-ifup-eth-stop-waiting-if-link-is-up.patch
++Patch12: 0012-run-dhclient-as-daemon-for-ipv6.patch
++
+ # === PATCHES =================================================================
+ 
+ # NOTE: 'autosetup' macro (below) uses 'git' for applying the patches:
+-- 
+1.8.3.1
+

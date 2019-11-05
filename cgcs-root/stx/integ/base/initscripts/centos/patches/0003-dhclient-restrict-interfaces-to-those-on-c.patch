@@ -1,0 +1,48 @@
+From a3ee16a26b69700ac8359f565f733870a9a1addf Mon Sep 17 00:00:00 2001
+From: "zhao.shuai" <zhaos@neusoft.com>
+Date: Mon, 4 Nov 2019 19:40:33 +0800
+Subject: [PATCH 03/14] dhclient-restrict-interfaces-to-those-on-c
+
+---
+ network-scripts/ifdown-eth | 2 +-
+ network-scripts/ifup-eth   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/network-scripts/ifdown-eth b/network-scripts/ifdown-eth
+index c610fd2..8a5fd04 100755
+--- a/network-scripts/ifdown-eth
++++ b/network-scripts/ifdown-eth
+@@ -92,7 +92,7 @@ for VER in "" 6 ; do
+         dhcpid=$(cat /run/dhclient$VER-${DEVICE}.pid)
+         generate_lease_file_name $VER
+         if is_true "$DHCPRELEASE";  then
+-            /sbin/dhclient -r -lf ${LEASEFILE} -pf /run/dhclient$VER-${DEVICE}.pid ${DEVICE} >/dev/null 2>&1
++            /sbin/dhclient -r -lf ${LEASEFILE} --restrict-interfaces -pf /run/dhclient$VER-${DEVICE}.pid ${DEVICE} >/dev/null 2>&1
+             retcode=$?
+         else
+             kill $dhcpid >/dev/null 2>&1
+diff --git a/network-scripts/ifup-eth b/network-scripts/ifup-eth
+index b55db79..8a9d9d7 100755
+--- a/network-scripts/ifup-eth
++++ b/network-scripts/ifup-eth
+@@ -207,7 +207,7 @@ if [ -n "${DYNCONFIG}" ] && [ -x /sbin/dhclient ]; then
+     generate_lease_file_name
+ 
+     # Initialize the dhclient args and obtain the hostname options if needed:
+-    DHCLIENTARGS="${DHCLIENTARGS} ${ONESHOT} -q ${DHCLIENTCONF} -lf ${LEASEFILE} -pf /run/dhclient-${DEVICE}.pid"
++    DHCLIENTARGS="${DHCLIENTARGS} ${ONESHOT} -q ${DHCLIENTCONF} -lf ${LEASEFILE} --restrict-interfaces -pf /run/dhclient-${DEVICE}.pid"
+     set_hostname_options DHCLIENTARGS
+ 
+     echo
+@@ -358,7 +358,7 @@ if is_true "${DHCPV6C}" && [ -x /sbin/dhclient ]; then
+     echo -n $"Determining IPv6 information for ${DEVICE}..."
+ 
+     # Initialize the dhclient args for IPv6 and obtain the hostname options if needed:
+-    DHCLIENTARGS="-6 -1 ${DHCPV6C_OPTIONS} ${DHCLIENTCONF} -lf ${LEASEFILE} -pf /run/dhclient6-${DEVICE}.pid ${DEVICE}"
++    DHCLIENTARGS="-6 -1 ${DHCPV6C_OPTIONS} ${DHCLIENTCONF} -lf ${LEASEFILE} --restrict-interfaces -pf /run/dhclient6-${DEVICE}.pid ${DEVICE}"
+     set_hostname_options DHCLIENTARGS
+ 
+     if /sbin/dhclient $DHCLIENTARGS; then
+-- 
+1.8.3.1
+

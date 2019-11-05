@@ -1,18 +1,18 @@
-From dbef300e543ad64e9499b3ecbf35ecc011a10677 Mon Sep 17 00:00:00 2001
-From: LongLi <lilong-neu@neusoft.com>
-Date: Thu, 31 Oct 2019 20:09:51 +0800
+From dcba6cc2b14c16ea6e079c536d371a6c522a0a7b Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 17:35:44 +0800
 Subject: [PATCH 4/5] Upversion-rpm-devel-dependency
 
-Signed-off-by: LongLi <lilong-neu@neusoft.com>
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
  SPECS/anaconda.spec | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/SPECS/anaconda.spec b/SPECS/anaconda.spec
-index d3ccc46..8532e0f 100644
+index 84fafb9..a1d4854 100644
 --- a/SPECS/anaconda.spec
 +++ b/SPECS/anaconda.spec
-@@ -46,7 +46,7 @@ Source0: %{name}-%{version}.tar.bz2
+@@ -47,7 +47,7 @@ Source0: %{name}-%{version}.tar.bz2
  %define nmver 1.0
  %define pykickstartver 3.16.2-1
  %define pypartedver 2.5-2

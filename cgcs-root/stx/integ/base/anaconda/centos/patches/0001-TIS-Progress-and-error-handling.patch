@@ -1,20 +1,20 @@
-From 718eb590dbf211ecc0d3cb0ea78230437ac584b4 Mon Sep 17 00:00:00 2001
-From: LongLi <lilong-neu@neusoft.com>
-Date: Fri, 1 Nov 2019 13:52:44 +0800
+From 4b2f9c35ff2f884d263846d567743f2307f20cd7 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 19:24:37 +0800
 Subject: [PATCH 1/4] TIS-Progress-and-error-handling
 
-Signed-off-by: LongLi <lilong-neu@neusoft.com>
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
  data/tmux.conf                                    |  3 +-
  pyanaconda/errors.py                              | 19 ++++-
  pyanaconda/flags.py                               |  1 +
- pyanaconda/installation.py                        |  1 +
+ pyanaconda/installation.py                        |  4 +
  pyanaconda/kickstart.py                           |  3 +
  pyanaconda/payload/rpmostreepayload.py            |  5 ++
  pyanaconda/tisnotify.py                           | 91 +++++++++++++++++++++++
  pyanaconda/ui/gui/hubs/progress.py                |  4 +
  pyanaconda/ui/tui/spokes/installation_progress.py |  4 +
- 9 files changed, 129 insertions(+), 2 deletions(-)
+ 9 files changed, 132 insertions(+), 2 deletions(-)
  create mode 100644 pyanaconda/tisnotify.py
 
 diff --git a/data/tmux.conf b/data/tmux.conf
@@ -39,7 +39,7 @@ index c909aca..7632f8f 100644
  new-window -d -n shell          "bash --login"
  new-window -d -n log            "tail -F /tmp/anaconda.log"
 diff --git a/pyanaconda/errors.py b/pyanaconda/errors.py
-index aec9602..78dfc42 100644
+index aec9602..783a742 100644
 --- a/pyanaconda/errors.py
 +++ b/pyanaconda/errors.py
 @@ -18,6 +18,7 @@
@@ -55,7 +55,7 @@ index aec9602..78dfc42 100644
  ERROR_RETRY = 2
  
 +#
-+# NEU: If a fatal error occurs in a %pre, anaconda hasn't setup the UI yet,
++# WRS: If a fatal error occurs in a %pre, anaconda hasn't setup the UI yet,
 +# and an exception occurs in the error handler. This is a basic dummy UI
 +# to avoid this exception and print the error message.
 +#
@@ -78,28 +78,38 @@ index aec9602..78dfc42 100644
 +
          if not self.ui:
 -            raise exn
-+            # NEU: Use the basic UI
++            # WRS: Use the basic UI
 +            self.ui = DefaultUI()
  
          if not flags.ksprompt:
              raise NonInteractiveError("Non interactive installation failed: %s" % exn)
 diff --git a/pyanaconda/flags.py b/pyanaconda/flags.py
-index 17325a1..c60ff80 100644
+index 17325a1..d3d3d97 100644
 --- a/pyanaconda/flags.py
 +++ b/pyanaconda/flags.py
 @@ -73,6 +73,7 @@ class Flags(object):
          self.rescue_mode = False
          self.noefi = False
          self.kexec = False
-+	self.tisNotifyPort = "0"
++        self.tisNotifyPort = "0"
          # nosave options
          self.nosave_input_ks = False
          self.nosave_output_ks = False
 diff --git a/pyanaconda/installation.py b/pyanaconda/installation.py
-index babdf0c..d747f8b 100644
+index babdf0c..2c61b5e 100644
 --- a/pyanaconda/installation.py
 +++ b/pyanaconda/installation.py
-@@ -209,6 +209,7 @@ def doConfiguration(storage, payload, ksdata, instClass):
+@@ -43,6 +43,9 @@ from pyanaconda.installation_tasks import Task, TaskQueue
+ from pykickstart.constants import SNAPSHOT_WHEN_POST_INSTALL
+ 
+ from pyanaconda.anaconda_loggers import get_module_logger
++
++from pyanaconda.tisnotify import tisnotify
++
+ log = get_module_logger(__name__)
+ 
+ class WriteResolvConfTask(Task):
+@@ -209,6 +212,7 @@ def doConfiguration(storage, payload, ksdata, instClass):
      # start the task queue
      configuration_queue.start()
      # done
@@ -108,18 +118,18 @@ index babdf0c..d747f8b 100644
  
  def doInstall(storage, payload, ksdata, instClass):
 diff --git a/pyanaconda/kickstart.py b/pyanaconda/kickstart.py
-index 4a88620..95f181c 100644
+index 4a88620..ac7b1f7 100644
 --- a/pyanaconda/kickstart.py
 +++ b/pyanaconda/kickstart.py
-@@ -92,6 +92,8 @@ from pykickstart.sections import NullSection, PackageSection, PostScriptSection,
-                                  OnErrorScriptSection, TracebackScriptSection, Section
- from pykickstart.version import returnClassForVersion, F27
+@@ -96,6 +96,8 @@ from pyanaconda import anaconda_logging
+ from pyanaconda.anaconda_loggers import get_module_logger, get_stdout_logger, get_blivet_logger,\
+     get_anaconda_root_logger
  
 +from pyanaconda.tisnotify import tisnotify
 +
- from pyanaconda import anaconda_logging
- from pyanaconda.anaconda_loggers import get_module_logger, get_stdout_logger, get_blivet_logger,\
-     get_anaconda_root_logger
+ log = get_module_logger(__name__)
+ 
+ stdoutLog = get_stdout_logger()
 @@ -2796,6 +2798,7 @@ def runPreScripts(scripts):
      if len(preScripts) == 0:
          return
@@ -129,18 +139,18 @@ index 4a88620..95f181c 100644
      stdoutLog.info(_("Running pre-installation scripts"))
  
 diff --git a/pyanaconda/payload/rpmostreepayload.py b/pyanaconda/payload/rpmostreepayload.py
-index 0ec736b..f834b88 100644
+index 0ec736b..8bacda2 100644
 --- a/pyanaconda/payload/rpmostreepayload.py
 +++ b/pyanaconda/payload/rpmostreepayload.py
-@@ -35,6 +35,8 @@ from gi.repository import Gio
- from blivet.size import Size
- from blivet.util import umount
+@@ -43,6 +43,8 @@ from pyanaconda.bootloader import EFIBase
+ from pyanaconda.core.glib import format_size_full, create_new_context, Variant, GError
+ import pyanaconda.errors as errors
  
 +from pyanaconda.tisnotify import tisnotify
 +
- from pyanaconda.anaconda_loggers import get_module_logger
- log = get_module_logger(__name__)
- 
+ class RPMOSTreePayload(ArchivePayload):
+     """ A RPMOSTreePayload deploys a tree (possibly with layered packages) onto the target system. """
+     def __init__(self, data):
 @@ -73,6 +75,7 @@ class RPMOSTreePayload(ArchivePayload):
          """Like util.execWithRedirect, but treat errors as fatal"""
          rc = util.execWithRedirect(cmd, argv, **kwargs)
@@ -167,7 +177,7 @@ index 0ec736b..f834b88 100644
              if errors.errorHandler.cb(exn) == errors.ERROR_RAISE:
 diff --git a/pyanaconda/tisnotify.py b/pyanaconda/tisnotify.py
 new file mode 100644
-index 0000000..33fc79b
+index 0000000..8cea919
 --- /dev/null
 +++ b/pyanaconda/tisnotify.py
 @@ -0,0 +1,91 @@
@@ -195,7 +205,7 @@ index 0000000..33fc79b
 +        self.last_installing = 0
 +
 +    def sendNotification(self, data):
-+        try:
++       try:
 +            subprocess.call(['/usr/bin/curl',
 +                             '--data', data,
 +                             self.tisnotify],

@@ -1,9 +1,9 @@
-From 14824f4712e46c48b3d9e0dfc42972dd092f268e Mon Sep 17 00:00:00 2001
-From: LongLi <lilong-neu@neusoft.com>
-Date: Fri, 1 Nov 2019 14:30:10 +0800
+From 2e5f8243d8a1f17fe1dde2addd6f9a55cc89286d Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 19:42:03 +0800
 Subject: [PATCH 4/4] Cache-server-ip-in-etc-hosts
 
-Signed-off-by: LongLi <lilong-neu@neusoft.com>
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
  data/systemd/anaconda.service |  1 +
  scripts/anaconda-preexec      | 50 +++++++++++++++++++++++++++++++++++++++++++

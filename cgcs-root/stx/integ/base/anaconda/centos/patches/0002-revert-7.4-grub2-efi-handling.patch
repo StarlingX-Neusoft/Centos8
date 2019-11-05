@@ -1,15 +1,15 @@
-From b490a45f40e8d5706d0f7a7c5b5d687f3b0b1984 Mon Sep 17 00:00:00 2001
-From: LongLi <lilong-neu@neusoft.com>
-Date: Fri, 1 Nov 2019 14:23:04 +0800
+From 4b454e54d13255ed03f973458e92452b95b6a36a Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 19:34:53 +0800
 Subject: [PATCH 2/4] revert-7.4-grub2-efi-handling
 
-Signed-off-by: LongLi <lilong-neu@neusoft.com>
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
- pyanaconda/bootloader.py | 35 +++--------------------------------
- 1 file changed, 3 insertions(+), 32 deletions(-)
+ pyanaconda/bootloader.py | 36 +++---------------------------------
+ 1 file changed, 3 insertions(+), 33 deletions(-)
 
 diff --git a/pyanaconda/bootloader.py b/pyanaconda/bootloader.py
-index d2c772d..da6c10d 100644
+index d2c772d..0d40711 100644
 --- a/pyanaconda/bootloader.py
 +++ b/pyanaconda/bootloader.py
 @@ -1457,9 +1457,7 @@ class GRUB2(GRUB):
@@ -33,12 +33,12 @@ index d2c772d..da6c10d 100644
      can_dual_boot = False
      stage2_is_valid_stage1 = False
      stage2_bootable = False
-@@ -1899,38 +1896,14 @@ class EFIGRUB(EFIBase, GRUB2):
+@@ -1899,38 +1896,13 @@ class EFIGRUB(EFIBase, GRUB2):
      def __init__(self):
          super().__init__()
          self.efi_dir = 'BOOT'
 -        self._packages64 = [ "grub2-efi-x64", "shim-x64" ]
- 
+-
 -        try:
 -            f = open("/sys/firmware/efi/fw_platform_size", "r")
 -            value = f.readline().strip()
@@ -73,7 +73,7 @@ index d2c772d..da6c10d 100644
  
  class ArmEFIGRUB(EFIGRUB):
      _serial_consoles = ["ttyAMA", "ttyS"]
-@@ -1938,12 +1911,10 @@ class ArmEFIGRUB(EFIGRUB):
+@@ -1938,12 +1910,10 @@ class ArmEFIGRUB(EFIGRUB):
  
      def __init__(self):
          super().__init__()

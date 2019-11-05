@@ -1,15 +1,15 @@
-From 74b2ae0c5b4e31885a2cbe61f47f53bcee20d3b1 Mon Sep 17 00:00:00 2001
-From: LongLi <lilong-neu@neusoft.com>
-Date: Thu, 31 Oct 2019 20:01:18 +0800
+From 43e3c1903219dca5ce8765c23cbc923f0d012826 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 17:29:18 +0800
 Subject: [PATCH 1/5] Update-package-versioning-for-TIS-format
 
-Signed-off-by: LongLi <lilong-neu@neusoft.com>
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
  SPECS/anaconda.spec | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/SPECS/anaconda.spec b/SPECS/anaconda.spec
-index ef88921..342c158 100644
+index ef88921..b345630 100644
 --- a/SPECS/anaconda.spec
 +++ b/SPECS/anaconda.spec
 @@ -7,7 +7,7 @@
@@ -17,7 +17,7 @@ index ef88921..342c158 100644
  Name:    anaconda
  Version: 29.19.0.40
 -Release: 1%{?dist}
-+Release: 1.el8.%{?_tis_dist}.%{tis_patch_ver}
++Release: 1.el8%{?_tis_dist}.%{tis_patch_ver}
  License: GPLv2+ and MIT
  Group:   Applications/System
  URL:     http://fedoraproject.org/wiki/Anaconda

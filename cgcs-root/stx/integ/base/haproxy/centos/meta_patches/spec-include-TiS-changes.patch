@@ -1,0 +1,51 @@
+From 9841e17cdaf58ac8898efb3669ba4dddff3822c4 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 10:37:36 +0800
+Subject: [PATCH 1/2] spec-include-TiS-changes
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/haproxy.spec | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/SPECS/haproxy.spec b/SPECS/haproxy.spec
+index 490d006..b28896f 100644
+--- a/SPECS/haproxy.spec
++++ b/SPECS/haproxy.spec
+@@ -23,6 +23,7 @@ Source4:        %{name}.sysconfig
+ Source5:        halog.1
+ 
+ Patch0:		bz1664533-fix-handling-priority-flag-HTTP2-decoder.patch
++Patch1:         haproxy-tpm-support.patch
+ 
+ BuildRequires:  lua-devel
+ BuildRequires:  pcre-devel
+@@ -36,6 +37,8 @@ Requires(post):     systemd
+ Requires(preun):    systemd
+ Requires(postun):   systemd
+ 
++Requires: tpm2-openssl-engine
++
+ %description
+ HAProxy is a TCP/HTTP reverse proxy which is particularly suited for high
+ availability environments. Indeed, it can:
+@@ -53,6 +56,7 @@ availability environments. Indeed, it can:
+ %prep
+ %setup -q
+ %patch0 -p1
++%patch1 -p1
+ 
+ %build
+ regparm_opts=
+@@ -75,7 +79,7 @@ popd
+ %{__make} install-man DESTDIR=%{buildroot} PREFIX=%{_prefix}
+ 
+ %{__install} -p -D -m 0644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
+-%{__install} -p -D -m 0644 %{SOURCE2} %{buildroot}%{haproxy_confdir}/%{name}.cfg
++%{__install} -p -D -m 0640 %{SOURCE2} %{buildroot}%{haproxy_confdir}/%{name}.cfg
+ %{__install} -p -D -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
+ %{__install} -p -D -m 0644 %{SOURCE4} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
+ %{__install} -p -D -m 0644 %{SOURCE5} %{buildroot}%{_mandir}/man1/halog.1
+-- 
+2.7.4
+

@@ -1,0 +1,15 @@
+Metadata-Version: 1.1
+Name: haproxy
+Version: 1.8.15
+Summary: Abstract asynchronous event notification library
+Home-page: 
+Author:
+Author-email:
+License: GPLv2+
+
+Description:
+HAProxy is a TCP/HTTP reverse proxy which is particularly suited for high
+availability environments.
+
+        
+Platform: UNKNOWN

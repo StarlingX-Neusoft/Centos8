@@ -1,0 +1,311 @@
+From ff48c9715552198a551d3715dc9019a9eb252fa7 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 10:29:32 +0800
+Subject: [PATCH] haproxy-tpm-support
+
+---
+ include/types/global.h |  13 +++++
+ src/cfgparse.c         |  28 ++++++++++
+ src/haproxy.c          |  26 ++++++++-
+ src/ssl_sock.c         | 147 +++++++++++++++++++++++++++++++++++++++++++------
+ 4 files changed, 196 insertions(+), 18 deletions(-)
+
+diff --git a/include/types/global.h b/include/types/global.h
+index bd7761c..b79e410 100644
+--- a/include/types/global.h
++++ b/include/types/global.h
+@@ -34,6 +34,10 @@
+ #include <types/task.h>
+ #include <types/vars.h>
+ 
++#ifdef USE_OPENSSL
++#include <openssl/engine.h>
++#endif
++
+ #ifndef UNIX_MAX_PATH
+ #define UNIX_MAX_PATH 108
+ #endif
+@@ -83,6 +87,14 @@ enum {
+ 	SSL_SERVER_VERIFY_REQUIRED = 1,
+ };
+ 
++// WRS: Define a new TPM configuration structure
++struct tpm_conf {
++    char *tpm_object;
++    char *tpm_engine;
++    EVP_PKEY *tpm_key;
++    ENGINE *tpm_engine_ref;
++};
++
+ /* FIXME : this will have to be redefined correctly */
+ struct global {
+ 	int uid;
+@@ -98,6 +110,7 @@ struct global {
+ 	int ssl_used_frontend;      /* non-zero if SSL is used in a frontend */
+ 	int ssl_used_backend;       /* non-zero if SSL is used in a backend */
+ 	int ssl_used_async_engines; /* number of used async engines */
++	struct tpm_conf tpm;	    /* tpm configuration*/
+ 	unsigned int ssl_server_verify; /* default verify mode on servers side */
+ 	struct freq_ctr conn_per_sec;
+ 	struct freq_ctr sess_per_sec;
+diff --git a/src/cfgparse.c b/src/cfgparse.c
+index 94f2963..198cdbf 100644
+--- a/src/cfgparse.c
++++ b/src/cfgparse.c
+@@ -1865,6 +1865,34 @@ int cfg_parse_global(const char *file, int linenum, char **args, int kwm)
+ 				env++;
+ 		}
+ 	}
++	else if (!strcmp(args[0], "tpm-object")) {
++		if (global.tpm.tpm_object) {
++			free(global.tpm.tpm_object);
++		}
++#ifdef USE_OPENSSL
++		if (*(args[1]) && (access(args[1], F_OK) != -1)) {
++			global.tpm.tpm_object = strdup(args[1]);
++		}
++#else
++		Alert("parsing [%s:%d] : '%s' is not implemented.\n", file, linenum, args[0]);
++		err_code |= ERR_ALERT | ERR_FATAL;
++		goto out;
++#endif
++    }
++	else if (!strcmp(args[0], "tpm-engine")) {
++		if (global.tpm.tpm_engine) {
++			free(global.tpm.tpm_engine);
++		}
++#ifdef USE_OPENSSL
++		if (*(args[1]) && (access(args[1], F_OK) != -1)) {
++			global.tpm.tpm_engine = strdup(args[1]);
++		}
++#else
++		Alert("parsing [%s:%d] : '%s' is not implemented.\n", file, linenum, args[0]);
++		err_code |= ERR_ALERT | ERR_FATAL;
++		goto out;
++#endif
++    }
+ 	else {
+ 		struct cfg_kw_list *kwl;
+ 		int index;
+diff --git a/src/haproxy.c b/src/haproxy.c
+index 8100f27..c463070 100644
+--- a/src/haproxy.c
++++ b/src/haproxy.c
+@@ -1994,6 +1994,24 @@ static void deinit_stick_rules(struct list *rules)
+ 	}
+ }
+ 
++static void deinit_tpm_engine()
++{
++	/*
++     * if the tpm engine is present then
++     * deinit it, this is needed to
++     * flush the TPM key handle from TPM memory
++     */
++	if (global.tpm.tpm_engine_ref) {
++		ENGINE_finish(global.tpm.tpm_engine_ref);
++	}
++
++	if (global.tpm.tpm_key) {
++		EVP_PKEY_free(global.tpm.tpm_key);
++	}
++	free(global.tpm.tpm_engine);  global.tpm.tpm_engine = NULL;
++	free(global.tpm.tpm_object);  global.tpm.tpm_object = NULL;
++}
++
+ void deinit(void)
+ {
+ 	struct proxy *p = proxies_list, *p0;
+@@ -2281,7 +2299,13 @@ void deinit(void)
+ 
+ 		free(uap);
+ 	}
+-
++    
++	/* if HAProxy was in TPM mode then deinit
++	 * that configuration as well.
++	 */
++	if (global.tpm.tpm_object && global.tpm.tpm_object != '\0')
++		deinit_tpm_engine();
++    
+ 	userlist_free(userlist);
+ 
+ 	cfg_unregister_sections();
+diff --git a/src/ssl_sock.c b/src/ssl_sock.c
+index 24ccc4b..74205d6 100644
+--- a/src/ssl_sock.c
++++ b/src/ssl_sock.c
+@@ -3322,6 +3322,80 @@ end:
+ 	return ret;
+ }
+ 
++/*
++ * initialize the TPM engine and load the 
++ * TPM object as private key within the Engine.
++ * Only do this for the first bind since TPM can
++ * only load 3-4 contexes before it runs out of memory
++ */
++static int ssl_sock_load_tpm_key(SSL_CTX *ctx, char **err) {
++	if (!global.tpm.tpm_object || global.tpm.tpm_object[0] == '\0') {
++		/* not in TPM mode */
++		return -1;
++	}
++	if (!global.tpm.tpm_key) {
++		Warning ("Could not find tpm_key; initializing engine\n");
++		/* no key present; load the dynamic TPM engine */
++		if (global.tpm.tpm_engine && global.tpm.tpm_engine[0]) {
++			ENGINE_load_dynamic();
++			ENGINE *engine = ENGINE_by_id("dynamic");
++			if (!engine) {
++				memprintf(err, "%s Unable to load the dynamic engine "
++				          "(needed for loading custom TPM engine)\n",
++				          err && *err ? *err : "");
++				return 1;
++            }
++
++			ENGINE_ctrl_cmd_string(engine, "SO_PATH", global.tpm.tpm_engine, 0);
++			ENGINE_ctrl_cmd_string(engine, "LOAD", NULL, 0);
++			/* stow away for ENGINE cleanup */
++			global.tpm.tpm_engine_ref = engine;
++
++			if (ENGINE_init(engine) != 1) {
++				const char *error_str = ERR_error_string(ERR_get_error(), NULL); 
++				memprintf(err, "%s Unable to init the TPM engine (%s). Err: %s\n",
++				          err && *err ? *err : "", 
++				          global.tpm.tpm_engine, error_str);
++				goto tpm_err;
++			}
++			EVP_PKEY *pkey = ENGINE_load_private_key(engine, 
++			                                         global.tpm.tpm_object,
++			                                         NULL, NULL);
++			if (!pkey) {
++				const char *error_str = ERR_error_string(ERR_get_error(), NULL); 
++				memprintf(err, "%s Unable to load TPM object (%s). Err: %s\n",
++				          err && *err ? *err : "", 
++				          global.tpm.tpm_object, error_str);
++				goto tpm_err;
++			}
++			global.tpm.tpm_key = pkey;
++		}
++		else { /* no TPM engine found */
++			memprintf(err, "%s TPM engine option not set when TPM mode expected\n",
++			          err && *err ? *err : "");
++			goto tpm_err;
++		}
++	} 
++
++	if (SSL_CTX_use_PrivateKey(ctx, global.tpm.tpm_key) <= 0){
++		const char *error_str = ERR_error_string(ERR_get_error(),
++                                                 NULL);
++		memprintf(err, "%s Invalid private key provided from TPM engine(%s). Err: %s\n",
++		          err && *err ? *err : "", 
++		          global.tpm.tpm_object, error_str);
++		goto tpm_err;
++	}
++
++	return 0;
++
++tpm_err:
++	ENGINE_finish(global.tpm.tpm_engine_ref);
++	global.tpm.tpm_engine_ref = NULL;
++	EVP_PKEY_free(global.tpm.tpm_key);
++	global.tpm.tpm_key = NULL;
++	return 1;
++}
++
+ static int ssl_sock_load_cert_file(const char *path, struct bind_conf *bind_conf, struct ssl_bind_conf *ssl_conf,
+ 				   char **sni_filter, int fcount, char **err)
+ {
+@@ -3335,26 +3409,54 @@ static int ssl_sock_load_cert_file(const char *path, struct bind_conf *bind_conf
+ 		return 1;
+ 	}
+ 
+-	if (SSL_CTX_use_PrivateKey_file(ctx, path, SSL_FILETYPE_PEM) <= 0) {
+-		memprintf(err, "%sunable to load SSL private key from PEM file '%s'.\n",
+-		          err && *err ? *err : "", path);
+-		SSL_CTX_free(ctx);
+-		return 1;
+-	}
+-
+-	ret = ssl_sock_load_cert_chain_file(ctx, path, bind_conf, ssl_conf, sni_filter, fcount);
+-	if (ret <= 0) {
+-		memprintf(err, "%sunable to load SSL certificate from PEM file '%s'.\n",
+-		          err && *err ? *err : "", path);
+-		if (ret < 0) /* serious error, must do that ourselves */
++	/* NOTE (knasim-wrs): US93721: TPM support
++	 * This SSL context applies to SSL frontends only.
++	 * If the TPM option is set then the Private key 
++	 * is stored in TPM.
++	 *
++	 * Launch the OpenSSL TPM engine and load the TPM
++	 * Private Key. The Public key will still be located
++	 * at the provided path and needs to be loaded as
++	 * per usual.
++	 */
++	if (global.tpm.tpm_object) {
++		ret = ssl_sock_load_tpm_key(ctx, err);
++		if (ret > 0) {
++			/* tpm configuration failed */
+ 			SSL_CTX_free(ctx);
+-		return 1;
++			return 1;
++		}
+ 	}
++	else { /* non TPM mode */
++		if (SSL_CTX_use_PrivateKey_file(ctx, path, SSL_FILETYPE_PEM) <= 0) {
++			memprintf(err, "%sunable to load SSL private key from PEM file '%s'.\n",
++			          err && *err ? *err : "", path);
++ 			SSL_CTX_free(ctx);
++			return 1;
++		}
++ 	}
+ 
+-	if (SSL_CTX_check_private_key(ctx) <= 0) {
+-		memprintf(err, "%sinconsistencies between private key and certificate loaded from PEM file '%s'.\n",
+-		          err && *err ? *err : "", path);
+-		return 1;
++	ret = ssl_sock_load_cert_chain_file(ctx, path, bind_conf, sni_filter, fcount);
++		if (ret <= 0) {
++			memprintf(err, "%sunable to load SSL certificate from PEM file '%s'.\n",
++					  err && *err ? *err : "", path);
++			if (ret < 0) /* serious error, must do that ourselves */
++				SSL_CTX_free(ctx);
++			return 1;
++		}
++
++	/*
++	 * only match the private key to the public key
++	 * for non TPM mode. This op would never work for
++	 * TPM since the private key has been wrapped, whereas
++	 * the public key is still the original one.
++	 */
++	if (!global.tpm.tpm_object) {
++		if (SSL_CTX_check_private_key(ctx) <= 0) {
++			memprintf(err, "%sinconsistencies between private key and certificate loaded from PEM file '%s'.\n",
++			          err && *err ? *err : "", path);
++			return 1;
++		}
+ 	}
+ 
+ 	/* we must not free the SSL_CTX anymore below, since it's already in
+@@ -4597,6 +4699,17 @@ int ssl_sock_prepare_srv_ctx(struct server *srv)
+ 	SSL_CTX_set_mode(ctx, mode);
+ 	srv->ssl_ctx.ctx = ctx;
+ 
++	/* NOTE (knasim-wrs): US93721: TPM support
++	 * This SSL context applies to SSL backends only.
++	 * Since Titanium backends don't support SSL, there
++	 * is no need to offload these keys in TPM or reuse the
++	 * same TPM key for the frontend engine. 
++	 * 
++	 * If SSL backends are to be supported in the future,
++	 * over TPM, then create a new TPM Engine context and
++	 * load the backend key in TPM, in a similar fashion to
++	 * the frontend key.
++	 */
+ 	if (srv->ssl_ctx.client_crt) {
+ 		if (SSL_CTX_use_PrivateKey_file(srv->ssl_ctx.ctx, srv->ssl_ctx.client_crt, SSL_FILETYPE_PEM) <= 0) {
+ 			ha_alert("config : %s '%s', server '%s': unable to load SSL private key from PEM file '%s'.\n",
+-- 
+2.7.4
+

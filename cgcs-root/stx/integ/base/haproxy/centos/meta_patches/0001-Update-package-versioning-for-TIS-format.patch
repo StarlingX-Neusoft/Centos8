@@ -1,0 +1,26 @@
+From 2e13319c3346b4e0765d25f465e8ada60536d5d1 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Tue, 5 Nov 2019 10:38:29 +0800
+Subject: [PATCH 2/2] 0001-Update-package-versioning-for-TIS-format
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/haproxy.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/haproxy.spec b/SPECS/haproxy.spec
+index b28896f..a7af312 100644
+--- a/SPECS/haproxy.spec
++++ b/SPECS/haproxy.spec
+@@ -8,7 +8,7 @@
+ 
+ Name:           haproxy
+ Version:        1.8.15
+-Release:        5%{?dist}
++Release:        5.el8%{?_tis_dist}.%{tis_patch_ver}
+ Summary:        HAProxy reverse proxy for high availability environments
+ 
+ Group:          System Environment/Daemons
+-- 
+2.7.4
+

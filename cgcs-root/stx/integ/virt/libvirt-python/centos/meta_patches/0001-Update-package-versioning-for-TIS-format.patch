@@ -1,6 +1,6 @@
-From 4f5f6dd13b5ee753a93156c566806d87c5a6efbb Mon Sep 17 00:00:00 2001
+From 43a08224d51e5abe77a5999cc0123a348b0b4bcf Mon Sep 17 00:00:00 2001
 From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 15:23:44 +0800
+Date: Wed, 6 Nov 2019 15:41:48 +0800
 Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
 
 ---

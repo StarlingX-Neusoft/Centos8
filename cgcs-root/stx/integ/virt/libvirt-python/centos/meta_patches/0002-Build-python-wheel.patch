@@ -1,14 +1,14 @@
-From 271c52dec2962f0cd324e7c1a62ab2aa40aa40e0 Mon Sep 17 00:00:00 2001
+From 50754742b9b7886cf28920d4f3dc88af652fa133 Mon Sep 17 00:00:00 2001
 From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 15:31:45 +0800
+Date: Wed, 6 Nov 2019 15:45:19 +0800
 Subject: [PATCH 2/2] Build-python-wheel
 
 ---
- SPECS/libvirt-python.spec | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ SPECS/libvirt-python.spec | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/SPECS/libvirt-python.spec b/SPECS/libvirt-python.spec
-index 99afd2e..7da7db8 100644
+index 99afd2e..fd4eb0b 100644
 --- a/SPECS/libvirt-python.spec
 +++ b/SPECS/libvirt-python.spec
 @@ -36,6 +36,7 @@ Name: libvirt-python
@@ -59,10 +59,11 @@ index 99afd2e..7da7db8 100644
  %endif
  %if %{with_python3}
  %{__python3} setup.py install --skip-build --root=%{buildroot}
-@@ -171,6 +180,15 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
- %{python3_sitearch}/*egg-info
- %endif
- 
+@@ -153,6 +162,16 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
+ %{python_sitearch}/libvirt_lxc.py*
+ %{python_sitearch}/libvirtmod*
+ %{python_sitearch}/*egg-info
++
 +%package wheels
 +Summary: %{name} wheels
 +
@@ -72,9 +73,9 @@ index 99afd2e..7da7db8 100644
 +%files wheels
 +/wheels/*
 +
- %changelog
- * Tue Jul  3 2018 Jiri Denemark <jdenemar@redhat.com> - 4.5.0-1
- - Rebased to libvirt-python-4.5.0
+ %endif
+ 
+ %if %{with_python3}
 -- 
 1.8.3.1
 

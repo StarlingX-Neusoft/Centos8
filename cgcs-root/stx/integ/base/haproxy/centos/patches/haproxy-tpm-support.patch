@@ -151,7 +151,7 @@ index 24ccc4b..74205d6 100644
 +		return -1;
 +	}
 +	if (!global.tpm.tpm_key) {
-+		Warning ("Could not find tpm_key; initializing engine\n");
++		ha_warning ("Could not find tpm_key; initializing engine\n");
 +		/* no key present; load the dynamic TPM engine */
 +		if (global.tpm.tpm_engine && global.tpm.tpm_engine[0]) {
 +			ENGINE_load_dynamic();
@@ -264,7 +264,7 @@ index 24ccc4b..74205d6 100644
 -		memprintf(err, "%sinconsistencies between private key and certificate loaded from PEM file '%s'.\n",
 -		          err && *err ? *err : "", path);
 -		return 1;
-+	ret = ssl_sock_load_cert_chain_file(ctx, path, bind_conf, sni_filter, fcount);
++	ret = ssl_sock_load_cert_chain_file(ctx, path, bind_conf, ssl_conf, sni_filter, fcount);
 +		if (ret <= 0) {
 +			memprintf(err, "%sunable to load SSL certificate from PEM file '%s'.\n",
 +					  err && *err ? *err : "", path);

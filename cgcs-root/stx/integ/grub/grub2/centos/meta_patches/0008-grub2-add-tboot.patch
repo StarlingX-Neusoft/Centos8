@@ -1,4 +1,4 @@
-From b2da101a67d9c07368d091d09c92f10a592a3fd5 Mon Sep 17 00:00:00 2001
+From 6949438d1d4dfd064e0d3bce160b1d3dc5060716 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 15:03:32 +0800
 Subject: [PATCH 08/10] grub2-add-tboot
@@ -10,7 +10,7 @@ Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
  2 files changed, 6 insertions(+)
 
 diff --git a/SOURCES/grub.macros b/SOURCES/grub.macros
-index c09e7ce..abe43da 100644
+index ffc7113..7162770 100644
 --- a/SOURCES/grub.macros
 +++ b/SOURCES/grub.macros
 @@ -110,6 +110,10 @@
@@ -24,7 +24,7 @@ index c09e7ce..abe43da 100644
  %endif
  
  %ifarch x86_64
-@@ -379,6 +383,7 @@ GRUB_MODULES="	all_video boot blscfg btrfs			\\\
+@@ -380,6 +384,7 @@ GRUB_MODULES="	all_video boot blscfg btrfs			\\\
  		search_label serial sleep syslinuxcfg test tftp	\\\
  		video xfs"					\
  GRUB_MODULES+=%{platform_modules}				\

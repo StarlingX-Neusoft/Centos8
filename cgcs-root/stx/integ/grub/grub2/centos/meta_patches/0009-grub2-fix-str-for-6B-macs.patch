@@ -1,4 +1,4 @@
-From 1830192177d7fd82563416b7d09ac18272a84c76 Mon Sep 17 00:00:00 2001
+From bca615e885cb5d35b92bef10104fe77a265e666f Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 15:05:10 +0800
 Subject: [PATCH 09/10] grub2-fix-str-for-6B-macs
@@ -10,7 +10,7 @@ Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
  2 files changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/SOURCES/grub.macros b/SOURCES/grub.macros
-index abe43da..bda5d3d 100644
+index 7162770..1255697 100644
 --- a/SOURCES/grub.macros
 +++ b/SOURCES/grub.macros
 @@ -110,7 +110,7 @@

@@ -1,4 +1,4 @@
-From 91cf73976c8c0a2bdf1641cd90f678d55a715719 Mon Sep 17 00:00:00 2001
+From f413be7d422016fbed31cc09ff7798e72b6b6675 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 15:09:39 +0800
 Subject: [PATCH 10/10] grub2-Don-t-strip-img-files-from-non-EFI-build
@@ -9,10 +9,10 @@ Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
  1 file changed, 2 deletions(-)
 
 diff --git a/SOURCES/grub.macros b/SOURCES/grub.macros
-index bda5d3d..eb76218 100644
+index 1255697..5f12320 100644
 --- a/SOURCES/grub.macros
 +++ b/SOURCES/grub.macros
-@@ -527,8 +527,6 @@ touch ${RPM_BUILD_ROOT}/boot/%{name}/grub.cfg			\
+@@ -528,8 +528,6 @@ touch ${RPM_BUILD_ROOT}/boot/%{name}/grub.cfg			\
  %defattr(-,root,root)						\
  %dir %{_libdir}/grub/%{2}/					\
  %{_libdir}/grub/%{2}/*						\

@@ -1,7 +1,7 @@
-From c814c16ff4b298b6eb8f73a9166e18b3c435f0ff Mon Sep 17 00:00:00 2001
+From 512fcc9bc1d0aa84677d09234cd4243e027f37e7 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
-Date: Sat, 2 Nov 2019 16:23:46 +0800
-Subject: [PATCH 2/3] dhclient-ipv6-bind-to-interface
+Date: Fri, 8 Nov 2019 14:57:14 +0800
+Subject: [PATCH 2/2] dhclient-ipv6-bind-to-interface
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
@@ -9,10 +9,10 @@ Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/common/socket.c b/common/socket.c
-index f30c171..b236c4a 100644
+index 94ce334..17d32e4 100644
 --- a/common/socket.c
 +++ b/common/socket.c
-@@ -236,6 +236,15 @@ if_register_socket(struct interface_info *info, int family,
+@@ -234,6 +234,15 @@ if_register_socket(struct interface_info *info, int family,
  	}
  #endif
  
@@ -28,7 +28,7 @@ index f30c171..b236c4a 100644
  	/* Bind the socket to this interface's IP address. */
  	if (bind(sock, (struct sockaddr *)&name, name_len) < 0) {
  		log_error("Can't bind to dhcp address: %m");
-@@ -246,15 +255,6 @@ if_register_socket(struct interface_info *info, int family,
+@@ -244,15 +253,6 @@ if_register_socket(struct interface_info *info, int family,
  		log_fatal("includes a bootp server.");
  	}
  

@@ -1,7 +1,7 @@
-From 863bddfcfb4a421532742edc113ff970233131f3 Mon Sep 17 00:00:00 2001
+From 99c9b108216d7691a6c80873cf5eafda650b7ab9 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
-Date: Sat, 2 Nov 2019 14:28:32 +0800
-Subject: [PATCH 2/2] Update-package-versioning-for-TIS-format
+Date: Fri, 8 Nov 2019 17:42:32 +0800
+Subject: [PATCH 3/3] 0001-Update-package-versioning-for-TIS-format
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
@@ -9,7 +9,7 @@ Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/SPECS/dhcp.spec b/SPECS/dhcp.spec
-index f0084b1..c09d90f 100644
+index fb687f8..c1024cd 100644
 --- a/SPECS/dhcp.spec
 +++ b/SPECS/dhcp.spec
 @@ -16,7 +16,7 @@

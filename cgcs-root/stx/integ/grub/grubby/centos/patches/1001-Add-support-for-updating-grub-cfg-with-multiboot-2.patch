@@ -23,7 +23,7 @@ index 8eeec80..de72d3c 100644
  install: all
  	mkdir -p $(DESTDIR)$(PREFIX)$(sbindir)
  	mkdir -p $(DESTDIR)/$(mandir)/man8
-+	mkdir -p $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby
++	mkdir -p $(DESTDIR)/usr/lib64/python3.6/site-packages/grubby
  	install -m 755 new-kernel-pkg $(DESTDIR)$(PREFIX)$(sbindir)
  	install -m 644 new-kernel-pkg.8 $(DESTDIR)/$(mandir)/man8
  	install -m 755 installkernel $(DESTDIR)$(PREFIX)$(sbindir)
@@ -31,9 +31,9 @@ index 8eeec80..de72d3c 100644
  	fi
  	install -m 755 -d $(DESTDIR)$(PREFIX)$(libexecdir)/grubby/
  	install -m 755 rpm-sort $(DESTDIR)$(PREFIX)$(libexecdir)/grubby/rpm-sort
-+	install -m 644 grub_cfg_update.py $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby/grub_cfg_update.py
-+	install -m 644 __init__.py $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby/__init__.py
-+	install -m 500 grub-cfg-update $(DESTDIR)$(PREFIX)/sbin/grub-cfg-update
++	install -m 644 grub_cfg_update.py $(DESTDIR)/usr/lib64/python3.6/site-packages/grubby/grub_cfg_update.py
++	install -m 644 __init__.py $(DESTDIR)/usr/lib64/python3.6/site-packages/grubby/__init__.py
++	install -m 500 grub-cfg-update $(DESTDIR)$(PREFIX)$(sbindir)/grub-cfg-update
  
  grubby:: $(OBJECTS)
  	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(grubby_LIBS)
@@ -57,7 +57,7 @@ index 0000000..64fd286
 --- /dev/null
 +++ b/grub-cfg-update
 @@ -0,0 +1,17 @@
-+#!/usr/bin/env python
++#!/usr/bin/env python3
 +
 +"""
 +Copyright (c) 2018 Wind River Systems, Inc.
@@ -80,7 +80,7 @@ index 0000000..03c83c9
 --- /dev/null
 +++ b/grub_cfg_update.py
 @@ -0,0 +1,126 @@
-+#!/usr/bin/env python
++#!/usr/bin/env python3
 +#
 +# Copyright (c) 2018 Wind River Systems, Inc.
 +# SPDX-License-Identifier: Apache-2.0

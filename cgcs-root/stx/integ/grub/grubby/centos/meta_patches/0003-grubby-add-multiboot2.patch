@@ -24,10 +24,10 @@ index 4e673ae..b4306bf 100644
  %endif
  Requires: findutils
  
-+BuildRequires: python-setuptools
-+Requires: python-devel
++BuildRequires: python3-setuptools
++Requires: python3-devel
 +
-+%define pythonroot  /usr/lib64/python2.7/site-packages
++%define pythonroot  /usr/lib64/python3.6/site-packages
 +
  %description
  This package provides a grubby compatibility script that manages

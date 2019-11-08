@@ -1,4 +1,4 @@
-From 4b454e54d13255ed03f973458e92452b95b6a36a Mon Sep 17 00:00:00 2001
+From 1cf8c2be5ae7c262e3a7c96ff3e50bb3cfef5a75 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Tue, 5 Nov 2019 19:34:53 +0800
 Subject: [PATCH 2/4] revert-7.4-grub2-efi-handling

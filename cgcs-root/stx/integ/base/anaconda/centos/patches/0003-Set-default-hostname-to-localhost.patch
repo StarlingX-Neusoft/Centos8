@@ -1,4 +1,4 @@
-From 96e3739aea31d73d0a519b4ec5586225a8d402a2 Mon Sep 17 00:00:00 2001
+From f30c4fccbc9c8e06846593d925f4e807e3a6c16c Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Tue, 5 Nov 2019 19:36:55 +0800
 Subject: [PATCH 3/4] Set-default-hostname-to-localhost

@@ -1,4 +1,4 @@
-From 2e5f8243d8a1f17fe1dde2addd6f9a55cc89286d Mon Sep 17 00:00:00 2001
+From a16b5b0d6ed2bd1000c314d271f6bb8fe6895e2d Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Tue, 5 Nov 2019 19:42:03 +0800
 Subject: [PATCH 4/4] Cache-server-ip-in-etc-hosts

@@ -1,7 +1,7 @@
-From b6a87543c2813a89fec2ffa91757082286a33e93 Mon Sep 17 00:00:00 2001
+From f7c195d88cf0be8712bda07710131dcd00d99939 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
-Date: Sat, 2 Nov 2019 15:51:51 +0800
-Subject: [PATCH] dhclient-dhcp6-set-hostname
+Date: Fri, 8 Nov 2019 17:40:11 +0800
+Subject: [PATCH 2/3] dhclient-dhcp6-set-hostname.patch
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

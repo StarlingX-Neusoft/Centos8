@@ -56,9 +56,11 @@ RUN groupadd -g 751 cgts && \
         createrepo \
         #deltarpm \
         expat-devel \
+        isomd5sum \
         gcc \
         gettext \
         git \
+        libguestfs-tools \
         libtool \
         libxml2 \
         #lighttpd \
@@ -73,18 +75,16 @@ RUN groupadd -g 751 cgts && \
         perl-CPAN \
         #python-deltarpm \
         #python-pep8 \
-        python3-pip \
-        python3-psutil \
+        #python-pip \
+        #python-psutil \
         python2-psutil \
         #python36-psutil \
-        #python3-sphinx \
+        #python-sphinx \
         #python-subunit \
-        #python-pip \
+        python2-pip \
         #python-testrepository \
         #python-tox \
-        python3-pyyaml \
-	python2 \
-	python36 \
+        python3-yaml \
         postgresql \
         qemu-kvm \
         quilt \
@@ -95,6 +95,7 @@ RUN groupadd -g 751 cgts && \
         sudo \
         systemd \
         syslinux \
+        #syslinux-utils \
         udisks2 \
         vim-enhanced \
         wget
@@ -146,8 +147,8 @@ RUN useradd -s /sbin/nologin -u 9001 -g 9001 mockbuild && \
 # Inherited  tools for mock stuff
 # we at least need the mock_cache_unlock tool
 # they install into /usr/bin
-COPY toCOPY/cgcs_overlay /opt/cgcs_overlay
-RUN cd /opt/cgcs_overlay && \
+COPY toCOPY/mock_overlay /opt/mock_overlay
+RUN cd /opt/mock_overlay && \
     make && \
     make install
 
@@ -180,7 +181,7 @@ RUN mkdir -p /www/run && \
 # in place sed for server root since it's expanded soon thereafter
 #     echo "server.bind = \"localhost\"" >> /etc/lighttpd/lighttpd.conf && \
 RUN echo "$MYUNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
-    yum -y install pcre-devel \
+	yum -y install pcre-devel \
         bzip2  \
         bzip2-devel && \
     wget https://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-1.4.54.tar.gz && \

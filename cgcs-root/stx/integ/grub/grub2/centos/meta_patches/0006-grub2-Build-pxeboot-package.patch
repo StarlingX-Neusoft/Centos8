@@ -1,7 +1,7 @@
-From 0af8f496ff37ced1ec8b007f7459f7a4496a7a1d Mon Sep 17 00:00:00 2001
+From c8a454eab9c3fbbe6fd165cc47159cd471f7496a Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 14:58:08 +0800
-Subject: [PATCH 07/10] grub2-Build-pxeboot-package
+Subject: [PATCH 6/9] grub2-Build-pxeboot-package
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

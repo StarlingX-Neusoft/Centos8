@@ -1,7 +1,7 @@
-From bca615e885cb5d35b92bef10104fe77a265e666f Mon Sep 17 00:00:00 2001
+From 8ca433e6575a5c58f1e16060988c14c85af57cb7 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 15:05:10 +0800
-Subject: [PATCH 09/10] grub2-fix-str-for-6B-macs
+Subject: [PATCH 8/9] grub2-fix-str-for-6B-macs
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

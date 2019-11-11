@@ -1,7 +1,7 @@
-From f413be7d422016fbed31cc09ff7798e72b6b6675 Mon Sep 17 00:00:00 2001
+From 2d3188b209d7796f738e8625f0c117e843ca244f Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 15:09:39 +0800
-Subject: [PATCH 10/10] grub2-Don-t-strip-img-files-from-non-EFI-build
+Subject: [PATCH 9/9] grub2-Don-t-strip-img-files-from-non-EFI-build
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

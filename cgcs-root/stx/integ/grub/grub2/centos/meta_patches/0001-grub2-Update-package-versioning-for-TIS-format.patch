@@ -1,7 +1,7 @@
 From 4ce897e0fb4638859086f72ef57abc4f3411eb9b Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 11:18:11 +0800
-Subject: [PATCH 01/10] grub2-Update-package-versioning-for-TIS-format
+Subject: [PATCH 1/9] grub2-Update-package-versioning-for-TIS-format
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

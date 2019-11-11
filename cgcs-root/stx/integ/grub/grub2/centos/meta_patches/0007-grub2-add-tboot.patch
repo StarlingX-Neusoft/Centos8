@@ -1,7 +1,7 @@
-From 6949438d1d4dfd064e0d3bce160b1d3dc5060716 Mon Sep 17 00:00:00 2001
+From 6afc251c12a4af870fd79520ba4d9cb6ca8b1271 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 15:03:32 +0800
-Subject: [PATCH 08/10] grub2-add-tboot
+Subject: [PATCH 7/9] grub2-add-tboot
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

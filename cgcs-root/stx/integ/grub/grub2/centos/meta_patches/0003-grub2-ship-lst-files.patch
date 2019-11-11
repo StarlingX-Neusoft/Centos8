@@ -1,7 +1,7 @@
-From e9904109fb4ec65149829e2098f49d15692924e0 Mon Sep 17 00:00:00 2001
+From 1649fe44b4c79dad4a1d00743ff4b321eff8d6da Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 14:38:29 +0800
-Subject: [PATCH 04/10] grub2-ship-lst-files
+Subject: [PATCH 3/9] grub2-ship-lst-files
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---
@@ -9,10 +9,10 @@ Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/SPECS/grub2.spec b/SPECS/grub2.spec
-index c48b6fd..22840d2 100644
+index 3e0bc91..b14ad71 100644
 --- a/SPECS/grub2.spec
 +++ b/SPECS/grub2.spec
-@@ -314,6 +314,8 @@ fi
+@@ -334,6 +334,8 @@ fi
  
  %files common -f grub.lang
  %dir %{_libdir}/grub/

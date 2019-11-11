@@ -1,7 +1,7 @@
-From 65cefe5d4b33d63c9299944e90f0e7c0481f548c Mon Sep 17 00:00:00 2001
+From d64d5a20b12b3203925e3cf082a8f2b8940b649f Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 14:40:33 +0800
-Subject: [PATCH 05/10] 1000_linux-mktitle-de-brand-the-grub.cfg-menu
+Subject: [PATCH 4/9] 1000_linux-mktitle-de-brand-the-grub.cfg-menu
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

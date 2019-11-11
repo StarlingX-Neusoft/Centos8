@@ -1,7 +1,7 @@
-From 3e7ca6a557d617eaefc27a959364b727f35081ae Mon Sep 17 00:00:00 2001
+From 630be68fb496f286d74eaa205a9471801096db48 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 14:54:25 +0800
-Subject: [PATCH 06/10] grub2-Build-unsigned-package
+Subject: [PATCH 5/9] grub2-Build-unsigned-package
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

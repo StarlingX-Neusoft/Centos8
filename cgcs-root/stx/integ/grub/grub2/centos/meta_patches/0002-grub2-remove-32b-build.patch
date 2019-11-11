@@ -1,7 +1,7 @@
-From 0f6d9d28eb17eadae7382afb3c8bd79053faee77 Mon Sep 17 00:00:00 2001
+From 436f202f710041a4ec2f530900acd759e63dc275 Mon Sep 17 00:00:00 2001
 From: lilong-neu <lilong-neu@neusoft.com>
 Date: Mon, 4 Nov 2019 14:27:50 +0800
-Subject: [PATCH 03/10] grub2-remove-32b-build
+Subject: [PATCH 2/9] grub2-remove-32b-build
 
 Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
 ---

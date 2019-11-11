@@ -1,0 +1,82 @@
+<head></head>
+<body>
+	<h1>Security report from vuls scan from {{title}}</h1>
+	<h2>Valid CVEs to take action immediately: {{cves_to_fix | length}}</h2>
+	<table>
+		{% if cves_to_fix|length > 1 %}
+			<tr>
+				{% for head in heads %}
+					<th>{{head}}</th>
+				{% endfor %}
+			</tr>
+
+			{% for cve in cves_to_fix %}
+			<tr>
+				<td>{{cve["id"]}}</td>
+				<td>{{cve["status"]}}</td>
+				<td>{{cve["cvss2Score"]}}</td>
+				<td>{{cve["av"]}}</td>
+				<td>{{cve["ac"]}}</td>
+				<td>{{cve["au"]}}</td>
+				<td>{{cve["ai"]}}</td>
+			</tr>
+			{% endfor %}
+		{% endif %}
+		</table>
+	<h2> CVEs to track for incoming fix: {{cves_to_track | length}}</h2>
+	<table>
+		{% if cves_to_track|length > 1 %}
+			<tr>
+			{% for head in heads %}
+				<th>{{head}}</th>
+			{% endfor %}
+			</tr>
+
+			{% for cve in cves_to_track %}
+			<tr>
+				<td>{{cve["id"]}}</td>
+				<td>{{cve["status"]}}</td>
+				<td>{{cve["cvss2Score"]}}</td>
+				<td>{{cve["av"]}}</td>
+				<td>{{cve["ac"]}}</td>
+				<td>{{cve["au"]}}</td>
+				<td>{{cve["ai"]}}</td>
+			</tr>
+			{% endfor %}
+		{% endif %}
+	</table>
+	<h2> CVEs to omit: {{cves_to_omit | length}}</h2>
+	<table>
+		{% if cves_to_omit|length > 1 %}
+			<tr>
+			{% for head in heads %}
+				<th>{{head}}</th>
+			{% endfor %}
+			</tr>
+
+			{% for cve in cves_to_omit %}
+			<tr>
+				<td>{{cve["id"]}}</td>
+				<td>{{cve["status"]}}</td>
+				<td>{{cve["cvss2Score"]}}</td>
+				<td>{{cve["av"]}}</td>
+				<td>{{cve["ac"]}}</td>
+				<td>{{cve["au"]}}</td>
+				<td>{{cve["ai"]}}</td>
+			</tr>
+			{% endfor %}
+		{% endif %}
+	</table>
+
+	<h2>ERROR: CVEs that have no cvss2Score or cvss2Vector:{{cves_w_errors | length}}</h2>
+		<table>
+		{% if cves_w_errors|length > 1 %}
+			{% for cve in cves_to_track %}
+			<tr>
+				<td>{{cve["id"]}}</td>
+				<td>{{cve["status"]}}</td>
+			</tr>
+			{% endfor %}
+		{% endif %}
+	</table>
+</body>

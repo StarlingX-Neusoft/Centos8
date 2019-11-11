@@ -1,0 +1,178 @@
+########
+# Centos 7.6.1810
+#
+
+[StarlingX-C7.6.1810-atomic]
+name=StarlingX-CentOS-7.6.1810 - atomic
+baseurl=http://vault.centos.org/centos/7.6.1810/atomic/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-centosplus]
+name=StarlingX-CentOS-7.6.1810 - centosplus
+baseurl=http://vault.centos.org/centos/7.6.1810/centosplus/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-centosplus-source]
+name=StarlingX-CentOS-7.6.1810 - centosplus-source
+baseurl=http://vault.centos.org/7.6.1810/centosplus/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-cloud-pike]
+name=StarlingX-CentOS-7.6.1810 - Cloud-pike
+baseurl=http://vault.centos.org/centos/7.6.1810/cloud/x86_64/openstack-pike/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-cloud-pike-source]
+name=StarlingX-CentOS-7.6.1810 - cloud-pike-source
+baseurl=http://vault.centos.org/7.6.1810/cloud/Source/openstack-pike/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-extras]
+name=StarlingX-CentOS-7.6.1810 - extras
+baseurl=http://vault.centos.org/centos/7.6.1810/extras/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-extras-source]
+name=StarlingX-CentOS-7.6.1810 - extras-source
+baseurl=http://vault.centos.org/7.6.1810/extras/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-nfv-fdio]
+name=StarlingX-CentOS-7.6.1810 - nfv
+baseurl=http://vault.centos.org/centos/7.6.1810/nfv/x86_64/fdio/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-opstools]
+name=StarlingX-CentOS-7.6.1810 - opstools
+baseurl=http://vault.centos.org/centos/7.6.1810/opstools/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-opstools-source]
+name=StarlingX-CentOS-7.6.1810 - opstools-source
+baseurl=http://vault.centos.org/7.6.1810/opstools/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-os]
+name=StarlingX-CentOS-7.6.1810 - os
+baseurl=http://vault.centos.org/centos/7.6.1810/os/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-os-source]
+name=StarlingX-CentOS-7.6.1810 - os-source
+baseurl=http://vault.centos.org/7.6.1810/os/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-paas-openshift-origin]
+name=StarlingX-CentOS-7.6.1810 - paas-openshift-origin
+baseurl=http://vault.centos.org/centos/7.6.1810/paas/x86_64/openshift-origin/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-paas-openshift-origin311]
+name=StarlingX-CentOS-7.6.1810 - paas-openshift-origin311
+baseurl=http://vault.centos.org/centos/7.6.1810/paas/x86_64/openshift-origin311/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-rt]
+name=StarlingX-CentOS-7.6.1810 - rt
+baseurl=http://vault.centos.org/centos/7.6.1810/rt/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-sclo-sclo]
+name=StarlingX-CentOS-7.6.1810 - sclo-sclo
+baseurl=http://vault.centos.org/centos/7.6.1810/sclo/x86_64/sclo/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-storage-ceph-jewel]
+name=StarlingX-CentOS-7.6.1810 - storage-ceph-jewel
+baseurl=http://vault.centos.org/centos/7.6.1810/storage/x86_64/ceph-jewel/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-storage-ceph-luminous]
+name=StarlingX-CentOS-7.6.1810 - storage-ceph-luminous
+baseurl=http://vault.centos.org/centos/7.6.1810/storage/x86_64/ceph-luminous/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-storage-ceph-nautilus]
+name=StarlingX-CentOS-7.6.1810 - storage-ceph-nautilus
+baseurl=http://vault.centos.org/centos/7.6.1810/storage/x86_64/ceph-nautilus/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-storage-gluster-5]
+name=StarlingX-CentOS-7.6.1810 - storage-gluster-5
+baseurl=http://vault.centos.org/centos/7.6.1810/storage/x86_64/gluster-5/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-updates]
+name=StarlingX-CentOS-7.6.1810 - updates
+baseurl=http://vault.centos.org/centos/7.6.1810/updates/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-updates-source]
+name=StarlingX-CentOS-7.6.1810 - updates-source
+baseurl=http://vault.centos.org/7.6.1810/updates/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-virt-kvm]
+name=StarlingX-CentOS-7.6.1810 - virt-kvm
+baseurl=http://vault.centos.org/centos/7.6.1810/virt/x86_64/kvm-common/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[StarlingX-C7.6.1810-virt-libvirt]
+name=StarlingX-CentOS-7.6.1810 - virt-libvirt
+baseurl=http://vault.centos.org/centos/7.6.1810/virt/x86_64/libvirt-latest/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=0
+
+[StarlingX-C7.6.1810-sclo-rh]
+name=StarlingX-CentOS-7.6.1810 - sclo-rh
+baseurl=http://vault.centos.org/centos/7.6.1810/sclo/x86_64/rh/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1

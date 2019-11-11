@@ -1,0 +1,86 @@
+#####
+# Centos 7.2.1511
+# 
+[Starlingx-C7.2.1511-cloud-newton]
+name=Starlingx-CentOS-7.2.1511 - Cloud-newton
+baseurl=http://vault.centos.org/7.2.1511/cloud/x86_64/openstack-newton/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-cloud-newton-source]
+name=Starlingx-CentOS-7.2.1511 - Cloud-newton-source
+baseurl=http://vault.centos.org/7.2.1511/cloud/Source/openstack-newton/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-extras]
+name=StarlingX-CentOS-7.2.1511 - extras
+baseurl=http://vault.centos.org/7.2.1511/extras/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-extras-source]
+name=Starlingx-CentOS-7.2.1511 - extras-source
+baseurl=http://vault.centos.org/7.2.1511/extras/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-os]
+name=Starlingx-CentOS-7.2.1511 - os
+baseurl=http://vault.centos.org/7.2.1511/os/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-os-source]
+name=Starlingx-CentOS-7.2.1511 - os-source
+baseurl=http://vault.centos.org/7.2.1511/os/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-updates]
+name=Starlingx-CentOS-7.2.1511 - updates
+baseurl=http://vault.centos.org/7.2.1511/updates/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-updates-source]
+name=Starlingx-CentOS-7.2.1511 - updates-source
+baseurl=http://vault.centos.org/7.2.1511/updates/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-virt-kvm]
+name=Starlingx-CentOS-7.2.1511 - virt-kvm
+baseurl=http://vault.centos.org/7.2.1511/virt/x86_64/kvm-common
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-virt-kvm-source]
+name=Starlingx-CentOS-7.2.1511 - virt-kvm-source
+baseurl=http://vault.centos.org/7.2.1511/virt/Source/kvm-common
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-cr]
+name=Starlingx-CentOS-7.2.1511 - cr
+baseurl=http://vault.centos.org/centos/7.2.1511/cr/x86_64
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.2.1511-cr-source]
+name=Starlingx-CentOS-7.2.1511 - cr-source
+baseurl=http://vault.centos.org/centos/7.2.1511/cr/Source
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1

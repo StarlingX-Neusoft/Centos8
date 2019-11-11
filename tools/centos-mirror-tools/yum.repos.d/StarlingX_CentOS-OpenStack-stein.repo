@@ -1,0 +1,41 @@
+# CentOS-OpenStack-stein.repo
+#
+# Please see http://wiki.centos.org/SpecialInterestGroup/Cloud for more
+# information
+
+[centos-openstack-stein]
+name=CentOS-7 - OpenStack stein
+baseurl=http://mirror.centos.org/centos/7/cloud/$basearch/openstack-stein/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[centos-openstack-stein-test]
+name=CentOS-7 - OpenStack stein Testing
+baseurl=https://buildlogs.centos.org/centos/7/cloud/$basearch/openstack-stein/
+gpgcheck=0
+enabled=0
+exclude=sip,PyQt4
+
+[centos-openstack-stein-debuginfo]
+name=CentOS-7 - OpenStack stein - Debug
+baseurl=http://debuginfo.centos.org/centos/7/cloud/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[centos-openstack-Stein-source]
+name=CentOS-7 - OpenStack Stein - Source
+baseurl=http://vault.centos.org/centos/7.6.1810/cloud/Source/openstack-stein/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud
+exclude=sip,PyQt4
+
+[rdo-trunk-stein-tested]
+name=OpenStack stein Trunk Tested
+baseurl=https://trunk.rdoproject.org/centos7-stein/current-passed-ci/
+gpgcheck=0
+enabled=0

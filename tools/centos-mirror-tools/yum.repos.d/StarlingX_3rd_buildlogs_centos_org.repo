@@ -1,0 +1,7 @@
+#####
+# buildlogs.centos.org
+
+[Starlingx-buildlogs.centos.org_c7.1708.u.i386]
+name=Starlingx-buildlogs.centos.org_c7.1708.u.i386 - buildlogs.centos.org_c7.1708.u.i386
+baseurl=https://buildlogs.centos.org/c7.1708.u.i386
+enabled=1

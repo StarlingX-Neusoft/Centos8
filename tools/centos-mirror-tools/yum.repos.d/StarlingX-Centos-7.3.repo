@@ -1,0 +1,131 @@
+####
+# Centos 7.3.1611
+# 
+[Starlingx-C7.3.1611-cloud-newton]
+name=Starlingx-CentOS-7.3.1611 - Cloud-newton
+baseurl=http://vault.centos.org/7.3.1611/cloud/x86_64/openstack-newton/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-cloud-newton-source]
+name=Starlingx-CentOS-7.3.1611 - Cloud-newton-source
+baseurl=http://vault.centos.org/7.3.1611/cloud/Source/openstack-newton/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-cloud-pike]
+name=Starlingx-CentOS-7.3.1611 - Cloud-pike
+baseurl=http://vault.centos.org/7.3.1611/cloud/x86_64/openstack-pike/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-cloud-pike-source]
+name=Starlingx-CentOS-7.3.1611 - Cloud-pike-source
+baseurl=http://vault.centos.org/7.3.1611/cloud/Source/openstack-pike/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-extras]
+name=Starlingx-CentOS-7.3.1611 - extras
+baseurl=http://vault.centos.org/7.3.1611/extras/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-extras-source]
+name=Starlingx-CentOS-7.3.1611 - extras-source
+baseurl=http://vault.centos.org/7.3.1611/extras/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-os]
+name=Starlingx-CentOS-7.3.1611 - os
+baseurl=http://vault.centos.org/7.3.1611/os/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-os-source]
+name=Starlingx-CentOS-7.3.1611 - os-source
+baseurl=http://vault.centos.org/7.3.1611/os/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-rt]
+name=Starlingx-CentOS-7.3.1611 - rt
+baseurl=http://vault.centos.org/7.3.1611/rt/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-rt-source]
+name=Starlingx-CentOS-7.3.1611 - rt-source
+baseurl=http://vault.centos.org/7.3.1611/rt/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+
+
+[Starlingx-C7.3.1611-updates]
+name=Starlingx-CentOS-7.3.1611 - updates
+baseurl=http://vault.centos.org/7.3.1611/updates/x86_64/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-updates-source]
+name=Starlingx-CentOS-7.3.1611 - updates-source
+baseurl=http://vault.centos.org/7.3.1611/updates/Source/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-virt-kvm]
+name=Starlingx-CentOS-7.3.1611 - virt-kvm
+baseurl=http://vault.centos.org/7.3.1611/virt/x86_64/kvm-common
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-virt-kvm-source]
+name=Starlingx-CentOS-7.3.1611 - virt-kvm-source
+baseurl=http://vault.centos.org/7.3.1611/virt/Source/kvm-common
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-virt-libvirt]
+name=Starlingx-CentOS-7.3.1611 - virt-libvirt
+baseurl=http://vault.centos.org/7.3.1611/virt/x86_64/libvirt-latest
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-virt-libvirt-source]
+name=Starlingx-CentOS-7.3.1611 - virt-libvirt-source
+baseurl=http://vault.centos.org/7.3.1611/virt/Source/libvirt-latest
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+# 7.3.1611-cr contains older versions of python and valgrind
+[Starlingx-C7.3.1611-cr]
+name=Starlingx-CentOS-7.3.1611 - cr
+baseurl=http://vault.centos.org/centos/7.3.1611/cr/x86_64
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1
+
+[Starlingx-C7.3.1611-cr-source]
+name=Starlingx-CentOS-7.3.1611 - cr-source
+baseurl=http://vault.centos.org/centos/7.3.1611/cr/Source
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+enabled=1

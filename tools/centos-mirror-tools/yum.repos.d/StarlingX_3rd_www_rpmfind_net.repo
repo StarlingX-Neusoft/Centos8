@@ -1,0 +1,7 @@
+#####
+# www.rpmfind.net
+
+[Starlingx-www.rpmfind.net_linux_epel_7_x86_64]
+name=Starlingx-www.rpmfind.net_linux_epel_7_x86_64 - www.rpmfind.net_linux_epel_7_x86_64
+baseurl=https://www.rpmfind.net/linux/epel/7/x86_64
+enabled=1

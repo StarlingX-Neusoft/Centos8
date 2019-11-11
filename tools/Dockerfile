@@ -85,7 +85,7 @@ RUN groupadd -g 751 cgts && \
         #python36-psutil \
         #python-sphinx \
         #python-subunit \
-        python2-pip \
+        python3-pip \
         #python-testrepository \
         #python-tox \
         python3-yaml \
@@ -122,8 +122,8 @@ RUN cpanm --notest Fatal && \
     cpanm --notest XML::Simple
 
 # pip installs
-RUN pip2 install python-subunit junitxml --upgrade && \
-    pip2 install tox --upgrade
+RUN pip3 install python-subunit junitxml --upgrade && \
+    pip3 install tox --upgrade
 
 # Install repo tool
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo && \
@@ -219,6 +219,7 @@ RUN echo "$MYUNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     echo "dir-listing.activate = \"enable\"" >> /etc/lighttpd/conf.d/dirlisting.conf
 
 RUN ln -s /usr/local/lighttpd/sbin/lighttpd /usr/sbin/lighttpd
+RUN ln -s /usr/bin/python3.6 /usr/bin/python
 
 # Systemd Enablement
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \

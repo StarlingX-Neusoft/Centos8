@@ -1,0 +1,29 @@
+diff --git a/lib/facter/ps.rb b/lib/facter/ps.rb
+index 9163519..02117ac 100644
+--- a/lib/facter/ps.rb
++++ b/lib/facter/ps.rb
+@@ -12,7 +12,7 @@
+ #
+ 
+ Facter.add(:ps) do
+-  setcode do 'ps -ef' end
++  setcode do 'ps -efww' end
+ end
+ 
+ Facter.add(:ps) do
+diff --git a/spec/unit/ps_spec.rb b/spec/unit/ps_spec.rb
+index 2e25a4b..20c61af 100755
+--- a/spec/unit/ps_spec.rb
++++ b/spec/unit/ps_spec.rb
+@@ -27,9 +27,9 @@ describe "ps facts" do
+     'RedHat',
+     'Debian',
+   ].each do |os|
+-    it "should return gnu/linux style ps -ef on operatingsystem #{os}" do
++    it "should return gnu/linux style ps -efww on operatingsystem #{os}" do
+       Facter.fact(:operatingsystem).stubs(:value).returns os
+-      Facter.fact(:ps).value.should == 'ps -ef'
++      Facter.fact(:ps).value.should == 'ps -efww'
+     end
+   end
+ 

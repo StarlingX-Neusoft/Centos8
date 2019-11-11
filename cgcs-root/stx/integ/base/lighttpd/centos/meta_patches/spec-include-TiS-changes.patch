@@ -1,0 +1,93 @@
+From 8f91c53ae95b97e12d4a7b16fac8f3d5195ccd52 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 20 Mar 2017 10:21:28 -0400
+Subject: [PATCH 1/4] WRS: spec-include-TiS-changes.patch
+
+---
+ SPECS/lighttpd.spec | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/SPECS/lighttpd.spec b/SPECS/lighttpd.spec
+index de52e46..7acdc84 100644
+--- a/SPECS/lighttpd.spec
++++ b/SPECS/lighttpd.spec
+@@ -62,6 +62,7 @@ Source13: http://www.lighttpd.net/light_logo.png
+ Source14: lighttpd-empty.png
+ #Source100: lighttpd-mod_geoip.c
+ #Source101: lighttpd-mod_geoip.txt
++
+ Patch0: lighttpd-1.4.39-defaultconf.patch
+ #Patch1: lighttpd-1.4.40-mod_geoip.patch
+ Patch2: lighttpd-1.4.35-system-crypto-policy.patch
+@@ -194,17 +195,19 @@ autoreconf -if
+     --libdir='%{_libdir}/lighttpd' \
+     %{confswitch mysql} \
+     %{confswitch pam} \
+-    %{confswitch ldap} \
++    --without-ldap \
+     %{confswitch attr} \
+-    %{confswitch openssl} \
++    --with-openssl \
+     %{confswitch kerberos5} \
+-    %{confswitch pcre} \
++    --with-pcre \
+     %{confswitch fam} \
+-    %{?with_webdavprops:--with-webdav-props} \
+-    %{?with_webdavlocks:--with-webdav-locks} \
++    --without-webdav-props \
++    --without-webdav-locks \
+     %{confswitch gdbm} \
+-    %{confswitch memcache} \
+-    %{confswitch lua} \
++    --without-memcache \
++    --without-lua \
++    --without-bzip2 \
++    --disable-static \
+     %{confswitch geoip} \
+     %{confswitch krb5}
+ make %{?_smp_mflags}
+@@ -223,13 +226,14 @@ install -D -p -m 0644 %{SOURCE2} \
+     %{buildroot}%{_sysconfdir}/php.d/lighttpd.ini
+ 
+ # Install our own init script (included one is old style) or systemd service
+-%if %{with systemd}
++#%if %{with systemd}
+ install -D -p -m 0644 %{SOURCE4} \
+     %{buildroot}%{_unitdir}/lighttpd.service
+-%else
++#%else
++mkdir -p /etc/rc.d/init.d
+ install -D -p -m 0755 %{SOURCE3} \
+     %{buildroot}%{_sysconfdir}/rc.d/init.d/lighttpd
+-%endif
++#%endif
+ 
+ # Install our own default web page and images
+ mkdir -p %{buildroot}%{webroot}
+@@ -267,11 +271,9 @@ echo 'D /var/run/lighttpd 0750 lighttpd lighttpd -' > \
+     %{buildroot}%{_sysconfdir}/tmpfiles.d/lighttpd.conf
+ %endif
+ 
+-
+ %clean
+ rm -rf %{buildroot}
+ 
+-
+ %pre
+ /usr/sbin/useradd -s /sbin/nologin -M -r -d %{webroot} \
+     -c 'lighttpd web server' lighttpd &>/dev/null || :
+@@ -315,11 +317,8 @@ fi
+ %config %{_sysconfdir}/lighttpd/conf.d/mod.template
+ %config %{_sysconfdir}/lighttpd/vhosts.d/vhosts.template
+ %config(noreplace) %{_sysconfdir}/logrotate.d/lighttpd
+-%if %{with systemd}
+ %{_unitdir}/lighttpd.service
+-%else
+ %{_sysconfdir}/rc.d/init.d/lighttpd
+-%endif
+ %if %{with tmpfiles}
+ %config(noreplace) %{_sysconfdir}/tmpfiles.d/lighttpd.conf
+ %endif
+-- 
+2.7.4
+

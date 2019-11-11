@@ -1,0 +1,40 @@
+From 730a5321581e70790da4e94085698fd299072be5 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 20 Mar 2017 10:21:28 -0400
+Subject: [PATCH] WRS: spec-check-content-length.patch
+
+Conflicts:
+	SPECS/lighttpd.spec
+---
+ SPECS/lighttpd.spec | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/SPECS/lighttpd.spec b/SPECS/lighttpd.spec
+index 2553b27..c27f78f 100644
+--- a/SPECS/lighttpd.spec
++++ b/SPECS/lighttpd.spec
+@@ -73,6 +73,10 @@ Patch3: lighttpd-1.4.39-socket.patch
+ #Patch7: lighttpd-1.4.42-bignum.patch
+ #Patch8: lighttpd-1.4.43-mysql.patch
+ #Patch9:  lighttpd-1.4.48-autoconf.patch
++
++# WRS Patches
++Patch100: check-content-length.patch
++
+ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+ # For the target poweredby.png image (skip requirement + provide image on EL5)
+ %if %{with systemlogos}
+@@ -184,6 +188,10 @@ Authentication module for lighttpd that uses PAM.
+ #%patch7 -p0 -b .bignum
+ #%patch8 -p0 -b .mysql
+ #%patch9 -p0 -b .autoconf
++
++# WRS Patches
++%patch100 -p1 -b .content_length
++
+ #install -p -m 0644 %{SOURCE100} src/mod_geoip.c
+ #install -p -m 0644 %{SOURCE101} mod_geoip.txt
+ 
+-- 
+2.7.4
+

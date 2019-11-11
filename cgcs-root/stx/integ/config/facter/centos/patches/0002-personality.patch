@@ -1,0 +1,93 @@
+---
+ lib/facter/personality.rb |   21 ++++++++++++++++++
+ lib/facter/subfunction.rb |   61 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 82 insertions(+)
+
+--- /dev/null
++++ b/lib/facter/personality.rb
+@@ -0,0 +1,21 @@
++#
++# personality.rb
++#
++# This fact gives the personality of this node.
++#
++require 'facter/util/file_read'
++
++Facter.add('personality') do
++  confine :kernel => :linux
++
++  setcode do
++    if release = Facter::Util::FileRead.read('/etc/platform/platform.conf')
++      if match = release.match(/^nodetype\=(.*)/)
++        match[1]
++      end
++    end
++  end
++end
++
++# vim: set ts=2 sw=2 et :
++# encoding: utf-8
+--- /dev/null
++++ b/lib/facter/subfunction.rb
+@@ -0,0 +1,61 @@
++#
++# subfunction.rb
++#
++# This fact gives the subfunction of this node.
++#
++require 'facter/util/file_read'
++
++Facter.add('subfunction') do
++  confine :kernel => :linux
++
++  setcode do
++    if release = Facter::Util::FileRead.read('/etc/platform/platform.conf')
++      if match = release.match(/^subfunction\=(.*)/)
++        match[1]
++      end
++    end
++  end
++end
++
++Facter.add('is_worker_subfunction') do
++  confine :kernel => :linux
++
++  setcode do
++    if release = Facter::Util::FileRead.read('/etc/platform/platform.conf')
++      match = release.match(/^subfunction\=.*worker/) ? true : false
++    end
++  end
++end
++
++Facter.add('is_controller_subfunction') do
++  confine :kernel => :linux
++
++  setcode do
++    if release = Facter::Util::FileRead.read('/etc/platform/platform.conf')
++      match = release.match(/^subfunction\=.*controller/) ? true : false
++    end
++  end
++end
++
++Facter.add('is_storage_subfunction') do
++  confine :kernel => :linux
++
++  setcode do
++    if release = Facter::Util::FileRead.read('/etc/platform/platform.conf')
++      match = release.match(/^subfunction\=.*storage/) ? true : false
++    end
++  end
++end
++
++Facter.add('is_lowlatency_subfunction') do
++  confine :kernel => :linux
++
++  setcode do
++    if release = Facter::Util::FileRead.read('/etc/platform/platform.conf')
++      match = release.match(/^subfunction\=.*lowlatency/) ? true : false
++    end
++  end
++end
++
++# vim: set ts=2 sw=2 et :
++# encoding: utf-8

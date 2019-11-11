@@ -1,0 +1,25 @@
+From 8665d409e8220c62bda1d1b7a6193845dc905d54 Mon Sep 17 00:00:00 2001
+From: chen-dq <chen.dq@neusoft.com>
+Date: Wed, 6 Nov 2019 21:12:11 -0500
+Subject: [PATCH] Update-package-versioning-for-TIS-format
+
+---
+ SPECS/facter.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/facter.spec b/SPECS/facter.spec
+index 97ee783..d704c21 100644
+--- a/SPECS/facter.spec
++++ b/SPECS/facter.spec
+@@ -20,7 +20,7 @@
+ 
+ Name:           facter
+ Version:        2.4.4
+-Release:        4%{?dist}
++Release:        4.el8%{?_tis_dist}.%{tis_patch_ver}
+ Summary:        Command and ruby library for gathering system information
+ Epoch:          1
+ 
+-- 
+2.18.1
+

@@ -1,0 +1,55 @@
+---
+ facter-2.4.4/lib/facter/domain.rb   |   24 +++++++++++++-----------
+ facter-2.4.4/lib/facter/uniqueid.rb |    9 +++++----
+ 2 files changed, 18 insertions(+), 15 deletions(-)
+
+--- a/facter-2.4.4/lib/facter/domain.rb
++++ b/facter-2.4.4/lib/facter/domain.rb
+@@ -33,22 +33,24 @@ Facter.add(:domain) do
+     full_hostname = 'hostname -f 2> /dev/null'
+     can_do_hostname_f = Regexp.union /Linux/i, /FreeBSD/i, /Darwin/i
+ 
+-    hostname_command = if Facter.value(:kernel) =~ can_do_hostname_f
+-                         full_hostname
+-                       elsif Facter.value(:kernel) == "windows"
+-                         windows_hostname
+-                       else
+-                         basic_hostname
+-                       end
++    # Because hostname -f doesn't work for IPv6, don't use that flag
++    # hostname_command = if Facter.value(:kernel) =~ can_do_hostname_f
++    #                      full_hostname
++    #                   elsif Facter.value(:kernel) == "windows"
++    #                     windows_hostname
++    #                   else
++    #                     basic_hostname
++    #                   end
++    hostname_command = basic_hostname
+ 
+     if name = Facter::Core::Execution.exec(hostname_command) \
+       and name =~ /.*?\.(.+$)/
+ 
+       return_value = $1
+-    elsif Facter.value(:kernel) != "windows" and domain = Facter::Core::Execution.exec('dnsdomainname 2> /dev/null') \
+-      and domain =~ /.+/
+-
+-      return_value = domain
++    # elsif Facter.value(:kernel) != "windows" and domain = Facter::Core::Execution.exec('dnsdomainname 2> /dev/null') \
++    #  and domain =~ /.+/
++    #
++    #  return_value = domain
+     elsif FileTest.exists?("/etc/resolv.conf")
+       domain = nil
+       search = nil
+--- a/facter-2.4.4/lib/facter/uniqueid.rb
++++ b/facter-2.4.4/lib/facter/uniqueid.rb
+@@ -1,4 +1,5 @@
+-Facter.add(:uniqueid) do
+-  setcode 'hostid'
+-  confine :kernel => %w{SunOS Linux AIX GNU/kFreeBSD}
+-end
++# hostid does not work with IPv6, and is not needed for Titanium cloud, so remove
++# Facter.add(:uniqueid) do
++#   setcode 'hostid'
++#   confine :kernel => %w{SunOS Linux AIX GNU/kFreeBSD}
++# end

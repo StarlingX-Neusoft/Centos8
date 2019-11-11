@@ -1,0 +1,43 @@
+From 0960bacb6c19c7af74cb77d27ae925a7af5d3410 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 20 Mar 2017 09:58:00 -0400
+Subject: [PATCH 1/2] WRS: spec-include-TiS-paches.patch
+
+---
+ SPECS/facter.spec | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/SPECS/facter.spec b/SPECS/facter.spec
+index 97ee783..7996d45 100644
+--- a/SPECS/facter.spec
++++ b/SPECS/facter.spec
+@@ -31,6 +31,13 @@ Source0:        https://downloads.puppetlabs.com/%{name}/%{name}-%{version}.tar.
+ Source1:        https://downloads.puppetlabs.com/%{name}/%{name}-%{version}.tar.gz.asc
+ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
++# WRS patches
++Patch0001:      0001-ps.patch
++Patch0002:      0002-personality.patch
++Patch0003:      0003-centos_remove-net-commands-that-can-timeout.patch
++Patch0004:      0004-centos_fix-ipv6-regex.patch
++Patch0005:      0005-Hardcode-ipaddress-fact-to-localhost.patch
++
+ # Upstream claims to only support 1.8.7 and higher
+ BuildRequires:  ruby >= 1.8.7
+ BuildRequires:  ruby-devel
+@@ -71,6 +78,12 @@ key off the values returned by facts.
+
+ %prep
+ %setup -q
++# WRS apply patches
++%patch0001 -p1
++%patch0002 -p1
++%patch0003 -p2
++%patch0004 -p2
++%patch0005 -p1
+
+ %build
+ # Nothing to build
+--
+1.8.3.1
+

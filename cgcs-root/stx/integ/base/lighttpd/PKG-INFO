@@ -1,0 +1,19 @@
+Metadata-Version: 1.1
+Name: lighttpd
+Version: 1.4.54
+Summary: Lightning fast webserver with light system requirements
+Home-page: 
+Author:
+Author-email:
+License: BSD
+
+Description:
+Secure, fast, compliant and very flexible web-server which has been optimized
+for high-performance environments. It has a very low memory footprint compared
+to other webservers and takes care of cpu-load. Its advanced feature-set
+(FastCGI, CGI, Auth, Output-Compression, URL-Rewriting and many more) make
+it the perfect webserver-software for every server that is suffering load
+problems.
+
+        
+Platform: UNKNOWN

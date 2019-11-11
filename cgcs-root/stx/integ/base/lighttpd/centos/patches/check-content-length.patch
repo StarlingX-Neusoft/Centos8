@@ -1,0 +1,79 @@
+From 65107586a55c594c44b0a97a2d6756f6a0f0a5ca Mon Sep 17 00:00:00 2001
+From: Giao Le <giao.le@windriver.com>
+Date: Mon, 27 Aug 2018 19:41:36 +0800
+Subject: [PATCH] check-length
+
+Signed-off-by: zhipengl <zhipengs.liu@intel.com>
+---
+ src/request.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/src/request.c b/src/request.c
+index d25e1e7..fe541a5 100644
+--- a/src/request.c
++++ b/src/request.c
+@@ -8,9 +8,38 @@
+ #include "log.h"
+ #include "sock_addr.h"
+ 
++#include <errno.h>
+ #include <limits.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <sys/statvfs.h>
++
++static size_t get_tempdirs_free_space(server *srv)
++{
++	int i;
++	int valid = 0;
++	size_t total = 0;
++	array *dirs = srv->srvconf.upload_tempdirs;
++
++	for (i = 0; i < (int)dirs->used; ++i) {
++		struct statvfs stat;
++		const char *name = ((data_string *)dirs->data[i])->value->ptr;
++		int ret = statvfs(name, &stat);
++
++		if (ret >= 0) {
++			size_t df = (size_t)(stat.f_bsize * stat.f_bfree);
++			total += df;
++			valid = 1;
++		}
++		else {
++			log_error_write(srv, __FILE__, __LINE__, "ssss",
++						"dir:", name,
++						"error:", strerror(errno));
++		}
++	}
++
++	return (valid) ? total : SSIZE_MAX;
++}
+ 
+ static int request_check_hostname(buffer *host) {
+ 	enum { DOMAINLABEL, TOPLABEL } stage = TOPLABEL;
+@@ -901,6 +930,22 @@ int http_request_parse(server *srv, connection *con, buffer *hdrs) {
+ 		if (!state.con_length_set) {
+ 			return http_request_header_line_invalid(srv, 411, "POST-request, but content-length missing -> 411");
+ 		}
++		/* content-length is larger than 64k */
++		if (con->request.content_length > 64*1024) {
++			size_t disk_free = get_tempdirs_free_space(srv);
++			if (con->request.content_length > disk_free) {
++				con->http_status = 413;
++				con->keep_alive = 0;
++
++				log_error_write(srv, __FILE__, __LINE__, "ssosos",
++						"not enough free space in tempdirs:",
++						"length =", (off_t) con->request.content_length,
++						"free =", (off_t) disk_free,
++						"-> 413");
++				return 0;
++			}
++		}
++
+ 		break;
+ 	default:
+ 		break;
+-- 
+2.21.0
+

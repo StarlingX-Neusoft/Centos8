@@ -1,3 +1,0 @@
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-"\C-x\C-r": re-read-init-file

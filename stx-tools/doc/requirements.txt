@@ -1,5 +1,0 @@
-sphinx>=1.6.2
-openstackdocstheme>=1.26.0 # Apache-2.0
-
-# Release Notes
-reno>=0.1.1 # Apache2

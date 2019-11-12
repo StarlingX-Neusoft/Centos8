@@ -1,0 +1,264 @@
+#!/bin/bash
+# set -x
+
+source "$SRC_BASE/build-tools/spec-utils"
+source "$SRC_BASE/build-tools/srpm-utils"
+
+CUR_DIR=`pwd`
+BUILD_DIR="$RPMBUILD_BASE"
+
+if [ "x$DATA" == "x" ]; then
+   echo "ERROR: default_build_srpm (${LINENO}): Environment variable 'DATA' not defined."
+   exit 1
+fi
+
+srpm_source_build_data $DATA
+if [ $? -ne 0 ]; then
+    echo "ERROR: default_build_srpm (${LINENO}): Failed to source build data from $DATA"
+    exit 1
+fi
+
+if [ "x$VERSION" == "x" ]; then
+    for SPEC in `find $SPECS_BASE -name '*.spec' | sort -V`; do
+       SPEC_PATH="$SPEC"
+
+       VERSION_DERIVED=`spec_evaluate '%{version}' "$SPEC_PATH" 2>> /dev/null`
+       if [ $? -ne 0 ]; then
+           echo "ERROR: default_build_srpm (${LINENO}): '%{version}' not found in '$PKG_BASE/$SPEC_PATH'"
+           VERSION_DERIVED=""
+       fi
+
+       if [ "x$VERSION_DERIVED" != "x" ]; then
+          if [ "x$VERSION" == "x" ]; then
+             VERSION=$VERSION_DERIVED
+          else
+             if [ "x$SRC_DIR" != "x" ]; then
+                echo "ERROR: default_build_srpm (${LINENO}): multiple spec files found, can't set VERSION automatically"
+                exit 1
+             fi
+          fi
+       fi
+    done
+
+    if [ "x$VERSION" == "x" ]; then
+       if [ -f $SRC_DIR/PKG-INFO ]; then
+          VERSION=$(grep '^Version:' $SRC_DIR/PKG-INFO | awk -F ': ' '{print $2}' | sed -e 's/^[[:space:]]*//')
+       fi
+    fi
+
+    if [ "x$VERSION" != "x" ]; then
+        echo "Derived VERSION=$VERSION"
+    else
+        echo "ERROR: default_build_srpm (${LINENO}): Failed to derive a good VERSION from SPEC file, and none provided."
+        exit 1
+    fi
+fi
+
+if [ "x$TAR_NAME" == "x" ]; then
+    for SPEC in `find $SPECS_BASE -name '*.spec' | sort -V`; do
+       SPEC_PATH="$SPEC"
+
+       SERVICE=`spec_find_global service "$SPEC_PATH" 2>> /dev/null`
+       if [ $? -eq 0 ]; then
+          if [ "x$TAR_NAME" == "x" ]; then
+             TAR_NAME=$SERVICE
+          else
+             if [ "x$SRC_DIR" != "x" ]; then
+                echo "ERROR: default_build_srpm (${LINENO}): multiple spec files found, can't set TAR_NAME automatically"
+                exit 1
+             fi
+          fi
+       else
+          NAME=`spec_find_tag Name "$SPEC_PATH" 2>> /dev/null`
+          if [ $? -eq 0 ]; then
+             if [ "x$TAR_NAME" == "x" ]; then
+                TAR_NAME=$NAME
+             else
+                if [ "x$SRC_DIR" != "x" ]; then
+                   echo "ERROR: default_build_srpm (${LINENO}): multiple spec files found, can't set TAR_NAME automatically"
+                   exit 1
+                fi
+             fi
+          else
+             echo "WARNING: default_build_srpm (${LINENO}): 'Name' not found in '$SPEC_PATH'"
+             NAME=""
+          fi
+       fi
+    done
+
+    if [ "x$TAR_NAME" == "x" ]; then
+        if [ -f $SRC_DIR/PKG-INFO ]; then
+            TAR_NAME=$(grep '^Name:' $SRC_DIR/PKG-INFO | awk -F ': ' '{print $2}' | sed -e 's/^[[:space:]]*//')
+        fi
+    fi
+
+    if [ "x$TAR_NAME" != "x" ]; then
+        echo "Derived TAR_NAME=$TAR_NAME"
+    else
+        echo "ERROR: default_build_srpm (${LINENO}): Failed to derive a good TAR_NAME from SPEC file, and none provided."
+        exit 1
+    fi
+fi
+
+if [ "x$TAR" == "x" ]; then
+    TAR="$TAR_NAME-$VERSION.tar.gz"
+fi
+
+SOURCE_PATH="$BUILD_DIR/SOURCES"
+TAR_PATH="$SOURCE_PATH/$TAR"
+STAGING=""
+
+if [ "x$COPY_LIST_TO_TAR" != "x" ] || [ "x$EXCLUDE_LIST_FROM_TAR" != "x" ]; then
+	STAGING="$BUILD_DIR/staging"
+	mkdir -p $STAGING
+fi
+
+mkdir -p "$BUILD_DIR/SRPMS"
+mkdir -p "$SOURCE_PATH"
+
+if [ "x$SRC_DIR" == "x" -a "x$COPY_LIST" == "x" -a "$ALLOW_EMPTY_RPM" != "true" ]; then
+   echo "ERROR: default_build_srpm (${LINENO}): '$PWD/$DATA' failed to provide at least one of 'SRC_DIR' or 'COPY_LIST'"
+   exit 1
+fi
+
+if [ "x$SRC_DIR" != "x" ]; then
+   if [ ! -d "$SRC_DIR" ]; then
+      echo "ERROR: default_build_srpm (${LINENO}): directory not found: '$SRC_DIR'"
+      exit 1
+   fi
+fi
+
+if [ "x$COPY_LIST" != "x" ]; then
+   echo "COPY_LIST: $COPY_LIST"
+   for p in $COPY_LIST; do
+      # echo "COPY_LIST: $p"
+      \cp -L -u -r -v $p $SOURCE_PATH
+      if [ $? -ne 0 ]; then
+         echo "ERROR: default_build_srpm (${LINENO}): COPY_LIST: file not found: '$p'"
+         exit 1
+      fi
+   done
+fi
+
+if [ "x$STAGING" != "x" ]; then
+   \cp -L -u -r -v $SRC_DIR $STAGING
+   echo "COPY_LIST_TO_TAR: $COPY_LIST_TO_TAR"
+   for p in $COPY_LIST_TO_TAR; do
+      # echo "COPY_LIST_TO_TAR: $p"
+      \cp -L -u -r -v $p $STAGING/$SRC_DIR
+      if [ $? -ne 0 ]; then
+         echo "ERROR: default_build_srpm (${LINENO}): COPY_LIST_TO_TAR: file not found: '$p'"
+         exit 1
+      fi
+   done   
+   echo "EXCLUDE_LIST_FROM_TAR: $EXCLUDE_LIST_FROM_TAR"
+   for p in $EXCLUDE_LIST_FROM_TAR; do
+      # echo "EXCLUDE_LIST_FROM_TAR: $p"
+      echo "rm -rf $STAGING/$SRC_DIR/$p"
+      \rm -rf $STAGING/$SRC_DIR/$p
+      if [ $? -ne 0 ]; then
+         echo "ERROR: default_build_srpm (${LINENO}): EXCLUDE_LIST_FROM_TAR: could not remove file: '$p'"
+         exit 1
+      fi
+   done   
+   
+fi
+
+TRANSFORM=`echo "$SRC_DIR" | sed 's/^\./\\./' | sed 's:^/::'`
+
+if [ "x$STAGING" != "x" ]; then
+	pushd $STAGING
+fi
+
+TAR_NEEDED=0
+if [ "x$SRC_DIR" != "x" ]; then
+    echo "SRC_DIR=$SRC_DIR"
+    if [ -f $TAR_PATH ]; then
+        n=`find . -cnewer $TAR_PATH -and ! -path './.git*' \
+                                    -and ! -path './build/*' \
+                                    -and ! -path './.pc/*' \
+                                    -and ! -path './patches/*' \
+                                    -and ! -path "./$DISTRO/*" \
+                                    -and ! -path './pbr-*.egg/*' \
+                                    | wc -l`
+        if [ $n -gt 0 ]; then
+            TAR_NEEDED=1
+        fi
+    else
+        TAR_NEEDED=1
+    fi
+fi
+
+if [ $TAR_NEEDED -gt 0 ]; then
+    echo "Creating tar file: $TAR_PATH ..."
+    tar czf  $TAR_PATH $SRC_DIR --exclude '.git*' --exclude 'build' --exclude='.pc' --exclude='patches' --exclude="$SRC_DIR/$DISTRO" --exclude='pbr-*.egg' $SRC_DIR --transform "s,^$TRANSFORM,$TAR_NAME-$VERSION,"
+    if [ $? -ne 0 ]; then
+		if [ "x$STAGING" != "x" ]; then
+			popd
+		fi
+    
+        echo "ERROR: default_build_srpm (${LINENO}): failed to create tar file, cmd: tar czf  $TAR_PATH $SRC_DIR --exclude '.git*' --exclude 'build' --exclude='.pc' --exclude='patches' --exclude="$SRC_DIR/$DISTRO" --exclude='pbr-*.egg' --transform \"s,^$TRANSFORM,$TAR_NAME-$VERSION,\""
+        exit 1
+    fi
+    echo "Created tar file: $TAR_PATH"
+else
+    echo "Tar file not needed."
+fi
+
+if [ "x$STAGING" != "x" ]; then
+	popd
+fi
+
+if [ ! -d $BUILD_DIR/SPECS ]; then
+    echo "Spec directory '$BUILD_DIR/SPECS' does not exist"
+    exit 1
+fi
+
+if [ $(ls -1 $BUILD_DIR/SPECS/*.spec | wc -l) -eq 0 ]; then
+    echo "No spec files found in spec directory '$BUILD_DIR/SPECS'"
+    exit 1
+fi
+
+for SPEC in `ls -1 $BUILD_DIR/SPECS`; do
+    SPEC_PATH="$BUILD_DIR/SPECS/$SPEC"
+    RELEASE=`spec_find_tag Release "$SPEC_PATH" 2>> /dev/null`
+    if [ $? -ne 0 ]; then
+        echo "ERROR: default_build_srpm (${LINENO}): 'Release' not found in '$SPEC_PATH'"
+    fi
+    NAME=`spec_find_tag Name "$SPEC_PATH" 2>> /dev/null`
+    if [ $? -ne 0 ]; then
+        echo "ERROR: default_build_srpm (${LINENO}): 'Name' not found in '$SPEC_PATH'"
+    fi
+    SRPM="$NAME-$VERSION-$RELEASE.src.rpm"
+    SRPM_PATH="$BUILD_DIR/SRPMS/$SRPM"
+
+    spec_validate_tis_release $SPEC_PATH
+    if [ $? -ne 0 ]; then
+        echo "TIS Validation of $SPEC_PATH failed"
+        exit 1
+    fi
+
+    BUILD_NEEDED=0
+    if [ -f $SRPM_PATH ]; then
+        n=`find . -cnewer $SRPM_PATH | wc -l`
+        if [ $n -gt 0 ]; then
+            BUILD_NEEDED=1
+        fi
+    else
+        BUILD_NEEDED=1
+    fi
+
+    if [ $BUILD_NEEDED -gt 0 ]; then
+        echo "SPEC file: $SPEC_PATH"
+        echo "SRPM build directory: $BUILD_DIR"
+        echo "TIS_PATCH_VER: $TIS_PATCH_VER"
+
+        sed -i -e "1 i%define _tis_build_type $BUILD_TYPE" $SPEC_PATH
+        sed -i -e "1 i%define tis_patch_ver $TIS_PATCH_VER" $SPEC_PATH
+        rpmbuild -bs $SPEC_PATH --define="%_topdir $BUILD_DIR"  --undefine=dist --define="_tis_dist .tis"
+    else
+        echo "SRPM build not needed"
+    fi
+done
+
+

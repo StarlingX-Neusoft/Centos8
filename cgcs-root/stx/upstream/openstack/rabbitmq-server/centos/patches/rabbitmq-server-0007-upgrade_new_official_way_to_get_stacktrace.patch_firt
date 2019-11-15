@@ -1,0 +1,113 @@
+From d8fcee5dbe9c64288e7be806b147d1b09c085926 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Fri, 15 Nov 2019 16:29:36 +0800
+Subject: [PATCH] 
+ rabbitmq-server-0006-upgrade_new_official_way_to_get_the_stacktrace
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ src/delegate.erl                   | 4 ++--
+ src/rabbit.erl                     | 4 ++--
+ src/rabbit_error_logger_file_h.erl | 4 ++--
+ src/rabbit_node_monitor.erl        | 4 ++--
+ src/rabbit_upgrade_functions.erl   | 1 +
+ src/vm_memory_monitor.erl          | 4 ++--
+ 6 files changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/src/delegate.erl b/src/delegate.erl
+index 778137c..fcc670a 100644
+--- a/src/delegate.erl
++++ b/src/delegate.erl
+@@ -197,8 +197,8 @@ safe_invoke(Pids, FunOrMFA) when is_list(Pids) ->
+ safe_invoke(Pid, FunOrMFA) when is_pid(Pid) ->
+     try
+         {ok, Pid, apply1(FunOrMFA, Pid)}
+-    catch Class:Reason ->
+-            {error, Pid, {Class, Reason, erlang:get_stacktrace()}}
++    catch Class:Reason:Stacktrace ->
++            {error, Pid, {Class, Reason, Stacktrace}}
+     end.
+ 
+ apply1({M, F, A}, Arg) -> apply(M, F, [Arg | A]);
+diff --git a/src/rabbit.erl b/src/rabbit.erl
+index f9e8231..a551e63 100644
+--- a/src/rabbit.erl
++++ b/src/rabbit.erl
+@@ -298,8 +298,8 @@ start_it(StartFun) ->
+                 catch
+                     throw:{could_not_start, _App, _Reason} = Err ->
+                         boot_error(Err, not_available);
+-                    _:Reason ->
+-                        boot_error(Reason, erlang:get_stacktrace())
++                    _:Reason:Stacktrace ->
++                        boot_error(Reason, Stacktrace)
+                 after
+                     unlink(Marker),
+                     Marker ! stop,
+diff --git a/src/rabbit_error_logger_file_h.erl b/src/rabbit_error_logger_file_h.erl
+index 930aead..fe04008 100644
+--- a/src/rabbit_error_logger_file_h.erl
++++ b/src/rabbit_error_logger_file_h.erl
+@@ -120,11 +120,11 @@ safe_handle_event(HandleEvent, Event, State) ->
+     try
+         HandleEvent(Event, State)
+     catch
+-        _:Error ->
++        _:Error:Stacktrace ->
+             io:format(
+               "Error in log handler~n====================~n"
+               "Event: ~P~nError: ~P~nStack trace: ~p~n~n",
+-              [Event, 30, Error, 30, erlang:get_stacktrace()]),
++              [Event, 30, Error, 30, Stacktrace]),
+             {ok, State}
+     end.
+ 
+diff --git a/src/rabbit_node_monitor.erl b/src/rabbit_node_monitor.erl
+index 0322aac..7c5ed81 100644
+--- a/src/rabbit_node_monitor.erl
++++ b/src/rabbit_node_monitor.erl
+@@ -709,10 +709,10 @@ register_outside_app_process(Fun, WaitForExistingProcess) ->
+ do_run_outside_app_fun(Fun) ->
+     try
+         Fun()
+-    catch _:E ->
++    catch _:E:Stacktrace ->
+             rabbit_log:error(
+               "rabbit_outside_app_process:~n~p~n~p~n",
+-              [E, erlang:get_stacktrace()])
++              [E, Stacktrace])
+     end.
+ 
+ wait_for_cluster_recovery(Condition) ->
+diff --git a/src/rabbit_upgrade_functions.erl b/src/rabbit_upgrade_functions.erl
+index 67c2a84..5b944c5 100644
+--- a/src/rabbit_upgrade_functions.erl
++++ b/src/rabbit_upgrade_functions.erl
+@@ -19,6 +19,7 @@
+ %% If you are tempted to add include("rabbit.hrl"). here, don't. Using record
+ %% defs here leads to pain later.
+ 
++-compile(nowarn_export_all).
+ -compile([export_all]).
+ 
+ -rabbit_upgrade({remove_user_scope,     mnesia, []}).
+diff --git a/src/vm_memory_monitor.erl b/src/vm_memory_monitor.erl
+index 6b04368..1aa2ffa 100644
+--- a/src/vm_memory_monitor.erl
++++ b/src/vm_memory_monitor.erl
+@@ -81,10 +81,10 @@
+ get_total_memory() ->
+     try
+         get_total_memory(os:type())
+-    catch _:Error ->
++    catch _:Error:Stacktrace ->
+             rabbit_log:warning(
+               "Failed to get total system memory: ~n~p~n~p~n",
+-              [Error, erlang:get_stacktrace()]),
++              [Error, Stacktrace]),
+             unknown
+     end.
+ 
+-- 
+2.7.4
+

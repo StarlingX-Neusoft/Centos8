@@ -1,0 +1,35 @@
+From e525726da5fdf33bc6887b0cc81dfb08ebb4ddf7 Mon Sep 17 00:00:00 2001
+From: lilong-neu <lilong-neu@neusoft.com>
+Date: Fri, 15 Nov 2019 16:39:58 +0800
+Subject: [PATCH] upgrade_new_official_way_get_stack_trace
+
+Signed-off-by: lilong-neu <lilong-neu@neusoft.com>
+---
+ SPECS/rabbitmq-server.spec | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/SPECS/rabbitmq-server.spec b/SPECS/rabbitmq-server.spec
+index 3a7d940..8d02671 100644
+--- a/SPECS/rabbitmq-server.spec
++++ b/SPECS/rabbitmq-server.spec
+@@ -22,6 +22,9 @@ Patch3: rabbitmq-server-0003-Revert-Distinct-exit-codes-for-CLI-utilities.patch
+ Patch4: rabbitmq-server-0004-Allow-guest-login-from-non-loopback-connections.patch
+ Patch5: rabbitmq-server-0005-Avoid-RPC-roundtrips-in-list-commands.patch
+ Patch6: rabbitmq-server-0006-rabbit_prelaunch-must-use-RABBITMQ_SERVER_ERL_ARGS.patch
++# NEUSOFT add 
++Patch7: rabbitmq-server-0007-upgrade_new_official_way_to_get_stacktrace.patch
++
+ Patch101: rabbitmq-common-0001-Avoid-RPC-roundtrips-while-listing-items.patch
+ Patch102: rabbitmq-common-0002-Use-proto_dist-from-command-line.patch
+ 
+@@ -63,6 +66,7 @@ scalable implementation of an AMQP broker.
+ %patch4 -p1
+ %patch5 -p1
+ %patch6 -p1
++%patch7 -p1
+ 
+ cd deps/rabbit_common
+ %patch101 -p1
+-- 
+2.7.4
+

@@ -1,0 +1,26 @@
+From 9eb2a001b8f80d1a66d4ec78d882d7d6cb4dff51 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Tue, 24 Jan 2017 12:16:38 -0500
+Subject: [PATCH 1/2] WRS: 0001-Update-package-versioning-for-TIS-format.patch
+
+Signed-off-by: zhipengl <zhipengs.liu@intel.com>
+---
+ SPECS/rabbitmq-server.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletions(-)
+
+diff --git a/SPECS/rabbitmq-server.spec b/SPECS/rabbitmq-server.spec
+index 3a7d940..435f427 100644
+--- a/SPECS/rabbitmq-server.spec
++++ b/SPECS/rabbitmq-server.spec
+@@ -5,7 +5,7 @@
+
+ Name: rabbitmq-server
+ Version: 3.6.5
+-Release: 1%{?dist}
++Release: 1.el7%{?_tis_dist}.%{tis_patch_ver}
+ License: MPLv1.1
+ Group: Development/Libraries
+ Source0: http://www.rabbitmq.com/releases/rabbitmq-server/v%{version}/%{name}-%{version}.tar.xz
+--
+1.8.3.1
+

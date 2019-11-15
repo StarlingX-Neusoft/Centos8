@@ -1,0 +1,28 @@
+From bdbcd8615e1720b4098296752a2f4273a0947a8d Mon Sep 17 00:00:00 2001
+From: Daniel Badea <daniel.badea@windriver.com>
+Date: Tue, 6 Sep 2016 15:09:39 +0000
+Subject: [PATCH] CGTS-2869 close connection on HTTP 413 Request Entity Too
+ Large
+
+Discard request body in case it's too large: close connection
+wile request is in progress.
+---
+ eventlet/wsgi.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/eventlet/wsgi.py b/eventlet/wsgi.py
+index 6af2b99..8eac966 100644
+--- a/eventlet/wsgi.py
++++ b/eventlet/wsgi.py
+@@ -525,6 +525,8 @@ class HttpProtocol(BaseHTTPServer.BaseHTTPRequestHandler):
+         finally:
+             if hasattr(result, 'close'):
+                 result.close()
++            if str(status_code[0]) == '413':
++                self.close_connection = 1
+             request_input = self.environ['eventlet.input']
+             if (request_input.chunked_input or
+                     request_input.position < (request_input.content_length or 0)):
+-- 
+1.8.3.1
+

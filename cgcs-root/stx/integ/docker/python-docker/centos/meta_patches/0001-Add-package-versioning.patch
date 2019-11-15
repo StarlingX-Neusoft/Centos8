@@ -1,0 +1,25 @@
+From 6cdb3429131939eff1921a29908bf65cb82cfb98 Mon Sep 17 00:00:00 2001
+From: chen-dq <chen.dq@neusoft.com>
+Date: Fri, 15 Nov 2019 03:12:09 -0500
+Subject: [PATCH 1/2] Add-package-versioning
+
+---
+ SPECS/python-docker.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/python-docker.spec b/SPECS/python-docker.spec
+index 5ebf252..a2fa420 100644
+--- a/SPECS/python-docker.spec
++++ b/SPECS/python-docker.spec
+@@ -18,7 +18,7 @@
+ 
+ Name:           python-%{srcname}
+ Version:        3.3.0
+-Release:        1%{?dist}
++Release:        1.el8%{?_tis_dist}.%{tis_patch_ver}
+ Summary:        A Python library for the Docker Engine API
+ License:        ASL 2.0
+ URL:            https://pypi.python.org/pypi/%{srcname}
+-- 
+2.18.1
+

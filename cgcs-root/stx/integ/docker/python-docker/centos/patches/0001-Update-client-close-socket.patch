@@ -1,0 +1,28 @@
+From cbe001760e9893015b1576cba05ebce0938038e4 Mon Sep 17 00:00:00 2001
+From: John Kung <john.kung@windriver.com>
+Date: Wed, 7 Aug 2019 14:06:04 -0400
+Subject: [PATCH 1/1] Update client close socket
+
+---
+ docker/api/client.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/docker/api/client.py b/docker/api/client.py
+index 13c292a..7df5eb1 100644
+--- a/docker/api/client.py
++++ b/docker/api/client.py
+@@ -370,7 +370,10 @@ class APIClient(
+         if stream:
+             return gen
+         else:
+-            return six.binary_type().join(gen)
++            try:
++                return six.binary_type().join(gen)
++            finally:
++                response.close()
+ 
+     def _disable_socket_timeout(self, socket):
+         """ Depending on the combination of python version and whether we're
+-- 
+1.8.3.1
+

@@ -20,10 +20,6 @@ FROM centos:8
 #ENV https_proxy "https://your.actual_https_proxy.com:your_port"
 #ENV ftp_proxy   "http://your.actual_ftp_proxy.com:your_port"
 
-ENV http_proxy  "http://child-prc.intel.com:913"
-ENV https_proxy "http://child-prc.intel.com:913"
-ENV ftp_proxy   "http://child-prc.intel.com:913"
-
 RUN echo "proxy=$http_proxy" >> /etc/yum.conf && \
     echo -e "export http_proxy=$http_proxy\nexport https_proxy=$https_proxy\n\
 export ftp_proxy=$ftp_proxy" >> /root/.bashrc
@@ -253,10 +249,10 @@ RUN chown $MYUNAME /home/$MYUNAME && \
     runuser -u $MYUNAME -- git config --global color.ui false
 
 # Customizations for mirror creation
-RUN rm /etc/yum.repos.d/CentOS-Sources.repo
-RUN rm /etc/yum.repos.d/epel.repo
-COPY centos-mirror-tools/yum.repos.d/* /etc/yum.repos.d/
-COPY centos-mirror-tools/rpm-gpg-keys/* /etc/pki/rpm-gpg/
+#RUN rm /etc/yum.repos.d/CentOS-Sources.repo
+#RUN rm /etc/yum.repos.d/epel.repo
+#COPY centos-mirror-tools/yum.repos.d/* /etc/yum.repos.d/
+#COPY centos-mirror-tools/rpm-gpg-keys/* /etc/pki/rpm-gpg/
 
 # Import GPG keys
 RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY*

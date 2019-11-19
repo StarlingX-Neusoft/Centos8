@@ -20,6 +20,10 @@ FROM centos:8
 #ENV https_proxy "https://your.actual_https_proxy.com:your_port"
 #ENV ftp_proxy   "http://your.actual_ftp_proxy.com:your_port"
 
+ENV http_proxy  "http://192.168.3.130:3333"
+ENV https_proxy "http://192.168.3.130:3333"
+ENV ftp_proxy   "http://192.168.3.130:3333"
+
 RUN echo "proxy=$http_proxy" >> /etc/yum.conf && \
     echo -e "export http_proxy=$http_proxy\nexport https_proxy=$https_proxy\n\
 export ftp_proxy=$ftp_proxy" >> /root/.bashrc
@@ -42,8 +46,8 @@ ENV container=docker
 RUN groupadd -g 751 cgts && \
     echo "mock:x:751:root" >> /etc/group && \
     echo "mockbuild:x:9001:" >> /etc/group && \
-    yum install -y epel-release && \
-    yum install -y anaconda \
+    dnf install -y epel-release && \
+    dnf install -y anaconda \
         #anaconda-help \
         anaconda-runtime \
         #autoconf-archive \
@@ -54,7 +58,7 @@ RUN groupadd -g 751 cgts && \
         bind-utils \
         cpanminus \
         createrepo \
-        #deltarpm \
+       	#deltarpm \
         expat-devel \
         isomd5sum \
         gcc \
@@ -63,7 +67,7 @@ RUN groupadd -g 751 cgts && \
         libguestfs-tools \
         libtool \
         libxml2 \
-        #lighttpd \
+        lighttpd \
         #lighttpd-fastcgi \
         #lighttpd-mod_geoip \
         net-tools \
@@ -73,17 +77,17 @@ RUN groupadd -g 751 cgts && \
         #mongodb-server \
         #pax \
         perl-CPAN \
-        #python-deltarpm \
-        #python-pep8 \
-        #python-pip \
-        #python-psutil \
+        #python3-deltarpm \
+        #python3-pep8 \
+        python3-pip \
+        #python3-psutil \
         python3-psutil \
         #python36-psutil \
-        #python-sphinx \
-        #python-subunit \
-        python3-pip \
-        #python-testrepository \
-        #python-tox \
+        #python3-sphinx \
+        #python3-subunit \
+        #python3-pip \
+        #python3-testrepository \
+        #python3-tox \
         python3-yaml \
         postgresql \
         qemu-kvm \
@@ -98,8 +102,8 @@ RUN groupadd -g 751 cgts && \
         #syslinux-utils \
         udisks2 \
         vim-enhanced \
-        wget
-        #yumdownloader
+        wget \
+        yum-utils
 
 # This image requires a set of scripts and helpers
 # for working correctly, in this section they are
@@ -181,17 +185,6 @@ RUN mkdir -p /www/run && \
 # in place sed for server root since it's expanded soon thereafter
 #     echo "server.bind = \"localhost\"" >> /etc/lighttpd/lighttpd.conf && \
 RUN echo "$MYUNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
-	yum -y install pcre-devel \
-        bzip2  \
-        bzip2-devel && \
-    wget https://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-1.4.54.tar.gz && \
-    tar zxvf lighttpd-1.4.54.tar.gz && \
-    cd "lighttpd-1.4.54" && \
-    ./autogen.sh && \
-    ./configure --prefix=/usr/local/lighttpd && \
-    make && make install && \
-    mkdir /etc/lighttpd && \
-    cp -r doc/config/* /etc/lighttpd/ && \
     mkdir -p  /var/log/lighttpd  && \
     chmod a+rwx /var/log/lighttpd/ && \
     sed -i 's%^var\.log_root.*$%var.log_root = "/www/logs"%g' /etc/lighttpd/lighttpd.conf  && \
@@ -214,7 +207,7 @@ RUN echo "$MYUNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     sed -i "s/dir-listing.activate/#dir-listing.activate/g" /etc/lighttpd/conf.d/dirlisting.conf && \
     echo "dir-listing.activate = \"enable\"" >> /etc/lighttpd/conf.d/dirlisting.conf
 
-RUN ln -s /usr/local/lighttpd/sbin/lighttpd /usr/sbin/lighttpd
+#RUN ln -s /usr/local/lighttpd/sbin/lighttpd /usr/sbin/lighttpd
 RUN ln -s /usr/bin/python3.6 /usr/bin/python
 
 # Systemd Enablement
@@ -253,6 +246,9 @@ RUN chown $MYUNAME /home/$MYUNAME && \
 #RUN rm /etc/yum.repos.d/epel.repo
 #COPY centos-mirror-tools/yum.repos.d/* /etc/yum.repos.d/
 #COPY centos-mirror-tools/rpm-gpg-keys/* /etc/pki/rpm-gpg/
+
+# Open PowerTools repo in centos8 to download rpm package
+RUN yum-config-manager --enable PowerTools
 
 # Import GPG keys
 RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY*

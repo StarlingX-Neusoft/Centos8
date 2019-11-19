@@ -1,5 +1,5 @@
 [main]
-releasever=7
+releasever=8
 cachedir=/tmp/cache/yum/$basearch/$releasever
 keepcache=0
 debuglevel=2

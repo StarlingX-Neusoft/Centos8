@@ -23,7 +23,7 @@ get_yum_command() {
         yumdownloader_extra_opts="--archlist=noarch,x86_64"
     fi
 
-    echo "yumdownloader -q -C ${YUMCONFOPT} ${RELEASEVER} $yumdownloader_extra_opts $rpm_name"
+    echo "yumdownloader -q ${YUMCONFOPT} ${RELEASEVER} $yumdownloader_extra_opts $rpm_name"
 }
 
 get_wget_command() {

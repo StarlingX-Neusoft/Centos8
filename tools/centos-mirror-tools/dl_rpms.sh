@@ -12,7 +12,7 @@ set -o nounset
 # be overridden via flags.
 
 SUDOCMD="sudo -E"
-RELEASEVER="--releasever=7"
+RELEASEVER="--releasever=8"
 YUMCONFOPT=""
 
 DL_RPMS_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}" )" )"

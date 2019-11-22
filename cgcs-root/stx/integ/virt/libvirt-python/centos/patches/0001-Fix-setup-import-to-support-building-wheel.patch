@@ -3,6 +3,7 @@ From: Don Penney <don.penney@windriver.com>
 Date: Wed, 17 Oct 2018 15:26:37 -0400
 Subject: [PATCH] Fix setup import to support building wheel
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  setup.py | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)

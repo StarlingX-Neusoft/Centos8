@@ -1,8 +1,11 @@
-From ab6bbe9d9e696a4593842588bb82bfa9738cf90a Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 15:48:20 +0800
-Subject: [PATCH] Change-group-passwd-and-uidgid
+From ac1266693665ff6a266e1123109c23a6adbb399b Mon Sep 17 00:00:00 2001
+From: Al Bailey <Al.Bailey@windriver.com>
+Date: Thu, 24 Oct 2019 11:53:01 -0500
+Subject: [PATCH] Change group,passwd,and uidgid
 
+Signed-off-by: Andy Ning <andy.ning@windriver.com>
+Signed-off-by: Al Bailey <Al.Bailey@windriver.com>
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  group  | 21 +++++++++++----------
  passwd | 18 ++++++++++--------
@@ -39,6 +42,7 @@ index 13a6276..4bbe1e0 100644
  users::100:
 +postgres:x:120:
 +nova:x:162:nova
++barbican:x:978:barbican
 +keystone:x:42424:keystone
 +neutron:x:164:neutron
 +ceilometer:x:166:ceilometer
@@ -71,6 +75,7 @@ index 8175e8b..132944e 100644
 +sysinv:x:168:168:sysinv Daemons:/var/lib/sysinv:/sbin/nologin
 +snmpd:x:169:169:net-snmp:/usr/share/snmp:/sbin/nologin
 +fm:x:195:195:fm-mgr:/var/lib/fm:/sbin/nologin
++barbican:x:982:978:Barbican Key Manager user account.:/var/lib/barbican:/sbin/nologin
 +ceilometer:x:991:166:OpenStack ceilometer Daemons:/var/lib/ceilometer:/sbin/nologin
 +keystone:x:42424:42424:OpenStack Keystone Daemons:/var/lib/keystone:/sbin/nologin
 +nova:x:994:162:OpenStack Nova Daemons:/var/lib/nova:/sbin/nologin
@@ -88,6 +93,7 @@ index e86d45e..5bfa92d 100644
 -glance	161	161	/var/lib/glance		/sbin/nologin	openstack-glance
  nova	162	162	/var/lib/nova		/sbin/nologin	openstack-nova
 -keystone	163	163	/var/lib/keystone		/sbin/nologin	openstack-keystone
++barbican	982	978	/var/lib/barbican		/sbin/nologin	openstack-barbican
 +keystone	42424	42424	/var/lib/keystone		/sbin/nologin	openstack-keystone
  quantum	164	164	/var/lib/quantum		/sbin/nologin	openstack-quantum
 -cinder	165	165	/var/lib/cinder		/sbin/nologin	openstack-cinder

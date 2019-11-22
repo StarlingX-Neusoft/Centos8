@@ -1,14 +1,15 @@
-From 50754742b9b7886cf28920d4f3dc88af652fa133 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Wed, 6 Nov 2019 15:45:19 +0800
-Subject: [PATCH 2/2] Build-python-wheel
+From 8feb14092d9db4aacd907bd8f76d90931f537eda Mon Sep 17 00:00:00 2001
+From: Don Penney <don.penney@windriver.com>
+Date: Wed, 17 Oct 2018 15:25:33 -0400
+Subject: [PATCH 2/2] Build python wheel
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
- SPECS/libvirt-python.spec | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ SPECS/libvirt-python.spec | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/SPECS/libvirt-python.spec b/SPECS/libvirt-python.spec
-index 99afd2e..fd4eb0b 100644
+index 99afd2e..0e37d46 100644
 --- a/SPECS/libvirt-python.spec
 +++ b/SPECS/libvirt-python.spec
 @@ -36,6 +36,7 @@ Name: libvirt-python
@@ -19,22 +20,16 @@ index 99afd2e..fd4eb0b 100644
  Url: http://libvirt.org
  License: LGPLv2+
  Group: Development/Libraries
-@@ -46,10 +47,14 @@ BuildRequires: libvirt-devel >= 4.5.0-1%{?dist}
- BuildRequires: python2-devel
- BuildRequires: python2-nose
- BuildRequires: python2-lxml
-+BuildRequires: python2-pip
-+BuildRequires: python2-wheel
- %else
- BuildRequires: python-devel
- BuildRequires: python-nose
- BuildRequires: python-lxml
-+BuildRequires: python2-pip
-+BuildRequires: python2-wheel
+@@ -56,6 +57,8 @@ BuildRequires: python-lxml
+ BuildRequires: python3-devel
+ BuildRequires: python3-nose
+ BuildRequires: python3-lxml
++BuildRequires: python3-pip
++BuildRequires: python3-wheel
  %endif
- %endif
- %if %{with_python3}
-@@ -109,6 +114,7 @@ of recent versions of Linux (and other OSes).
+ 
+ # Don't want provides for python shared objects
+@@ -109,6 +112,7 @@ of recent versions of Linux (and other OSes).
  
  %prep
  %setup -q
@@ -42,27 +37,27 @@ index 99afd2e..fd4eb0b 100644
  
  # Unset execute bit for example scripts; it can introduce spurious
  # RPM dependencies, like /usr/bin/python which can pull in python2
-@@ -123,6 +129,7 @@ exit 1
- 
- %if %{with_python2}
- CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
-+CFLAGS="$RPM_OPT_FLAGS" %{__python2} setup.py bdist_wheel
+@@ -126,6 +130,7 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
  %endif
  %if %{with_python3}
  CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
-@@ -131,6 +138,8 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
++CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py bdist_wheel
+ %endif
+ 
  %install
- %if %{with_python2}
- %{__python} setup.py install --skip-build --root=%{buildroot}
-+mkdir -p $RPM_BUILD_ROOT/wheels
-+install -m 644 dist/*.whl $RPM_BUILD_ROOT/wheels/
+@@ -134,6 +139,8 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
  %endif
  %if %{with_python3}
  %{__python3} setup.py install --skip-build --root=%{buildroot}
-@@ -153,6 +162,16 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
- %{python_sitearch}/libvirt_lxc.py*
- %{python_sitearch}/libvirtmod*
- %{python_sitearch}/*egg-info
++mkdir -p $RPM_BUILD_ROOT/wheels
++install -m 644 dist/*.whl $RPM_BUILD_ROOT/wheels/
+ %endif
+ 
+ %check
+@@ -169,6 +176,16 @@ CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
+ %{python3_sitearch}/__pycache__/libvirtaio.cpython-*.py*
+ %{python3_sitearch}/libvirtmod*
+ %{python3_sitearch}/*egg-info
 +
 +%package wheels
 +Summary: %{name} wheels
@@ -75,7 +70,7 @@ index 99afd2e..fd4eb0b 100644
 +
  %endif
  
- %if %{with_python3}
+ %changelog
 -- 
-1.8.3.1
+2.18.1
 

@@ -1,20 +1,22 @@
-From 6d9f4002136faf26a8976428b06acf7a2e074d22 Mon Sep 17 00:00:00 2001
+From eb190b9e956ff44223ef8b1806e0893ab89769bf Mon Sep 17 00:00:00 2001
 From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Sat, 2 Nov 2019 09:57:10 +0800
+Date: Wed, 20 Nov 2019 14:39:25 +0800
 Subject: [PATCH] close-connection-on-HTTP-413-Request-Entit
 
 Allow low_conn to retrieve/handle unread response data buffers
 in case ProtocolError or socket.error are raised while sending
 request data.
+
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
- requests/adapters.py | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ requests/adapters.py | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/requests/adapters.py b/requests/adapters.py
-index fa4d9b3..1c7be19 100644
+index fa4d9b3..b73c6a9 100644
 --- a/requests/adapters.py
 +++ b/requests/adapters.py
-@@ -466,13 +466,18 @@ class HTTPAdapter(BaseAdapter):
+@@ -466,12 +466,18 @@ class HTTPAdapter(BaseAdapter):
  
                      low_conn.endheaders()
  
@@ -24,22 +26,21 @@ index fa4d9b3..1c7be19 100644
 -                        low_conn.send(i)
 -                        low_conn.send(b'\r\n')
 -                    low_conn.send(b'0\r\n\r\n')
--
 +                    try:
 +                        for i in request.body:
 +                            low_conn.send(hex(len(i))[2:].encode('utf-8'))
 +                            low_conn.send(b'\r\n')
 +                            low_conn.send(i)
 +                            low_conn.send(b'\r\n')
-+                            low_conn.send(b'0\r\n\r\n')
++                        low_conn.send(b'0\r\n\r\n')
 +                    except (ProtocolError, socket.error) as err:
 +                        # allow low_conn to retrieve/handle unread response
 +                        # data buffers in case ProtocolError or socket.error
 +                        # are raised while sending request data
 +                        pass
+ 
                      # Receive the response from the server
                      try:
-                         # For Python 2.7, use buffering of HTTP responses
 -- 
 1.8.3.1
 

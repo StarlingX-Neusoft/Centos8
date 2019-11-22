@@ -1,8 +1,4 @@
-From 52bb106ce05f9f6aa032457bf0156d6b74db0e99 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Tue, 5 Nov 2019 15:17:16 +0800
-Subject: [PATCH 2/2] spec-build-configure-changes
-
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/net-snmp.spec | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)

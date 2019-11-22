@@ -1,8 +1,9 @@
-From d47c15bcbd25156d75a140ee528cba05028588a4 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 20:22:10 +0800
-Subject: [PATCH 11/14] ifup-eth-stop-waiting-if-link-is-up
+From 358cb3c0c8feed5ecfaa8ebfc56b7742b88bb14a Mon Sep 17 00:00:00 2001
+From: Denny Khoerniawan <denny.khoerniawan@windriver.com>
+Date: Wed, 15 Nov 2017 14:02:49 -0500
+Subject: [PATCH] ifup-eth stop waiting if link is up
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/ifup-eth | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)

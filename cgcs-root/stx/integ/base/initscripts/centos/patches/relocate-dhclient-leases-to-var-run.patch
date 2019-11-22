@@ -1,8 +1,9 @@
-From 6ef93cd334969facf20502cf423524889abb61f9 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 19:33:31 +0800
-Subject: [PATCH 02/14] relocate-dhclient-leases-to-var-run
+From 6a3a3047ad47570ccdb9b758c8417a66447be697 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Thu, 5 Oct 2017 12:31:18 -0400
+Subject: [PATCH 2/9] WRS: Patch5-relocate-dhclient-leases-to-var-run.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/network-functions | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

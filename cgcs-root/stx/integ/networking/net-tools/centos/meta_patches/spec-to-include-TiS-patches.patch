@@ -1,8 +1,9 @@
-From 147b635fa17635d1bbc3af2f8cdc523e498e99c8 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 11:50:03 +0800
-Subject: [PATCH 2/2] spec-to-include-TiS-patches
+From 24d92c7a7730e71bac4182df53d5fd6f4d7d6957 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 16:42:22 -0400
+Subject: [PATCH 1/2] WRS: spec-to-include-TiS-patches.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/net-tools.spec | 7 +++++++
  1 file changed, 7 insertions(+)

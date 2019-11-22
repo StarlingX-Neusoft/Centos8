@@ -1,8 +1,9 @@
-From 86ead5d94154b21ca2ec41bc5cd5d20598f20c21 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 20:16:45 +0800
-Subject: [PATCH 10/14] ipv6-static-route-support
+From e47e3faa2a3a35018e111dbd061a2e529cf77f9c Mon Sep 17 00:00:00 2001
+From: Kevin Smith <kevin.smith@windriver.com>
+Date: Tue, 17 Oct 2017 10:46:00 -0500
+Subject: [PATCH 1/1] ipv6 static route support
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/ifup-routes | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)

@@ -1,8 +1,9 @@
-From 97ae8e0844c8b6f5e77ce968e51b21d0507e4718 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 13:40:22 +0800
-Subject: [PATCH 3/3] security-set-immutable-attribute
+From 15d8e3a327bc4ee96845163f962837cfcb4699bb Mon Sep 17 00:00:00 2001
+From: Kam Nasim <kam.nasim@windriver.com>
+Date: Tue, 6 Feb 2018 15:25:00 -0500
+Subject: [PATCH] CGTS-8849: Security: Set immutable attribute and permissions
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/tboot.spec | 16 ++++++++++++++--
  1 file changed, 14 insertions(+), 2 deletions(-)

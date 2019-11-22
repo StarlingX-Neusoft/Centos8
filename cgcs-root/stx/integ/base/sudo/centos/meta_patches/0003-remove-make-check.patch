@@ -1,8 +1,4 @@
-From a90631a40bcf04c66cb37032e312d162d7956519 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 14:35:01 +0800
-Subject: [PATCH 3/3] remove-make-check
-
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/sudo.spec | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)

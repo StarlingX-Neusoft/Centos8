@@ -1,8 +1,9 @@
-From baf18b5bdd60dbfb24f3e925a5f2c7c4df5d2c8f Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 14:33:48 +0800
-Subject: [PATCH 2/3] spec-include-TiS-changes
+From 70046603b8d607445e2fbf5e7d934bcd43a77dc8 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 16:50:44 -0400
+Subject: [PATCH 2/4] STX: 0002-spec-include-TiS-changes.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/sudo.spec | 7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)

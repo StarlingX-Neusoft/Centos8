@@ -1,8 +1,9 @@
-From af1dd4a592c460b3861e7dd331e2dd1c77767d0a Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 20:01:00 +0800
-Subject: [PATCH 05/14] dhclient-remove-1-arg
+From 11bc780fc8c7cfc7bbc59dcd84f3735c1cabfd30 Mon Sep 17 00:00:00 2001
+From: Ludovic Beliveau <ludovic.beliveau@windriver.com>
+Date: Mon, 30 May 2016 10:12:43 -0400
+Subject: [PATCH 1/1] dhclient remove -1 arg
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/ifup-eth | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)

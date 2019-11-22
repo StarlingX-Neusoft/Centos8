@@ -1,8 +1,9 @@
-From b903bdfd52e80b53233048ab112693fc7c4a2a39 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 19:48:25 +0800
-Subject: [PATCH 04/14] support-interface-promisc
+From f50fd7a0a9b53ba475d85670a5428876e13dac36 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Thu, 5 Oct 2017 12:37:06 -0400
+Subject: [PATCH 4/9] WRS: Patch7-support-interface-promisc.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/ifdown-eth | 5 +++++
  network-scripts/ifup-eth   | 8 ++++++++

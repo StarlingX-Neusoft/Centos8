@@ -1,8 +1,27 @@
-From a3ee16a26b69700ac8359f565f733870a9a1addf Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 19:40:33 +0800
-Subject: [PATCH 03/14] dhclient-restrict-interfaces-to-those-on-c
+From bafc4d1f7971edbe7cd411fbe2ee6876ded35c6e Mon Sep 17 00:00:00 2001
+From: Allain Legacy <allain.legacy@windriver.com>
+Date: Thu, 14 Apr 2016 12:04:55 -0400
+Subject: [PATCH] CGTS-3416: dhclient: restrict interfaces to those on command
+ line only
 
+By default, the dhclient process does not respect the list of interfaces
+supplied at the command line.  It configures any interfaces found to be
+specified in the config file.  Since we customize options for each interface in
+our config file and run a separate dhclient process for each interface we end
+up with multiple dhclient processes that each service all interfaces.  This is
+undesirable because it is possible that a request is sent by process A but
+received by process B.  This leads to lease expiry events even though a valid
+request packet was returned by the server.
+
+This change introduces a "--restrict-interfaces" option to the dhclient process
+to force it to ignore all interfaces in config files other than those specified
+at the command line.
+
+To activate this change our version of ifup/ifdown has been modified to
+pass the "--restrict-interfaces" to dhclient as well as to request that each
+process use its own lease file to avoid file corruption.
+
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/ifdown-eth | 2 +-
  network-scripts/ifup-eth   | 4 ++--

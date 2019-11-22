@@ -1,8 +1,9 @@
-From 0330ca87e6b99d145d054cb88be6e51c156c762b Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Thu, 31 Oct 2019 18:15:25 +0800
-Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+From 63375de22771a9384eb9c4a90abc8ee2143a7721 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 17:30:57 -0400
+Subject: [PATCH] WRS: 0001-Update-package-versioning-for-TIS-format.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/tpm2-tools.spec | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

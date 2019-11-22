@@ -1,8 +1,17 @@
-From 073c92996547369359bef89a7da594a36fa88b02 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 20:13:38 +0800
-Subject: [PATCH 09/14] sysconfig-unsafe-usage-of-linkdelay-variable
+From 9b12287d8dade60c012969db3ae56b36d1e50966 Mon Sep 17 00:00:00 2001
+From: Allain Legacy <allain.legacy@windriver.com>
+Date: Thu, 17 Nov 2016 11:37:38 -0500
+Subject: [PATCH] sysconfig: unsafe usage of linkdelay variable
 
+If the LINKDELAY variable is an alphabetic string instead of an integer then
+the calculation in check_link_down() causes delay to be set to 0.  That causes
+the loop to never execute and for the caller to think that the link is always
+down.
+
+This does not address but is related to CGTS-5821
+
+Signed-off-by: Allain Legacy <allain.legacy@windriver.com>
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/network-functions | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

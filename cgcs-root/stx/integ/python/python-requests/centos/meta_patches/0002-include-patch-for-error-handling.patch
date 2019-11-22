@@ -1,8 +1,9 @@
-From 5bf9746d06c5126cf395bfa129bf6b7aa7c795ed Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Sat, 2 Nov 2019 09:48:10 +0800
-Subject: [PATCH 2/2] include-patch-for-error-handling
+From b99292ef32fdde60d2ec4181ee5963b93a97cdf2 Mon Sep 17 00:00:00 2001
+From: jmckenna <jason.mckenna@windriver.com>
+Date: Wed, 13 Dec 2017 09:02:40 -0500
+Subject: [PATCH 2/2] include patch for error handling
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/python-requests.spec | 2 ++
  1 file changed, 2 insertions(+)

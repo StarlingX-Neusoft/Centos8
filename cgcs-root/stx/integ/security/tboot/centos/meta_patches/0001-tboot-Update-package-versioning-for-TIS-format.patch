@@ -1,8 +1,9 @@
-From 3a506e093344b3f6b725452c36dfd1173b3aa850 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 13:33:44 +0800
-Subject: [PATCH 1/3] tboot-Update-package-versioning-for-TIS-format
+From f7ac0c586ee46b67c7b5a541ee823f459e19c5c6 Mon Sep 17 00:00:00 2001
+From: Bin Qian <bin.qian@windriver.com>
+Date: Mon, 27 Nov 2017 08:35:10 -0500
+Subject: [PATCH 1/1] WRS: 8000-TiS-tboot.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/tboot.spec | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

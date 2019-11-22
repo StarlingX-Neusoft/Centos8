@@ -1,0 +1,43 @@
+From cd3e0b0fea9588c987db119cb6d7840ace399368 Mon Sep 17 00:00:00 2001
+From: Allain Legacy <allain.legacy@windriver.com>
+Date: Thu, 17 Nov 2016 08:27:42 -0500
+Subject: [PATCH] sysconfig: affirmative check for link carrier
+
+The /sys/class/net/<iface>/carrier attribute is supposed to return 0 or 1 to
+indicate whether a link carrier is present or not.  This holds true for regular
+ethernet devices but for special devices, such as VLAN interfaces, it appears
+to be possible that it returns an error on stderr and nothing on stdout in some
+scenarios.  One such scenario is if the lower interface of a VLAN is
+administratively down then checking the carrier status of the VLAN returns
+"invalid argument".
+
+Because of the way the check_link_down() function is currently coded a failure
+to produce any output on stdout is interpreted as a sign that the link carrier
+is present.  That is, the empty string "" is not equal to "0" therefore the
+check passes.
+
+To avoid this scenario we are changing this to a more affirmative check so that
+it won't actually pass until stdout returns "1".
+
+Signed-off-by: Allain Legacy <allain.legacy@windriver.com>
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
+---
+ network-scripts/network-functions | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/network-scripts/network-functions b/network-scripts/network-functions
+index db462bf..0ab632d 100644
+--- a/network-scripts/network-functions
++++ b/network-scripts/network-functions
+@@ -459,7 +459,7 @@ check_link_down ()
+     delay=20
+     [ -n "$LINKDELAY" ] && delay=$(($LINKDELAY * 2))
+     while [ $timeout -le $delay ]; do
+-        [ "$(cat /sys/class/net/$REALDEVICE/carrier 2>/dev/null)" != "0" ] && return 1
++        [ "$(cat /sys/class/net/$REALDEVICE/carrier 2>/dev/null)" == "1" ] && return 1
+         sleep 0.5
+         timeout=$((timeout+1))
+     done
+-- 
+1.8.3.1
+

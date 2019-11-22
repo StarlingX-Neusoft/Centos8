@@ -1,8 +1,9 @@
-From 2bf949735b9feaf2dab6cde12a4a28b6ea6be4e2 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 20:34:26 +0800
-Subject: [PATCH 13/14] ifup-alias-scope
+From 59e30a344df4b661f30c0a5c629dbd13e9d88e8f Mon Sep 17 00:00:00 2001
+From: Teresa Ho <teresa.ho@windriver.com>
+Date: Mon, 17 Dec 2018 17:47:18 -0500
+Subject: [PATCH 1/1] WRS: Patch13: ifup-alias-scope.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/ifup-aliases | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)

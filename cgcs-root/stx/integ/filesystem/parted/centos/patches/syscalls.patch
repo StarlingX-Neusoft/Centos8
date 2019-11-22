@@ -1,8 +1,9 @@
-From ad0c8fcb211ec3f41496f04b0a0a9ccb2b3eba22 Mon Sep 17 00:00:00 2001
-From: Fedora Ninjas <parted-owner@fedoraproject.org>
-Date: Sat, 2 Nov 2019 15:50:06 +0800
-Subject: [PATCH] syscalls
+From 0da33d97a8c20125922b5967988a2849d801ca0c Mon Sep 17 00:00:00 2001
+From: Allain Legacy <allain.legacy@windriver.com>
+Date: Fri, 28 Sep 2018 02:28:30 +0800
+Subject:
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  libparted/arch/linux.c | 11 +++++++++++
  1 file changed, 11 insertions(+)

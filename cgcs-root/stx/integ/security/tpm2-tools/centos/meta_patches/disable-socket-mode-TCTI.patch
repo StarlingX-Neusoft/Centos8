@@ -1,8 +1,9 @@
-From 1f2ee4452b6d966e28dcdb92db21451d2581fb11 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Thu, 31 Oct 2019 18:16:35 +0800
-Subject: [PATCH 2/2] disable-socket-mode-TCTI
+From e54d19f53dcd78d0aaceb30d1fb89eebefc1c066 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 17:30:56 -0400
+Subject: [PATCH 1/2] WRS: disable-socket-mode-TCTI.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/tpm2-tools.spec | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

@@ -1,8 +1,9 @@
-From 929ce70fee6f143f3f07e6fc8835c0b3dc44f2d1 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 11:52:30 +0800
-Subject: [PATCH] 1000-tboot-for-tis
+From c2edea1ff347242a70075808652fa1ad4c86037a Mon Sep 17 00:00:00 2001
+From: Bin Qian <bin.qian@windriver.com>
+Date: Mon, 27 Nov 2017 08:35:11 -0500
+Subject: [PATCH 1/1] WRS: Patch1: 9000-tboot-for-tis.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  tboot/20_linux_tboot     | 21 ++++++++++++---------
  tboot/20_linux_xen_tboot |  2 +-

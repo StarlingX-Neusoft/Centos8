@@ -1,8 +1,9 @@
-From 6b370f50ff9105e1cb77f52f80cd271162323190 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 15:35:01 +0800
-Subject: [PATCH 2/2] WRS-change-passwd-group-uidgid
+From e3aba238a88f73392d832b5ae366466f783adce4 Mon Sep 17 00:00:00 2001
+From: zhipengl <zhipengs.liu@intel.com>
+Date: Sun, 18 Nov 2018 10:06:23 +0000
+Subject: [PATCH] WRS: 0001-patch-passwd-group.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/setup.spec | 5 +++++
  1 file changed, 5 insertions(+)

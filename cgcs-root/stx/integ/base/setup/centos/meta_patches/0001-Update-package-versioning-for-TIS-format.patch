@@ -1,8 +1,9 @@
-From f26118287a90951fa9df28e1f7e9568384ff2db2 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 15:32:35 +0800
-Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+From 667cc2ccdd4451ce9d943064d714bcf1a8d1e4ed Mon Sep 17 00:00:00 2001
+From: Don Penney <don.penney@windriver.com>
+Date: Mon, 26 Sep 2016 17:40:54 -0400
+Subject: [PATCH 09/15] Update package versioning for TIS format
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/setup.spec | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

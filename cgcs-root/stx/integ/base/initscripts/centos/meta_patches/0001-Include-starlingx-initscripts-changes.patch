@@ -1,0 +1,63 @@
+From 764ce9e69477b47577fc0231f4a0190b119937f7 Mon Sep 17 00:00:00 2001
+From: Joseph Richard <joseph.richard@windriver.com>
+Date: Tue, 19 Nov 2019 13:06:43 -0500
+Subject: [PATCH] Include starlingx initscripts changes
+
+This is build with build-pkgs --edit initscripts, and then rebased with
+git rebase -i --root, with all existing meta-patches squashed into this
+commit, and then the new meta-patch created from the output of
+git format-patch HEAD~
+
+Signed-off-by: Joseph Richard <joseph.richard@windriver.com>
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
+---
+ SPECS/initscripts.spec | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/SPECS/initscripts.spec b/SPECS/initscripts.spec
+index 4835491..80820b8 100644
+--- a/SPECS/initscripts.spec
++++ b/SPECS/initscripts.spec
+@@ -19,7 +19,7 @@ Requires:         gawk                       \
+ Name:             initscripts
+ Summary:          Basic support for legacy System V init scripts
+ Version:          10.00.1
+-Release:          1%{?dist}
++Release:          1.el8%{?_tis_dist}.%{tis_patch_ver}
+ 
+ License:          GPLv2
+ 
+@@ -54,6 +54,20 @@ Provides:         /sbin/service
+ 
+ Obsoletes:        %{name}            < 9.82-2
+ 
++Patch1: support-interface-scriptlets.patch
++Patch2: relocate-dhclient-leases-to-var-run.patch
++Patch3: dhclient-restrict-interfaces-to-those-on-c.patch
++Patch4: support-interface-promisc.patch
++Patch5: 0001-dhclient-remove-1-arg.patch
++Patch6: 0001-force-delay-check-link-down.patch
++Patch7: run-ifdown-on-all-interfaces.patch
++Patch8: sysconfig-affirmative-check-for-link-carrier.patch
++Patch9: sysconfig-unsafe-usage-of-linkdelay-variable.patch
++Patch10: ipv6-static-route-support.patch
++Patch11: ifup-eth-stop-waiting-if-link-is-up.patch
++Patch12: ifup-alias-scope.patch
++Patch13: ifup-alias-check-ipaddr.patch
++
+ # === PATCHES =================================================================
+ 
+ # NOTE: 'autosetup' macro (below) uses 'git' for applying the patches:
+@@ -265,9 +279,6 @@ fi
+ 
+ # NOTE: /etc/profile.d/ is owned by setup package.
+ #       /etc/sysconfig/ is owned by filesystem package.
+-%dir %{_sysconfdir}/rc.d
+-%dir %{_sysconfdir}/rc.d/init.d
+-%dir %{_sysconfdir}/rc.d/rc[0-6].d
+ %dir %{_sysconfdir}/sysconfig/console
+ %dir %{_sysconfdir}/sysconfig/modules
+ %dir %{_libexecdir}/%{name}
+-- 
+2.18.1
+

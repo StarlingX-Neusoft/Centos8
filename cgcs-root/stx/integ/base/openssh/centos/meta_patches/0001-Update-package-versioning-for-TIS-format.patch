@@ -1,8 +1,10 @@
-From 5276ac3b8b6e8a90de670290c03978640fceb20f Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Sat, 2 Nov 2019 17:15:03 +0800
-Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+From 4da56227f47a96f37eb0e46e0222f7e1d2f95c2b Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 15:32:16 -0400
+Subject: 0001-Update-package-versioning-for-TIS-format.patch
 
+Signed-off-by: zhipengl <zhipengs.liu@intel.com>
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/openssh.spec | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

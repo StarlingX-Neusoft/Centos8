@@ -1,8 +1,9 @@
-From ae315127367fb56207341a4f744f43f47b66ef34 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Sat, 2 Nov 2019 09:46:58 +0800
-Subject: [PATCH 1/2] Update-package-versioning-for-TIS-format
+From 9e05fbda393fe0ed6cb581c33ba19a14ab07abb6 Mon Sep 17 00:00:00 2001
+From: jmckenna <jason.mckenna@windriver.com>
+Date: Wed, 13 Dec 2017 09:02:08 -0500
+Subject: [PATCH 1/2] Update package versioning for TIS format
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/python-requests.spec | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

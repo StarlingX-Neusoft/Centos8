@@ -1,8 +1,9 @@
-From 616127964cd7d63578b3c5982f6c7ac6232941f0 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 20:35:57 +0800
-Subject: [PATCH 14/14] ifup-alias-check-ipaddr
+From a45766732beaa475d48907824666e501bacc69db Mon Sep 17 00:00:00 2001
+From: Teresa Ho <teresa.ho@windriver.com>
+Date: Wed, 25 Sep 2019 15:56:36 -0400
+Subject: [PATCH 1/1] Patch14: ifup-alias-check-ipaddr
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/ifup-aliases | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

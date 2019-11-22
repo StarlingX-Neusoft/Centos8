@@ -3,6 +3,7 @@ From: "zhao.shuai" <zhaos@neusoft.com>
 Date: Mon, 4 Nov 2019 10:22:31 +0800
 Subject: [PATCH 2/3] openldap-spec-file
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/openldap.spec | 7 +++++--
  1 file changed, 5 insertions(+), 2 deletions(-)

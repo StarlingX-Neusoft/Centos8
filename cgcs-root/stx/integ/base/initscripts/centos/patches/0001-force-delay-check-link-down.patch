@@ -1,8 +1,9 @@
-From 6758af363f039ba4f7e6234d02feab008792a3cb Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 20:04:22 +0800
-Subject: [PATCH 06/14] force-delay-check-link-down
+From 6afaa4c6e0f4ca0821da986e3e4cc1a0bf56bebb Mon Sep 17 00:00:00 2001
+From: Ludovic Beliveau <ludovic.beliveau@windriver.com>
+Date: Thu, 9 Jun 2016 23:05:17 -0400
+Subject: [PATCH 1/1] force-delay-check-link-down
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  network-scripts/network-functions | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

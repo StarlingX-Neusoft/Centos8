@@ -1,8 +1,9 @@
-From 9ffe510612701aa6bb2f72bfefda53c3ce886bc3 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Fri, 1 Nov 2019 13:36:33 +0800
-Subject: [PATCH 2/3] TiS-tboot
+From 16a82ea84332a117c4524caaa4209b912e18e888 Mon Sep 17 00:00:00 2001
+From: Bin Qian <bin.qian@windriver.com>
+Date: Wed, 6 Dec 2017 08:47:12 -0500
+Subject: [PATCH 1/1] TiS tboot
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  SPECS/tboot.spec | 4 ++++
  1 file changed, 4 insertions(+)

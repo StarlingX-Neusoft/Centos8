@@ -1,8 +1,9 @@
-From 70c62527e3e261898003a25aab5ada3515e49f08 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 20:08:39 +0800
-Subject: [PATCH 07/14] run-ifdown-on-all-interfaces
+From 76a5f892c132eed05a6cbffbdba3306e50b6a672 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Thu, 5 Oct 2017 12:40:38 -0400
+Subject: [PATCH 7/9] WRS: Patch10-run-ifdown-on-all-interfaces.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  etc/rc.d/init.d/network | 3 +++
  1 file changed, 3 insertions(+)

@@ -1,8 +1,10 @@
-From 0b53ec749ec625edcadf84f15e76e8507cd3ad55 Mon Sep 17 00:00:00 2001
-From: "zhao.shuai" <zhaos@neusoft.com>
-Date: Mon, 4 Nov 2019 14:13:33 +0800
-Subject: [PATCH 2/2] net-tools-ifconfig-no-ifstate-on-flush
+From c8c0e58c037b4183672666be22782d96d0fc3267 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 16:42:25 -0400
+Subject: [PATCH 2/2] WRS: Patch23:
+ net-tools-ifconfig-no-ifstate-on-flush.patch
 
+Signed-off-by: chendongqi <chen.dq@neusoft.com>
 ---
  ifconfig.c | 5 +++++
  1 file changed, 5 insertions(+)

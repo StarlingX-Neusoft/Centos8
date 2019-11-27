@@ -1,0 +1,61 @@
+From c3448b1536d50291dc5ca49dce5957c39403cc82 Mon Sep 17 00:00:00 2001
+From: Bin Qian <bin.qian@windriver.com>
+Date: Wed, 29 Aug 2018 11:00:22 -0400
+Subject: [PATCH 1/1] avoid failing service when I/F is down
+
+---
+ heartbeat/IPaddr2 | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
+
+diff --git a/heartbeat/IPaddr2 b/heartbeat/IPaddr2
+index 86009b9..2da5c5e 100755
+--- a/heartbeat/IPaddr2
++++ b/heartbeat/IPaddr2
+@@ -968,12 +968,8 @@ ip_start() {
+ 		then
+ 			exit $OCF_SUCCESS
+ 		else
+-			if [ "$OCF_RESKEY_dc" = "yes" ]; then
+-				ocf_log info "NIC $NIC is DOWN..."
+-				exit $OCF_SUCCESS
+-			else
+-				exit $OCF_ERR_GENERIC
+-			fi
++			ocf_log info "NIC $NIC is DOWN..."
++			exit $OCF_SUCCESS
+ 		fi
+ 	fi
+ 	
+@@ -1037,12 +1033,8 @@ ip_start() {
+ 	then
+ 		exit $OCF_SUCCESS
+ 	else
+-		if [ "$OCF_RESKEY_dc" = "yes" ]; then
+-			ocf_log info "NIC $NIC is DOWN"
+-			exit $OCF_SUCCESS
+-		else
+-			exit $OCF_ERR_GENERIC
+-		fi
++		ocf_log info "NIC $NIC is DOWN"
++		exit $OCF_SUCCESS
+ 	fi
+ }
+ 
+@@ -1123,12 +1115,8 @@ ip_monitor() {
+ 		then
+ 			return $OCF_SUCCESS
+ 		else
+-			if [ "$OCF_RESKEY_dc" = "yes" ]; then
+-				ocf_log info "NIC $NIC is DOWN"
+-				return $OCF_SUCCESS
+-			else
+-				return $OCF_NOT_RUNNING
+-			fi
++			ocf_log info "NIC $NIC is DOWN"
++			exit $OCF_SUCCESS
+ 		fi
+ 		;;
+ 	partial|no|partial2)
+-- 
+1.8.3.1
+

@@ -1,0 +1,27 @@
+From d48b31c66589b0c5a9831dcf4123a80fa8ccd89a Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Tue, 6 Mar 2018 12:19:53 -0600
+Subject: [PATCH 1/1] Disable creation of the debug package as it causes a seg
+ fault in dwz
+
+---
+ SPECS/resource-agents.spec | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/SPECS/resource-agents.spec b/SPECS/resource-agents.spec
+index 2536cb7..e5fbbeb 100644
+--- a/SPECS/resource-agents.spec
++++ b/SPECS/resource-agents.spec
+@@ -35,6 +35,9 @@
+   } || %{?__transaction_systemd_inhibit:1}%{?!__transaction_systemd_inhibit:0}%{nil \
+   } || %(test -f /usr/lib/os-release; test $? -ne 0; echo $?))
+ 
++# Disable debug package, it currently triggers a segfault in dwz tool
++%define  debug_package  %{nil}
++
+ %global upstream_prefix ClusterLabs-resource-agents
+ %global upstream_version e711383f
+ 
+-- 
+1.8.3.1
+

@@ -1,0 +1,16 @@
+Metadata-Version: 1.1
+Name: resource-agents
+Version: 3.9.5
+Summary: Open Source HA Reusable Cluster Resource Scripts
+Home-page: 
+Author:
+Author-email:
+License: GPLv2+ and LGPLv2+
+
+Description:
+A set of scripts to interface with several services to operate in a
+High Availability environment for both Pacemaker and rgmanager
+service managers.
+
+        
+Platform: UNKNOWN

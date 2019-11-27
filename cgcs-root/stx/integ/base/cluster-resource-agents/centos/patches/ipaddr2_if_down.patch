@@ -1,0 +1,58 @@
+From 573f0835621c5e64c6270260f607624aea29d21a Mon Sep 17 00:00:00 2001
+From: Bin Qian <bin.qian@windriver.com>
+Date: Sat, 21 Jan 2017 02:36:39 -0500
+Subject: [PATCH 1/1] ipaddr2_if_down
+
+---
+ heartbeat/IPaddr2 | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/heartbeat/IPaddr2 b/heartbeat/IPaddr2
+index 67a7ca3..2cd822d 100755
+--- a/heartbeat/IPaddr2
++++ b/heartbeat/IPaddr2
+@@ -968,7 +968,12 @@ ip_start() {
+ 		then
+ 			exit $OCF_SUCCESS
+ 		else
+-			exit $OCF_ERR_GENERIC
++			if [ "$OCF_RESKEY_dc" = "yes" ]; then
++				ocf_log info "NIC $NIC is DOWN..."
++				exit $OCF_SUCCESS
++			else
++				exit $OCF_ERR_GENERIC
++			fi
+ 		fi
+ 	fi
+ 	
+@@ -1032,7 +1037,12 @@ ip_start() {
+ 	then
+ 		exit $OCF_SUCCESS
+ 	else
+-		exit $OCF_ERR_GENERIC
++		if [ "$OCF_RESKEY_dc" = "yes" ]; then
++			ocf_log info "NIC $NIC is DOWN"
++			exit $OCF_SUCCESS
++		else
++			exit $OCF_ERR_GENERIC
++		fi
+ 	fi
+ }
+ 
+@@ -1113,7 +1123,12 @@ ip_monitor() {
+ 		then
+ 			return $OCF_SUCCESS
+ 		else
+-			return $OCF_NOT_RUNNING
++			if [ "$OCF_RESKEY_dc" = "yes" ]; then
++				ocf_log info "NIC $NIC is DOWN"
++				return $OCF_SUCCESS
++			else
++				return $OCF_NOT_RUNNING
++			fi
+ 		fi
+ 		;;
+ 	partial|no|partial2)
+-- 
+1.9.1
+

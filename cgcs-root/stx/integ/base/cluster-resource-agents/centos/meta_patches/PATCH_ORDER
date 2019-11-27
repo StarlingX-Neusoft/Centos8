@@ -1,0 +1,5 @@
+spec-include-TiS-patches.patch
+spec-avoid-dir-collisions.patch
+0001-Update-package-versioning-for-TIS-format.patch
+Disable-creation-of-the-debug-package.patch
+spec-upgrade-buildRequires-python-2to3.patch

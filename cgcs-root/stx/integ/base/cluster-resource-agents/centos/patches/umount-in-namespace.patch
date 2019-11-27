@@ -1,0 +1,27 @@
+From eb45b8271ce64a046d41c93b1cffd641245ce55f Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 15:12:48 -0400
+Subject: [PATCH 05/13] WRS: Patch1109: umount-in-namespace.patch
+
+---
+ heartbeat/Filesystem | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/heartbeat/Filesystem b/heartbeat/Filesystem
+index f536298..05e4097 100755
+--- a/heartbeat/Filesystem
++++ b/heartbeat/Filesystem
+@@ -503,6 +503,10 @@ signal_processes() {
+ }
+ try_umount() {
+ 	local SUB=$1
++
++    # We need to ensure we umount in namespaces, too
++    /usr/sbin/umount-in-namespace $SUB
++
+ 	$UMOUNT $umount_force $SUB
+ 	list_mounts | grep -q " $SUB " >/dev/null 2>&1 || {
+ 		ocf_log info "unmounted $SUB successfully"
+-- 
+1.9.1
+

@@ -1,0 +1,150 @@
+From 577055560d55b388d479ef398ffd839792dc1996 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 15:12:54 -0400
+Subject: [PATCH 06/13] WRS: Patch1110: lvm_vg_activation.patch
+
+---
+ heartbeat/LVM | 117 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 116 insertions(+), 1 deletion(-)
+
+diff --git a/heartbeat/LVM b/heartbeat/LVM
+index b0ca87a..38092f9 100755
+--- a/heartbeat/LVM
++++ b/heartbeat/LVM
+@@ -222,6 +222,81 @@ LVM_status() {
+ }
+ 
+ #
++#    Activate one volume explicitly.
++#
++activate_volume() {
++        ocf_run lvchange $1 /dev/${2}/$3
++        if [ $? -eq 0 ] ; then
++            ocf_log info "Succesfully activated $LV."
++        else
++            ocf_log err "Problem activating $LV."
++        fi
++}
++
++#
++#    Kick off parallel activation of all volumes
++#
++activate_all_volumes() {
++   VG=$1
++   shift
++   lvchange_args="$*"
++
++   # Get the list of volumes, without the first line which is column headings.
++   VOLS=`lvs $VG |tail -n +2`
++
++   while read -r LINE; do
++       # Convert the line into an array.
++       LINE_ARRAY=($LINE)
++
++       # First array element is the volume/snapshot name.
++       LV=${LINE_ARRAY[0]}
++
++       # Third array element is the attributes.
++       ATTR=${LINE_ARRAY[2]}
++
++       # Fifth character in the attributes is "a" if it's active.
++       ACTIVE=${ATTR:4:1}
++       if [ "$ACTIVE" == "a" ]; then
++         ocf_log info "$LV is already active."
++         continue
++       fi
++
++       SNAPSHOT_ORIGIN=${LINE_ARRAY[4]}
++       if [ "$SNAPSHOT_ORIGIN" != "" ] ; then
++         # If this is a snapshot, don't activate it.
++         continue
++       fi
++
++       ( activate_volume "$*" $VG $LV ) &
++    done <<< "$VOLS"
++}
++
++#
++#    Scan for inactive volumes and log any that are found.
++#
++log_inactive_volumes() {
++    # Get the list of volumes, without the first line which is column headings.
++    VOLS=`lvs $1 |tail -n +2`
++
++    while read -r LINE; do
++        # Convert the line into an array.
++        LINE_ARRAY=($LINE)
++
++        # First array element is the volume/snapshot name.
++        LV=${LINE_ARRAY[0]}
++
++        # Third array element is the attributes.
++        ATTR=${LINE_ARRAY[2]}
++
++        # Fifth character in the attributes is "a" if it's active.
++        ACTIVE=${ATTR:4:1}
++        if [ "$ACTIVE" != "a" ]; then
++            ocf_log err "Volume $LV is not active after expiry of timeout."
++        fi
++    done <<< "$VOLS"
++}
++
++#
+ #	Enable LVM volume
+ #
+ LVM_start() {
+@@ -241,10 +316,50 @@ LVM_start() {
+ 		ocf_run vgscan
+ 	fi
+ 
++	 # Kick off activation of all volumes.  If it doesn't complete within
++	# the timeout period, then we'll log the not-yet-activated volumes and
++	# continue on.
+ 	lvm_pre_activate || exit
+-	ocf_run vgchange $vgchange_activate_options $vg
++	(ocf_run vgchange $vgchange_activate_options $1) & PID=$!
+ 	lvm_post_activate $?
+ 
++	# Check every second for up to TIMEOUT seconds whether the vgchange has
++	# completed.
++	TIMEOUT=300
++	TIMED_OUT=true
++	SECONDS=0;
++	PARALLEL_ACTIVATE_DELAY=10
++	PARALLEL_ACTIVATE_DONE=false
++	while [ $SECONDS -lt $TIMEOUT ] ; do
++		kill -0 $PID &> /dev/null
++		if [ $? -eq 1 ] ; then
++		# process with pid of $PID doesn't exist, vgchange command completed
++			TIMED_OUT=false
++			break
++		fi
++		if [ $SECONDS -ge $PARALLEL_ACTIVATE_DELAY ] && \
++			[ "$PARALLEL_ACTIVATE_DONE" != true ] && \
++			[ "$1" == "cinder-volumes" ] ; then
++			# This will kick off parallel activation of all LVs in the VG.
++			# The delay is to ensure the VG is activated first.
++			PARALLEL_ACTIVATE_DONE=true
++			ocf_log info Explicitly activating all volumes in $1 with: $vgchange_activate_options
++			activate_all_volumes $1 $vgchange_activate_options
++		fi
++		sleep 1
++	done
++
++	if [ "$TIMED_OUT" = true ] ; then
++		ocf_log err "Timed out running ocf_run vgchange $vgchange_activate_options $1"
++		log_inactive_volumes $1
++	else
++		# Child process completed, get its status.
++		wait $PID
++		if [ $? -ne 0 ] ; then
++			return $OCF_ERR_GENERIC
++		fi
++	fi
++
+ 	if LVM_status $vg; then
+ 		: OK Volume $vg activated just fine!
+ 		return $OCF_SUCCESS 
+-- 
+2.7.4
+

@@ -1,0 +1,53 @@
+From 8c725e6e7a4931066488a74227f902269850a263 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 15:11:58 -0400
+Subject: [PATCH 02/10] WRS: spec-avoid-dir-collisions.patch
+
+Signed-off-by: zhipengl <zhipengs.liu@intel.com>
+---
+ SPECS/resource-agents.spec | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/SPECS/resource-agents.spec b/SPECS/resource-agents.spec
+index ec85fc2..bb96485 100644
+--- a/SPECS/resource-agents.spec
++++ b/SPECS/resource-agents.spec
+@@ -725,14 +725,11 @@ rm -rf %{buildroot}
+ %endif
+ 
+ %if %{with linuxha}
+-%dir /usr/lib/ocf
+-%dir /usr/lib/ocf/resource.d
+-%dir /usr/lib/ocf/lib
++/usr/lib/ocf/lib/heartbeat/*
+ 
+-/usr/lib/ocf/lib/heartbeat
+-
+-/usr/lib/ocf/resource.d/heartbeat
+-/usr/lib/ocf/resource.d/openstack
++/usr/lib/ocf/resource.d/heartbeat/*
++/usr/lib/ocf/resource.d/heartbeat/.ocf-*
++/usr/lib/ocf/resource.d/openstack/*
+ %if %{with rgmanager}
+ /usr/lib/ocf/resource.d/redhat
+ %endif
+@@ -758,8 +755,6 @@ rm -rf %{buildroot}
+ 
+ %{_includedir}/heartbeat
+ 
+-%dir %attr (1755, root, root)	%{_var}/run/resource-agents
+-
+ %{_mandir}/man7/*.7*
+ 
+ ###
+@@ -912,7 +907,6 @@ rm -rf %{buildroot}
+ %exclude %{_mandir}/man8/ldirectord.8.gz
+ 
+ # For compatability with pre-existing agents
+-%dir %{_sysconfdir}/ha.d
+ %{_sysconfdir}/ha.d/shellfuncs
+ 
+ %{_libexecdir}/heartbeat
+-- 
+1.8.3.1
+

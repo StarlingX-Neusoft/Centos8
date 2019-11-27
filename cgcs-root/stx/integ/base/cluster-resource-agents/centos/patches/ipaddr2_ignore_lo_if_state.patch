@@ -1,0 +1,43 @@
+From 81bb87debd2a683bad2173d6cb16327c776fe3b3 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 15:13:46 -0400
+Subject: [PATCH 13/13] WRS: Patch1119: ipaddr2_ignore_lo_if_state.patch
+
+---
+ heartbeat/IPaddr2 | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/heartbeat/IPaddr2 b/heartbeat/IPaddr2
+index 2cd822d..59620d2 100755
+--- a/heartbeat/IPaddr2
++++ b/heartbeat/IPaddr2
+@@ -964,7 +964,7 @@ ip_start() {
+ 	local ip_status=`ip_served`
+ 
+ 	if [ "$ip_status" = "ok" ]; then
+-		if [ -n "`ip link show $NIC | grep \"state UP\"`" ]
++		if [ -n "`ip link show $NIC | grep \"state UP\"`" ] || [ "$NIC" = "lo" ]
+ 		then
+ 			exit $OCF_SUCCESS
+ 		else
+@@ -1033,7 +1033,7 @@ ip_start() {
+ 		fi
+ 		;;
+ 	esac
+-	if [ -n "`ip link show $NIC | grep \"state UP\"`" ]
++	if [ -n "`ip link show $NIC | grep \"state UP\"`" ] || [ "$NIC" = "lo" ]
+ 	then
+ 		exit $OCF_SUCCESS
+ 	else
+@@ -1119,7 +1119,7 @@ ip_monitor() {
+ 	case $ip_status in
+ 	ok)
+ 		run_arp_sender refresh
+-		if [ -n "`ip link show $NIC | grep \"state UP\"`" ]
++		if [ -n "`ip link show $NIC | grep \"state UP\"`" ] || [ "$NIC" = "lo" ]
+ 		then
+ 			return $OCF_SUCCESS
+ 		else
+-- 
+1.9.1
+

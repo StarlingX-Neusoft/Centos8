@@ -1,0 +1,88 @@
+From 386e3919b703c5a3d06edfc5b078ab67604139ab Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 15:12:59 -0400
+Subject: [PATCH 07/13] WRS: Patch1111: pgsql.patch
+
+---
+ heartbeat/pgsql  | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/heartbeat/pgsql b/heartbeat/pgsql
+index 768608e..28cc046 100755
+--- a/heartbeat/pgsql
++++ b/heartbeat/pgsql
+@@ -46,6 +46,7 @@ get_pgsql_param() {
+ OCF_RESKEY_pgctl_default=/usr/bin/pg_ctl
+ OCF_RESKEY_psql_default=/usr/bin/psql
+ OCF_RESKEY_pgdata_default=/var/lib/pgsql/data
++OCF_RESKEY_pgconf_default=/etc/postgresql
+ OCF_RESKEY_pgdba_default=postgres
+ OCF_RESKEY_pghost_default=""
+ OCF_RESKEY_pgport_default=5432
+@@ -78,11 +79,12 @@ OCF_RESKEY_replication_slot_name_default=""
+ : ${OCF_RESKEY_pgctl=${OCF_RESKEY_pgctl_default}}
+ : ${OCF_RESKEY_psql=${OCF_RESKEY_psql_default}}
+ : ${OCF_RESKEY_pgdata=${OCF_RESKEY_pgdata_default}}
++: ${OCF_RESKEY_pgconf=${OCF_RESKEY_pgconf_default}}
+ : ${OCF_RESKEY_pgdba=${OCF_RESKEY_pgdba_default}}
+ : ${OCF_RESKEY_pghost=${OCF_RESKEY_pghost_default}}
+ : ${OCF_RESKEY_pgport=${OCF_RESKEY_pgport_default}}
+ : ${OCF_RESKEY_pglibs=${OCF_RESKEY_pglibs_default}}
+-: ${OCF_RESKEY_config=${OCF_RESKEY_pgdata}/postgresql.conf}
++: ${OCF_RESKEY_config=${OCF_RESKEY_pgconf}/postgresql.conf}
+ : ${OCF_RESKEY_start_opt=${OCF_RESKEY_start_opt_default}}
+ : ${OCF_RESKEY_ctl_opt=${OCF_RESKEY_ctl_opt_default}}
+ : ${OCF_RESKEY_pgdb=${OCF_RESKEY_pgdb_default}}
+@@ -180,6 +182,14 @@ Path to PostgreSQL data directory.
+ <content type="string" default="${OCF_RESKEY_pgdata_default}" />
+ </parameter>
+ 
++<parameter name="pgconf" unique="0" required="0">
++<longdesc lang="en">
++Path to PostgreSQL config directory.
++</longdesc>
++<shortdesc lang="en">pgconf</shortdesc>
++<content type="string" default="${OCF_RESKEY_pgconf_default}" />
++</parameter>
++
+ <parameter name="pgdba" unique="0" required="0">
+ <longdesc lang="en">
+ User that owns PostgreSQL.
+@@ -243,7 +253,7 @@ SQL script that will be used for monitor operations.
+ Path to the PostgreSQL configuration file for the instance.
+ </longdesc>
+ <shortdesc lang="en">Configuration file</shortdesc>
+-<content type="string" default="${OCF_RESKEY_pgdata}/postgresql.conf" />
++<content type="string" default="${OCF_RESKEY_pgconf}/postgresql.conf" />
+ </parameter>
+ 
+ <parameter name="pgdb" unique="0" required="0">
+@@ -630,6 +640,12 @@ pgsql_real_start() {
+         fi
+     fi
+ 
++    # WRS: Create an unversioned symlink under /var/run so SM can easily
++    # find the PID file.
++    if [ ! -h $PIDFILE_SYMLINK ]; then
++      /bin/ln -s $PIDFILE $PIDFILE_SYMLINK
++    fi
++
+     ocf_log info "PostgreSQL is started."
+     return $rc
+ }
+@@ -2078,10 +2094,11 @@ then
+ fi
+ 
+ PIDFILE=${OCF_RESKEY_pgdata}/postmaster.pid
++PIDFILE_SYMLINK=/var/run/postmaster.pid
+ BACKUPLABEL=${OCF_RESKEY_pgdata}/backup_label
+ RESOURCE_NAME=`echo $OCF_RESOURCE_INSTANCE | cut -d ":" -f 1`
+ PGSQL_WAL_RECEIVER_STATUS_ATTR="${RESOURCE_NAME}-receiver-status"
+-RECOVERY_CONF=${OCF_RESKEY_pgdata}/recovery.conf
++RECOVERY_CONF=${OCF_RESKEY_pgconf}/recovery.conf
+ NODENAME=$(ocf_local_nodename | tr '[A-Z]' '[a-z]')
+ 
+ case "$1" in
+-- 
+1.9.1
+

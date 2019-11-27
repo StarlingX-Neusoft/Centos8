@@ -1,0 +1,60 @@
+From 7c181a1afdc85456333f9cbf9c5827ceb0554a91 Mon Sep 17 00:00:00 2001
+From: Chris Friesen <chris.friesen@windriver.com>
+Date: Fri, 24 Aug 2018 03:51:37 +0800
+Subject: [PATCH] Fix VG activity bug in heartbeat/LVM script
+
+There is currently an issue in the lvm2 package where if you create an LVM thin
+pool, then create a thin volume in the pool, then the udev rule doesn't think
+there should be a /dev// symlink for the thin pool, but "vgmknodes" and
+"vgscan --mknodes" both think that there should be such a symlink. This is a
+bug, but it's in the field in CentOS 7 at least and likely elsewhere.
+
+The end result of this is that on such a system running either "vgscan
+--mknodes" or "vgmknodes" and then running "vgchange -an " will
+leave the /dev/ directory with a dangling symlink in it.
+
+This breaks the LVM_status() function in this OCF script, since the
+/dev/ directory exists and is not empty even though the volume
+group is not active.
+
+This commit changes the code to directly query lvm about the volume group
+activity rather than relying on side effects.
+
+Signed-off-by: zhipengl <zhipengs.liu@intel.com>
+
+---
+ heartbeat/LVM | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/heartbeat/LVM b/heartbeat/LVM
+index 893ece8..1efb207 100755
+--- a/heartbeat/LVM
++++ b/heartbeat/LVM
+@@ -191,18 +191,15 @@ LVM_status() {
+ 		fi
+ 	fi
+ 	
+-	if [ -d /dev/$1 ]; then
+-		test "`cd /dev/$1 && ls`" != ""
+-		rc=$?
+-		if [ $rc -ne 0 ]; then
+-			ocf_exit_reason "VG $1 with no logical volumes is not supported by this RA!"
+-		fi
+-	fi
+-
+-	if [ $rc -ne 0 ]; then
++	# Ask lvm whether the volume group is active.  This maps to
++	# the question "Are there any logical volumes that are active in
++	# the specified volume group?".
++	lvs --noheadings -o selected  -S lv_active=active,vg_name=${1}|grep -q 1
++	if [ $? -ne 0 ]; then
+ 		ocf_log $loglevel "LVM Volume $1 is not available (stopped)"
+ 		rc=$OCF_NOT_RUNNING
+ 	else
++		rc=0
+ 		lvm_status
+ 		rc=$?
+ 	fi
+-- 
+2.7.4
+

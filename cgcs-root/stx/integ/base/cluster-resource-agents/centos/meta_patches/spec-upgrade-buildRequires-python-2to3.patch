@@ -1,0 +1,128 @@
+From 96b004fbbc6a4bcdb07ffcfb3d332193c16d4280 Mon Sep 17 00:00:00 2001
+From: LongLi <lilong-neu@neusoft.com>
+Date: Tue, 26 Nov 2019 16:44:38 +0800
+Subject: [PATCH] spec-upgrade-buildRequires-python-2to3
+
+Signed-off-by: LongLi <lilong-neu@neusoft.com>
+---
+ SPECS/resource-agents.spec | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
+
+diff --git a/SPECS/resource-agents.spec b/SPECS/resource-agents.spec
+index 9399f93..b093dfd 100644
+--- a/SPECS/resource-agents.spec
++++ b/SPECS/resource-agents.spec
+@@ -177,7 +177,7 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+ 
+ # Build dependencies
+ BuildRequires: automake autoconf pkgconfig
+-BuildRequires: perl python-devel python-setuptools
++BuildRequires: perl python3-devel python3-setuptools
+ BuildRequires: libxslt glib2-devel
+ BuildRequires: which
+ 
+@@ -600,42 +600,42 @@ make $JFLAGS
+ # python-pyroute2 bundle
+ %ifarch x86_64
+ pushd %{pyroute2_dir}
+-%{__python2} setup.py build
++%{__python3} setup.py build
+ popd
+ 
+ # python-colorama bundle
+ pushd %{colorama_dir}
+-%{__python2} setup.py build
++%{__python3} setup.py build
+ popd
+ 
+ # python-jmespath bundle
+ pushd %{jmespath_dir}
+-CFLAGS="%{optflags}" %{__python} setup.py %{?py_setup_args} build --executable="%{__python2} -s"
++CFLAGS="%{optflags}" %{__python3} setup.py %{?py_setup_args} build --executable="%{__python3} -s"
+ popd
+ 
+ # python-pycryptodome bundle
+ pushd %{pycryptodome_dir}
+-%{__python2} setup.py build
++%{__python3} setup.py build
+ popd
+ 
+ # python-aliyun-sdk-core bundle
+ pushd %{aliyunsdkcore_dir}
+-%{__python2} setup.py build
++%{__python3} setup.py build
+ popd
+ 
+ # python-aliyun-sdk-ecs bundle
+ pushd %{aliyunsdkecs_dir}
+-%{__python2} setup.py build
++%{__python3} setup.py build
+ popd
+ 
+ # python-aliyun-sdk-vpc bundle
+ pushd %{aliyunsdkvpc_dir}
+-%{__python2} setup.py build
++%{__python3} setup.py build
+ popd
+ 
+ # aliyuncli bundle
+ pushd %{aliyuncli_dir}
+-%{__python2} setup.py build
++%{__python3} setup.py build
+ popd
+ %endif
+ 
+@@ -657,42 +657,42 @@ popd
+ 
+ # python-pyroute2 bundle
+ pushd %{pyroute2_dir}
+-%{__python2} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
++%{__python3} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
+ popd
+ # python-colorama bundle
+ pushd %{colorama_dir}
+-%{__python2} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
++%{__python3} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
+ popd
+ 
+ # python-jmespath bundle
+ pushd %{jmespath_dir}
+-CFLAGS="%{optflags}" %{__python} setup.py %{?py_setup_args} install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
++CFLAGS="%{optflags}" %{__python3} setup.py %{?py_setup_args} install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
+ popd
+ rm %{buildroot}/%{_bindir}/jp.py
+ 
+ # python-pycryptodome bundle
+ pushd %{pycryptodome_dir}
+-%{__python2} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
++%{__python3} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
+ popd
+ 
+ # python-aliyun-sdk-core bundle
+ pushd %{aliyunsdkcore_dir}
+-%{__python2} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
++%{__python3} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
+ popd
+ 
+ # python-aliyun-sdk-ecs bundle
+ pushd %{aliyunsdkecs_dir}
+-%{__python2} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
++%{__python3} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
+ popd
+ 
+ # python-aliyun-sdk-vpc bundle
+ pushd %{aliyunsdkvpc_dir}
+-%{__python2} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
++%{__python3} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
+ popd
+ 
+ # aliyuncli bundle
+ pushd %{aliyuncli_dir}
+-%{__python2} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
++%{__python3} setup.py install -O1 --skip-build --root %{buildroot} --install-lib /usr/lib/%{name}/%{bundled_lib_dir}
+ sed -i -e "/^import sys/asys.path.insert(0, '/usr/lib/%{name}/%{bundled_lib_dir}')" %{buildroot}/%{_bindir}/aliyuncli
+ mv %{buildroot}/%{_bindir}/aliyuncli %{buildroot}/%{_bindir}/aliyuncli-ra
+ # aliyun_completer / aliyun_zsh_complete.sh
+-- 
+2.7.4
+

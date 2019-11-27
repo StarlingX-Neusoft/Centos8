@@ -1,0 +1,68 @@
+From 1f6128eb7bf5287db6def45f278acf771a711a42 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Mon, 2 Oct 2017 15:11:58 -0400
+Subject: [PATCH] WRS: spec-include-TiS-patches.patch
+
+Signed-off-by: zhipengl <zhipengs.liu@intel.com>
+---
+ SPECS/resource-agents.spec | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/SPECS/resource-agents.spec b/SPECS/resource-agents.spec
+index a16660a..ec85fc2 100644
+--- a/SPECS/resource-agents.spec
++++ b/SPECS/resource-agents.spec
+@@ -148,6 +148,24 @@ Patch1002:	bz1568588-9-google-cloud-sdk-oauth2client-python-rsa-to-cryptography.
+ Patch1003:	bz1568588-10-gcloud-support-info.patch
+ Patch1004:	bz1568589-4-aliyun-vpc-move-ip-bundled.patch
+ 
++# STX
++
++Patch1106:  new_ocf_return_codes.patch
++Patch1107:  ipaddr2_check_if_state.patch
++Patch1108:  copyright.patch
++Patch1109:  umount-in-namespace.patch
++Patch1110: lvm_vg_activation.patch
++Patch1111: pgsql.patch
++
++
++
++Patch1115: Fix-VG-activity-bug-in-heartbeat-LVM-script.patch
++Patch1116: ocf-shellfuncs_change_logtag.patch
++Patch1117: lvm_cleanup_refs_on_stop.patch
++Patch1118: ipaddr2_if_down.patch
++Patch1119: ipaddr2_ignore_lo_if_state.patch
++Patch1121: ipaddr2-avoid-failing-svc-if-down.patch
++Patch1122: ipaddr2-use-host-scope-for-addresses-on-loopback.patch
+ Obsoletes:	heartbeat-resources <= %{version}
+ Provides:	heartbeat-resources = %{version}
+ 
+@@ -508,6 +526,25 @@ cp %{aliyuncli_dir}/LICENSE %{aliyuncli}_LICENSE
+ %patch1004 -p1
+ %endif
+ 
++# STX
++
++%patch1106 -p1
++%patch1107 -p1
++%patch1108 -p1
++%patch1109 -p1
++%patch1110 -p1
++%patch1111 -p1
++
++
++
++%patch1115 -p1
++%patch1116 -p1
++%patch1117 -p1
++%patch1118 -p1
++%patch1119 -p1
++%patch1121 -p1
++%patch1122 -p1
++
+ %build
+ if [ ! -f configure ]; then
+ 	./autogen.sh
+-- 
+1.8.3.1
+

@@ -1,0 +1,62 @@
+From 111343419dd381d81303354dad48cca5095ab080 Mon Sep 17 00:00:00 2001
+From: Scott Little <scott.little@windriver.com>
+Date: Fri, 26 Aug 2016 15:06:02 -0400
+Subject: [PATCH 02/12] WRS: Patch106: new_ocf_return_codes.patch
+
+---
+ heartbeat/ocf-returncodes | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/heartbeat/ocf-returncodes b/heartbeat/ocf-returncodes
+index dd5f017..9200889 100644
+--- a/heartbeat/ocf-returncodes
++++ b/heartbeat/ocf-returncodes
+@@ -4,6 +4,7 @@
+ #
+ # Copyright (c) 2004 SUSE LINUX AG, Andrew Beekhof
+ #                    All Rights Reserved.
++# Copyright (c) 2014 Wind River Systems, Inc. All rights reserved.
+ #
+ #
+ # This library is free software; you can redistribute it and/or
+@@ -53,3 +54,37 @@ OCF_NOT_RUNNING=7
+ #
+ OCF_RUNNING_MASTER=8
+ OCF_FAILED_MASTER=9
++
++# Non-standard values particular to Wind River deployments.
++#
++# OCF does not include the concept of data sync states for master/slave
++# resources.
++#
++# OCF_DATA_INCONSISTENT:
++#   The resource's data is not useable.
++#
++# OCF_DATA_OUTDATED:
++#   The resource's data is consistent, but a peer with more recent data
++#   has been seen.
++#
++# OCF_DATA_CONSISTENT:
++#   The resource's data is consistent, but it is unsure that this is the
++#   most recent data.
++#
++# OCF_SYNC:
++#   The resource is syncing data.
++#
++# OCF_STANDALONE:
++#   The resource is operating as standalone.  No peer is available or
++#   syncing is not possible (i.e. split brain fencing).
++#
++OCF_DATA_INCONSISTENT=32
++OCF_DATA_OUTDATED=33
++OCF_DATA_CONSISTENT=34
++OCF_DATA_SYNC=35
++OCF_DATA_STANDALONE=36
++OCF_RUNNING_MASTER_DATA_INCONSISTENT=37
++OCF_RUNNING_MASTER_DATA_OUTDATED=38
++OCF_RUNNING_MASTER_DATA_CONSISTENT=39
++OCF_RUNNING_MASTER_DATA_SYNC=40
++OCF_RUNNING_MASTER_DATA_STANDALONE=41
+-- 
+1.9.1
+

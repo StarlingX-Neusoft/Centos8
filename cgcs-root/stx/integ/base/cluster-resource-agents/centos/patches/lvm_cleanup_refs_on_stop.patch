@@ -1,0 +1,125 @@
+From 72fcaed4a9cc3c847278dd4fca88ba0bca88125a Mon Sep 17 00:00:00 2001
+From: Vu Tran <vu.tran@windriver.com>
+Date: Thu Sep 29 19:07:25 2016 -0400
+Subject: CGTS-5173: LVM ocf cleanup refs on stop
+
+In LVM ocf script, LVM_stop() fails if any of the created logical volume
+dm block devices are being held by any process with the following error
+
+err ERROR: Logical volume cinder-volumes/volume-96a8becd-a1c1-4508-8b25-9bcbcfeff2fa
+contains a filesystem in use. Can't deactivate volume group "cinder-volumes"
+with 1 open logical volume(s)
+
+So here we want to have defensive code to scan through any process that
+holds what dm block devices and causes LVM_stop() to fail.  There are
+2 cases:
+
+* dm block devices are mounted and processes are accessing files located
+in this mount point.  We first need to kill all the processes which are
+opening files and then umount the dm block devices.
+
+* processes just hold/open dm block devices directly.  We need to kill
+these processes.
+
+Signed-off-by: Sun Austin <austin.sun@intel.com>
+---
+ heartbeat/LVM | 76 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+
+diff --git a/heartbeat/LVM b/heartbeat/LVM
+index 1efb207..bde381c 100755
+--- a/heartbeat/LVM
++++ b/heartbeat/LVM
+@@ -367,6 +367,81 @@ LVM_start() {
+ }
+ 
+ #
++#    Kill provided process that holds lv
++#
++log_and_kill_process_hold_lv() {
++  p_info=$(ps -lfLp ${1} | tail -1)
++  ocf_log warn "lv ${2} is being held by this process (will be forced killed):"
++  ocf_log warn ${p_info}
++  kill -s KILL ${1}
++}
++
++#
++#    Scan for processes that hold any lvs and kill them
++#
++scan_and_kill_processes_hold_lv() {
++  vg_name=${1}
++
++  # Get list of logical volumes which are busy
++  lv_paths=$(lvdisplay -c ${vg_name} | awk -F ":" '{print $1}')
++  for lv_path in ${lv_paths}; do
++    open_num=$(lvdisplay ${lv_path} | grep "# open" | awk '{print $3}')
++    if [ ${open_num} -gt 0 ]; then
++      lv_name=$(lvdisplay ${lv_path} | grep "LV Name" | awk '{print $3}')
++      lv_block=$(lvdisplay ${lv_path} | grep "Block device" | awk '{print $3}')
++
++      lv_list="${lv_list}
++${lv_name}|${lv_block}"
++      lv_block_list="${lv_block_list} ${lv_block}"
++    fi
++  done
++
++  # Exit if there is no busy logical volume
++  [ -z "${lv_list}" ] && exit 0
++
++  # Checking to see if any of these busy logical volumes are caused by mount
++  mountinfo=$(cat /proc/1/mountinfo)
++  while read -r line; do
++    mount_majorminor=$(echo ${line} | awk '{print $3}')
++    mount_point=$(echo ${line} | awk '{print $5}')
++
++    for lv in ${lv_block_list}; do
++      if [ "${lv}" == "${mount_majorminor}" ]; then
++        lv_name=$(echo "${lv_list}" | grep ${lv} | awk -F "|" '{print $1}')
++        ocf_log warn "lv ${lv_name} is busy mounted at ${mount_point} (will be forced unmounted)"
++        processes_holding_mount_point=$(fuser -m ${mount_point} 2>/dev/null)
++        if [ -n "${processes_holding_mount_point}" ]; then
++          for p in ${processes_holding_mount_point}; do
++            log_and_kill_process_hold_lv "${p}" "${lv_name}"
++          done
++        fi
++        umount ${mount_point}
++        [ $? -ne 0 ] && ocf_log warn "Cannot umount ${mount_point}"
++      fi
++    done
++  done <<< "${mountinfo}"
++
++  # Now checking to see if any process holding these logical volumes
++  all_processes=$(ps -e | awk '{print $1}')
++  for p in ${all_processes}; do
++    [ ! -d /proc/${p}/fd ] && continue
++    opened_file_list=$(ls -l /proc/${p}/fd | awk -F "->" '{print $2}')
++
++    for f in ${opened_file_list}; do
++      [ ! -b "${f}" ] && continue
++      f_majorminor=$(printf "%d:%d" $(stat -c '0x%t 0x%T' ${f}))
++
++      for lv in ${lv_block_list}; do
++        if [ "${lv}" == "${f_majorminor}" ]; then
++          lv_name=$(echo "${lv_list}" | grep ${lv} | awk -F "|" '{print $1}')
++          log_and_kill_process_hold_lv "${p}" "${lv_name}"
++        fi
++      done
++    done
++  done
++}
++
++#
+ #	Disable the LVM volume
+ #
+ LVM_stop() {
+@@ -395,6 +470,7 @@ LVM_stop() {
+ 			break
+ 		fi
+ 
++		scan_and_kill_processes_hold_lv $vg
+ 		res=$OCF_ERR_GENERIC
+ 		ocf_log warn "$vg still Active"
+ 		ocf_log info "Retry deactivating volume group $vg"
+-- 
+2.7.4
+

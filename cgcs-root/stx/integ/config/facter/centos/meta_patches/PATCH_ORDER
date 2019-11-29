@@ -1,2 +1,3 @@
 0001-spec-include-TiS-paches.patch
 0002-Update-package-versioning-for-TIS-format.patch
+0003-fix_install_man_page_for_rhel8.patch

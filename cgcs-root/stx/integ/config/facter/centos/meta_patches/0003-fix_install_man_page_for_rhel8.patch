@@ -1,0 +1,26 @@
+From 9428b3d96f0270ec79c1ab48dc36277c8061681d Mon Sep 17 00:00:00 2001
+From: Long Li <lilong-neu@neusoft.com>
+Date: Thu, 28 Nov 2019 18:28:49 +0800
+Subject: [PATCH] fix_install_man_page_for_rhel8
+
+Signed-off-by: Long Li <lilong-neu@neusoft.com>
+---
+ SPECS/facter.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/facter.spec b/SPECS/facter.spec
+index 97ee783..3ddd64f 100644
+--- a/SPECS/facter.spec
++++ b/SPECS/facter.spec
+@@ -83,7 +83,7 @@ ruby install.rb --destdir=%{buildroot} --quick --no-rdoc --sitelibdir=%{facter_l
+ # Create directory for external facts
+ mkdir -p %{buildroot}/%{_sysconfdir}/%{name}/facts.d
+ 
+-%if ! (0%{?fedora} || 0%{?rhel} >= 7)
++%if ! (0%{?fedora})
+ # Install man page, rubygem-rdoc is not available on older EL releases)
+ install -D -pv -m 644 man/man8/%{name}.8 %{buildroot}/%{_mandir}/man8/%{name}.8
+ %endif
+-- 
+2.7.4
+

@@ -1,0 +1,27 @@
+From b7992d01d3ce4ccb51f73e7c1c4e3f4cb9e8e454 Mon Sep 17 00:00:00 2001
+From: Kristine Bujold <kristine.bujold@windriver.com>
+Date: Tue, 3 Sep 2019 16:08:25 -0400
+Subject: [PATCH] Update-package-versioning-for-TIS-format
+
+Signed-off-by: Kristine Bujold <kristine.bujold@windriver.com>
+Signed-off-by: Long Li <lilong-neu@neusoft.com>
+---
+ SPECS/ntp.spec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SPECS/ntp.spec b/SPECS/ntp.spec
+index 1ab6b7d..e453e2e 100644
+--- a/SPECS/ntp.spec
++++ b/SPECS/ntp.spec
+@@ -3,7 +3,7 @@
+ Summary: The NTP daemon and utilities
+ Name: ntp
+ Version: 4.2.8p13
+-Release: 3%{?dist}
++Release: 3%{?_tis_dist}.%{tis_patch_ver}
+ # primary license (COPYRIGHT) : MIT
+ # kernel/sys/ppsclock.h (not used) : BSD with advertising
+ # include/ntif.h (not used) : BSD
+-- 
+2.7.4
+

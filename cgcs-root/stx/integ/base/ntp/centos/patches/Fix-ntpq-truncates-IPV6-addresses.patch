@@ -1,0 +1,26 @@
+From c135c30f1196b081619e1f4164840748b7815f24 Mon Sep 17 00:00:00 2001
+From: Kristine Bujold <kristine.bujold@windriver.com>
+Date: Tue, 3 Sep 2019 16:58:39 -0400
+Subject: [PATCH] ntpq truncates "remote" host information when system is IPV6
+
+Signed-off-by: Kristine Bujold <kristine.bujold@windriver.com>
+---
+ ntpq/ntpq-subs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ntpq/ntpq-subs.c b/ntpq/ntpq-subs.c
+index c834ce6..0ed8933 100644
+--- a/ntpq/ntpq-subs.c
++++ b/ntpq/ntpq-subs.c
+@@ -1614,7 +1614,7 @@ doprintpeers(
+ 	}
+ 	if (AF_UNSPEC == af || AF(&srcadr) == af) {
+ 		strncpy(clock_name, nntohost(&srcadr), sizeof(clock_name));		
+-		fprintf(fp, "%c%-15.15s ", c, clock_name);
++		fprintf(fp, "%c%s\n                 ", c, clock_name);
+ 		drlen = strlen(dstadr_refid);
+ 		makeascii(drlen, dstadr_refid, fp);
+ 		while (drlen++ < 15)
+-- 
+1.8.3.1
+
